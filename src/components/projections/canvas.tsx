@@ -112,7 +112,7 @@ const EditableMainNode = ({ data, selected, id }: CustomNodeProps) => {
               onClick={() => data.onAddTopic?.(id)}
               title="Add Topic"
             >
-              <Workflow size={14}/>
+              <Workflow size={14} />
             </Button>
           </div>
           <Button
