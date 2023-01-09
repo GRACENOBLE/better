@@ -268,6 +268,22 @@ export default function RoadmapStudio() {
     if (currentRoadmap) {
       console.log("Loading roadmap into studio:", currentRoadmap);
       applyRoadmapLayout(currentRoadmap.nodes, currentRoadmap.edges);
+    } else {
+      // Create a default starter roadmap with one main milestone
+      const defaultRoadmap = {
+        nodes: [
+          {
+            id: "starter",
+            label: "Start Here",
+            type: "main" as const,
+            level: 0,
+          },
+        ],
+        edges: [],
+        metadata: { topic: "New Roadmap" },
+      };
+      setRoadmap(defaultRoadmap);
+      applyRoadmapLayout(defaultRoadmap.nodes, defaultRoadmap.edges);
     }
   }, [currentRoadmap]);
 
@@ -674,8 +690,8 @@ export default function RoadmapStudio() {
     // Determine the level for the new node
     let level = 0;
     if (addMode === "milestone") {
-      // For new milestones, find the next level after the parent
-      level = (parentNode?.data.level || 0) + 1;
+      // For new milestones, if no parent, level 0, else next level
+      level = parentNodeId ? (parentNode?.data.level || 0) + 1 : 0;
     } else if (addMode === "topic") {
       // Topics use the same level as their parent main node
       level = parentNode?.data.level || 0;
@@ -828,52 +844,10 @@ export default function RoadmapStudio() {
     router.push("/");
   };
 
-  const handleBack = () => {
-    router.push("/");
-  };
-
   return (
     <div className="w-full h-full relative">
-      <Button
-        size="sm"
-        onClick={handleRealignNodes}
-        variant="outline"
-        className="aspect-square w-10 h-10 absolute z-10 top-4 right-4 "
-      >
-        <AlignAllNodes />
-      </Button>
-      {/* Header */}
-      {/* <div className="absolute top-0 left-0 right-0 z-10 bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Button onClick={handleBack} variant="outline" size="sm">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Chat
-          </Button>
-          <h1 className="text-xl font-bold">🗺️ Roadmap Studio</h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            onClick={handleRealignNodes}
-            variant="outline"
-            size="sm"
-            title="Realign Nodes"
-          >
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Realign
-          </Button>
-          <Button
-            onClick={handleSave}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
-            size="sm"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Save Changes
-          </Button>
-        </div>
-      </div> */}
-
       {/* React Flow Canvas */}
-      <div className=" h-full">
+      <div className="h-full">
         <ReactFlow
           nodes={nodes}
           edges={edges}
