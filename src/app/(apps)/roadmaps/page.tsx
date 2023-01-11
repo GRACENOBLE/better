@@ -1,3 +1,5 @@
+"use client";
+
 import Container from "@/components/common/container";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { TextEffect } from "@/components/ui/text-effect";
@@ -12,7 +14,39 @@ import Header from "@/components/layout/header";
 import RoadmapCard from "@/components/projections/roadmap-card";
 import Image from "next/image";
 import CustomButton from "@/components/CustomButton";
+import { useEffect, useState } from "react";
+
+interface Roadmap {
+  id: string;
+  title: string;
+  nodes: any[];
+  edges: any[];
+  metadata?: any;
+  progress: number;
+  createdAt: string;
+}
+
 const page = () => {
+  const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchRoadmaps = async () => {
+      try {
+        const res = await fetch("/api/roadmaps");
+        if (res.ok) {
+          const data = await res.json();
+          setRoadmaps(data);
+        }
+      } catch (error) {
+        console.error("Error fetching roadmaps:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRoadmaps();
+  }, []);
+
   const transitionVariants = {
     item: {
       hidden: {
@@ -100,106 +134,52 @@ const page = () => {
             </TabsList>
             <TabsContent value="all">
               <div className="grid grid-cols-4 gap-4">
-                {[
-                  "My personal roadmap name one",
-                  "My personal roadmap name two",
-                  "My personal roadmap name three",
-                  "My personal roadmap name four",
-                  "My personal roadmap name five",
-                  "My personal roadmap name six",
-                  "My personal roadmap name seven",
-                  "My personal roadmap name eight",
-                  "My personal roadmap name nine",
-                  "My personal roadmap name ten",
-                ].map((roadmap, index) => (
+                {roadmaps.map((roadmap) => (
                   <RoadmapCard
-                    key={index}
-                    slug={"my-custom-roadmap-1"}
-                    type={"in-progress"}
+                    key={roadmap.id}
+                    slug={roadmap.id}
+                    type={roadmap.progress === 100 ? "completed" : "in-progress"}
                     bookmarked={false}
-                    title={roadmap}
-                    deadline={"Jan 20,2025"}
-                    progress={32}
+                    title={roadmap.title}
+                    deadline={new Date(roadmap.createdAt).toLocaleDateString()}
+                    progress={roadmap.progress}
                   />
                 ))}
               </div>
             </TabsContent>
             <TabsContent value="underway">
               <div className="grid grid-cols-4 gap-4">
-                {[
-                  "My personal roadmap name one",
-                  "My personal roadmap name two",
-                  "My personal roadmap name three",
-                  "My personal roadmap name four",
-                  "My personal roadmap name five",
-                  "My personal roadmap name six",
-                  "My personal roadmap name seven",
-                  "My personal roadmap name eight",
-                  "My personal roadmap name nine",
-                  "My personal roadmap name ten",
-                ].map((roadmap, index) => (
+                {roadmaps.filter(r => r.progress < 100).map((roadmap) => (
                   <RoadmapCard
-                    key={index}
-                    slug={"my-custom-roadmap-1"}
-                    type={"in-progress"}
+                    key={roadmap.id}
+                    slug={roadmap.id}
+                    type="in-progress"
                     bookmarked={false}
-                    title={roadmap}
-                    deadline={"Jan 20,2025"}
-                    progress={32}
+                    title={roadmap.title}
+                    deadline={new Date(roadmap.createdAt).toLocaleDateString()}
+                    progress={roadmap.progress}
                   />
                 ))}
               </div>
             </TabsContent>
             <TabsContent value="completed">
               <div className="grid grid-cols-4 gap-2">
-                {[
-                  "roadmap11",
-                  "roadmap21",
-                  "roadmap31",
-                  "roadmap41",
-                  "roadmap51",
-                  "roadmap11",
-                  "roadmap21",
-                  "roadmap31",
-                  "roadmap41",
-                  "roadmap51",
-                ].map((roadmap, index) => (
+                {roadmaps.filter(r => r.progress === 100).map((roadmap) => (
                   <RoadmapCard
-                    key={index}
-                    slug={"my-custom-roadmap-1"}
-                    type={"completed"}
+                    key={roadmap.id}
+                    slug={roadmap.id}
+                    type="completed"
                     bookmarked={false}
-                    title={roadmap}
-                    deadline={"Jan 20,2025"}
-                    progress={100}
+                    title={roadmap.title}
+                    deadline={new Date(roadmap.createdAt).toLocaleDateString()}
+                    progress={roadmap.progress}
                   />
                 ))}
               </div>
             </TabsContent>
             <TabsContent value="bookmarked">
               <div className="grid grid-cols-4 gap-2">
-                {[
-                  "roadmap11",
-                  "roadmap21",
-                  "roadmap31",
-                  "roadmap41",
-                  "roadmap51",
-                  "roadmap11",
-                  "roadmap21",
-                  "roadmap31",
-                  "roadmap41",
-                  "roadmap51",
-                ].map((roadmap, index) => (
-                  <RoadmapCard
-                    key={index}
-                    slug={"my-custom-roadmap-1"}
-                    type={"in-progress"}
-                    bookmarked={true}
-                    title={roadmap}
-                    deadline={"Jan 20,2025"}
-                    progress={32}
-                  />
-                ))}
+                {/* Bookmarked roadmaps will be implemented later */}
               </div>
             </TabsContent>
           </Tabs>
