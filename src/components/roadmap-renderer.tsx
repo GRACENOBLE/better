@@ -28,6 +28,7 @@ interface RoadmapData {
     level?: number;
     description?: string;
     category?: string;
+    completed?: boolean;
   }>;
   edges: Array<{
     id: string;
@@ -45,112 +46,177 @@ interface RoadmapData {
 
 interface RoadmapRendererProps {
   roadmapData: RoadmapData;
+  onToggleComplete?: (nodeId: string) => void;
+  readOnly?: boolean;
 }
 
 // Main milestone nodes (yellow) with named connection handles
-const MainNode = ({ data }: { data: any }) => (
-  <div className="px-6 py-4 shadow-lg rounded-lg bg-yellow-300 border-2 border-gray-800 min-w-[200px] font-bold text-center relative">
-    <Handle
-      type="target"
-      position={Position.Top}
-      id="top"
-      className="w-3 h-3"
-    />
-    <Handle
-      type="source"
-      position={Position.Bottom}
-      id="bottom"
-      className="w-3 h-3"
-    />
-    <Handle
-      type="source"
-      position={Position.Left}
-      id="left"
-      className="w-3 h-3"
-    />
-    <Handle
-      type="source"
-      position={Position.Right}
-      id="right"
-      className="w-3 h-3"
-    />
-    <div className="text-sm text-gray-900">{data.label}</div>
-  </div>
-);
+const MainNode = ({ data }: { data: any }) => {
+  const isCompleted = data.completed || false;
+  const isReadOnly = data.readOnly || false;
+  const onToggleComplete = data.onToggleComplete;
+
+  const handleRightClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isReadOnly && onToggleComplete) {
+      onToggleComplete(data.id);
+    }
+  }, [data.id, isReadOnly, onToggleComplete]);
+
+  return (
+    <div
+      className={`px-6 py-4 shadow-lg rounded-lg bg-yellow-300 border-2 border-gray-800 min-w-[200px] font-bold text-center relative cursor-pointer ${
+        isCompleted ? 'line-through opacity-60' : ''
+      }`}
+      onContextMenu={handleRightClick}
+    >
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="top"
+        className="w-3 h-3"
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom"
+        className="w-3 h-3"
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="left"
+        className="w-3 h-3"
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        className="w-3 h-3"
+      />
+      <div className="text-sm text-gray-900">{data.label}</div>
+      {isCompleted && (
+        <div className="text-xs text-green-600 mt-1 font-normal">✓ Complete</div>
+      )}
+    </div>
+  );
+};
 
 // Regular topic nodes (gray) with named connection handles
-const TopicNode = ({ data }: { data: any }) => (
-  <div className="px-4 py-3 shadow-md rounded-lg bg-gray-300 border-2 border-gray-800 min-w-[150px] font-semibold text-center relative">
-    <Handle
-      type="target"
-      position={Position.Top}
-      id="top"
-      className="w-3 h-3"
-    />
-    <Handle
-      type="source"
-      position={Position.Bottom}
-      id="bottom"
-      className="w-3 h-3"
-    />
-    <Handle
-      type="target"
-      position={Position.Left}
-      id="left"
-      className="w-3 h-3"
-    />
-    <Handle
-      type="target"
-      position={Position.Right}
-      id="right"
-      className="w-3 h-3"
-    />
-    <Handle
-      type="source"
-      position={Position.Left}
-      id="left-source"
-      className="w-3 h-3"
-    />
-    <Handle
-      type="source"
-      position={Position.Right}
-      id="right-source"
-      className="w-3 h-3"
-    />
-    <div className="text-xs text-gray-900">{data.label}</div>
-  </div>
-);
+const TopicNode = ({ data }: { data: any }) => {
+  const isCompleted = data.completed || false;
+  const isReadOnly = data.readOnly || false;
+  const onToggleComplete = data.onToggleComplete;
+
+  const handleRightClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isReadOnly && onToggleComplete) {
+      onToggleComplete(data.id);
+    }
+  }, [data.id, isReadOnly, onToggleComplete]);
+
+  return (
+    <div
+      className={`px-4 py-3 shadow-md rounded-lg bg-gray-300 border-2 border-gray-800 min-w-[150px] font-semibold text-center relative cursor-pointer ${
+        isCompleted ? 'line-through opacity-60' : ''
+      }`}
+      onContextMenu={handleRightClick}
+    >
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="top"
+        className="w-3 h-3"
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom"
+        className="w-3 h-3"
+      />
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="left"
+        className="w-3 h-3"
+      />
+      <Handle
+        type="target"
+        position={Position.Right}
+        id="right"
+        className="w-3 h-3"
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="left-source"
+        className="w-3 h-3"
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right-source"
+        className="w-3 h-3"
+      />
+      <div className="text-xs text-gray-900">{data.label}</div>
+      {isCompleted && (
+        <div className="text-xs text-green-600 mt-0.5 font-normal">✓</div>
+      )}
+    </div>
+  );
+};
 
 // Small subtopic nodes with named connection handles
-const SubtopicNode = ({ data }: { data: any }) => (
-  <div className="px-3 py-2 shadow-sm rounded bg-gray-200 border border-gray-700 min-w-[80px] text-center relative">
-    <Handle
-      type="target"
-      position={Position.Top}
-      id="top"
-      className="w-2 h-2"
-    />
-    <Handle
-      type="target"
-      position={Position.Bottom}
-      id="bottom"
-      className="w-2 h-2"
-    />
-    <Handle
-      type="target"
-      position={Position.Left}
-      id="left"
-      className="w-2 h-2"
-    />
-    <Handle
-      type="target"
-      position={Position.Right}
-      id="right"
-      className="w-2 h-2"
-    />
-    <div className="text-xs text-gray-800 font-medium">{data.label}</div>
-  </div>
-);
+const SubtopicNode = ({ data }: { data: any }) => {
+  const isCompleted = data.completed || false;
+  const isReadOnly = data.readOnly || false;
+  const onToggleComplete = data.onToggleComplete;
+
+  const handleRightClick = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!isReadOnly && onToggleComplete) {
+      onToggleComplete(data.id);
+    }
+  }, [data.id, isReadOnly, onToggleComplete]);
+
+  return (
+    <div
+      className={`px-3 py-2 shadow-sm rounded bg-gray-200 border border-gray-700 min-w-[80px] text-center relative cursor-pointer ${
+        isCompleted ? 'line-through opacity-60' : ''
+      }`}
+      onContextMenu={handleRightClick}
+    >
+      <Handle
+        type="target"
+        position={Position.Top}
+        id="top"
+        className="w-2 h-2"
+      />
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        id="bottom"
+        className="w-2 h-2"
+      />
+      <Handle
+        type="target"
+        position={Position.Left}
+        id="left"
+        className="w-2 h-2"
+      />
+      <Handle
+        type="target"
+        position={Position.Right}
+        id="right"
+        className="w-2 h-2"
+      />
+      <div className="text-xs text-gray-800 font-medium">{data.label}</div>
+      {isCompleted && (
+        <div className="text-xs text-green-600 mt-0.5 font-normal">✓</div>
+      )}
+    </div>
+  );
+};
 
 const nodeTypes = {
   main: MainNode,
@@ -158,7 +224,7 @@ const nodeTypes = {
   subtopic: SubtopicNode,
 };
 
-export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
+export default function RoadmapRenderer({ roadmapData, onToggleComplete, readOnly = true }: RoadmapRendererProps) {
   console.log("RoadmapRenderer called with:", roadmapData);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -185,6 +251,9 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
           data: {
             label: node.label,
             description: node.description,
+            completed: node.completed || false,
+            readOnly,
+            onToggleComplete,
           },
           draggable: true,
         };
