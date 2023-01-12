@@ -113,25 +113,42 @@ const page = () => {
             <h2 className="text-2xl font-semibold">Your roadmaps</h2>
 
             <div className="border rounded-md p-2 w-fit flex items-center">
-              <Flame strokeWidth={1.5} size={20} /> <span>4</span>
+              <Flame strokeWidth={1.5} size={20} /> <span>{roadmaps.length}</span>
             </div>
           </div>
 
-          <Tabs defaultValue="underway" className="">
-            <TabsList className="grid grid-cols-4 mx-auto mb-6 bg-muted-foreground/10">
-              <TabsTrigger value="all" className="w-[200px]">
-                All
-              </TabsTrigger>
-              <TabsTrigger value="underway" className="w-[200px]">
-                Underway
-              </TabsTrigger>
-              <TabsTrigger value="completed" className="w-[200px]">
-                Completed
-              </TabsTrigger>
-              <TabsTrigger value="bookmarked" className="w-[200px]">
-                Bookmarked
-              </TabsTrigger>
-            </TabsList>
+          {loading ? (
+            <div className="text-center py-12">
+              <p>Loading your roadmaps...</p>
+            </div>
+          ) : roadmaps.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold mb-4">No roadmaps yet</h3>
+              <p className="text-muted-foreground mb-6">
+                Create your first roadmap to get started on your learning journey.
+              </p>
+              <Link href="/roadmaps/studio">
+                <CustomButton>
+                  Create Roadmap
+                </CustomButton>
+              </Link>
+            </div>
+          ) : (
+            <Tabs defaultValue="underway" className="">
+              <TabsList className="grid grid-cols-4 mx-auto mb-6 bg-muted-foreground/10">
+                <TabsTrigger value="all" className="w-[200px]">
+                  All ({roadmaps.length})
+                </TabsTrigger>
+                <TabsTrigger value="underway" className="w-[200px]">
+                  Underway ({roadmaps.filter(r => r.progress < 100).length})
+                </TabsTrigger>
+                <TabsTrigger value="completed" className="w-[200px]">
+                  Completed ({roadmaps.filter(r => r.progress === 100).length})
+                </TabsTrigger>
+                <TabsTrigger value="bookmarked" className="w-[200px]">
+                  Bookmarked (0)
+                </TabsTrigger>
+              </TabsList>
             <TabsContent value="all">
               <div className="grid grid-cols-4 gap-4">
                 {roadmaps.map((roadmap) => (
@@ -183,6 +200,7 @@ const page = () => {
               </div>
             </TabsContent>
           </Tabs>
+          )}
         </Container>
       </section>
     </>
