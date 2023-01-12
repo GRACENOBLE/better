@@ -47,11 +47,9 @@ export async function PUT(
 
     const { id: roadmapId } = await params;
     const body = await request.json();
-    const { nodeId, completed } = body;
+    const { nodeId } = body;
 
-    if (typeof completed !== 'boolean') {
-      return NextResponse.json({ error: "Invalid completed value" }, { status: 400 });
-    }
+    console.log("PUT request for roadmap:", roadmapId, "nodeId:", nodeId);
 
     // Get current roadmap
     const currentRoadmap = await db
@@ -60,24 +58,40 @@ export async function PUT(
       .where(eq(roadmap.id, roadmapId))
       .limit(1);
 
-    if (currentRoadmap.length === 0 || currentRoadmap[0].userId !== session.user.id) {
+    if (
+      currentRoadmap.length === 0 ||
+      currentRoadmap[0].userId !== session.user.id
+    ) {
       return NextResponse.json({ error: "Roadmap not found" }, { status: 404 });
     }
 
     const roadmapData = currentRoadmap[0];
     const nodes = roadmapData.nodes as any[];
 
+    console.log(
+      "Current nodes:",
+      nodes.map((n) => ({ id: n.id, completed: n.completed }))
+    );
+    console.log("Looking for nodeId:", nodeId);
+
     // Update completion status for the specific node (toggle it)
-    const updatedNodes = nodes.map(node =>
+    const updatedNodes = nodes.map((node) =>
       node.id === nodeId ? { ...node, completed: !node.completed } : node
     );
 
+    console.log(
+      "Updated nodes:",
+      updatedNodes.map((n) => ({ id: n.id, completed: n.completed }))
+    );
+
     // Calculate overall progress as percentage of completed nodes
-    const completedCount = updatedNodes.filter(node => node.completed).length;
+    const completedCount = updatedNodes.filter((node) => node.completed).length;
     const overallProgress = Math.round((completedCount / nodes.length) * 100);
 
+    console.log("Overall progress:", overallProgress);
+
     // Update the roadmap with new nodes and overall progress
-    await db
+    const updateResult = await db
       .update(roadmap)
       .set({
         nodes: updatedNodes,
@@ -85,6 +99,8 @@ export async function PUT(
         updatedAt: new Date(),
       })
       .where(eq(roadmap.id, roadmapId));
+
+    console.log("Update result:", updateResult);
 
     return NextResponse.json({ success: true, overallProgress });
   } catch (error) {

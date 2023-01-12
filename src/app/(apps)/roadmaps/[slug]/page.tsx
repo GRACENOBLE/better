@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Edit } from "lucide-react";
 import { ReactFlowProvider } from "@xyflow/react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 interface Roadmap {
   id: string;
@@ -33,7 +33,7 @@ export default function Page({
 
   // Resolve params once
   useEffect(() => {
-    params.then(p => setRoadmapId(p.slug));
+    params.then((p) => setRoadmapId(p.slug));
   }, [params]);
 
   useEffect(() => {
@@ -42,17 +42,21 @@ export default function Page({
 
       try {
         const response = await fetch(`/api/roadmaps/${roadmapId}`);
-        
+
         if (!response.ok) {
           setLoading(false);
           return;
         }
 
         const data = await response.json();
+        console.log("Loaded roadmap data:", {
+          id: data.id,
+          nodes: data.nodes.map((n: any) => ({ id: n.id, label: n.label, completed: n.completed }))
+        });
         // Convert createdAt string to Date object
         setRoadmapData({
           ...data,
-          createdAt: new Date(data.createdAt)
+          createdAt: new Date(data.createdAt),
         });
       } catch (error) {
         console.error("Error loading roadmap:", error);
@@ -65,33 +69,49 @@ export default function Page({
     loadRoadmap();
   }, [roadmapId, session]);
 
-  const handleToggleComplete = async (nodeId: string) => {
-    if (!roadmapData || !roadmapId) return;
+  const handleToggleComplete = useCallback(async (nodeId: string) => {
+    console.log(`handleToggleComplete called for node ${nodeId}`);
+    if (!roadmapData || !roadmapId) {
+      console.log("Missing roadmapData or roadmapId");
+      return;
+    }
 
     try {
+      console.log(`Making API call to update ${nodeId}`);
       const response = await fetch(`/api/roadmaps/${roadmapId}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ nodeId, completed: true }),
+        body: JSON.stringify({ nodeId }),
       });
 
       if (response.ok) {
         const result = await response.json();
+        console.log("API response:", result);
         // Update local state with new completion status
-        setRoadmapData(prev => prev ? {
-          ...prev,
-          progress: result.overallProgress,
-          nodes: prev.nodes.map(node =>
-            node.id === nodeId ? { ...node, completed: !node.completed } : node
-          )
-        } : null);
+        setRoadmapData((prev) => {
+          const newData = prev
+            ? {
+                ...prev,
+                progress: result.overallProgress,
+                nodes: prev.nodes.map((node) =>
+                  node.id === nodeId
+                    ? { ...node, completed: !node.completed }
+                    : node
+                ),
+              }
+            : null;
+          console.log("Updated roadmapData:", newData);
+          return newData;
+        });
+      } else {
+        console.error("API call failed:", response.status);
       }
     } catch (error) {
       console.error("Error updating completion:", error);
     }
-  };
+  }, [roadmapData, roadmapId]);
 
   if (loading) {
     return (
@@ -136,10 +156,10 @@ export default function Page({
             <h1 className="text-3xl font-bold mb-2">{roadmapData.title}</h1>
             <div className="flex gap-4 text-sm text-muted-foreground">
               <span>Progress: {roadmapData.progress}%</span>
-              <span>
-                Created: {roadmapData.createdAt.toLocaleDateString()}
+              <span>Created: {roadmapData.createdAt.toLocaleDateString()}</span>
+              <span className="text-blue-600">
+                Right-click items to mark as complete
               </span>
-              <span className="text-blue-600">Right-click items to mark as complete</span>
             </div>
           </div>
           <div className="h-[600px] border rounded-lg">

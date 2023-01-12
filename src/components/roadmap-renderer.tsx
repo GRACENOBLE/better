@@ -56,17 +56,25 @@ const MainNode = ({ data }: { data: any }) => {
   const isReadOnly = data.readOnly || false;
   const onToggleComplete = data.onToggleComplete;
 
-  const handleRightClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!isReadOnly && onToggleComplete) {
-      onToggleComplete(data.id);
-    }
-  }, [data.id, isReadOnly, onToggleComplete]);
+  const handleRightClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      console.log(
+        `MainNode right-clicked on ${
+          data.id
+        }, readOnly=${isReadOnly}, hasCallback=${!!onToggleComplete}`
+      );
+      if (!isReadOnly && onToggleComplete) {
+        onToggleComplete(data.id);
+      }
+    },
+    [data.id, isReadOnly, onToggleComplete]
+  );
 
   return (
     <div
       className={`px-6 py-4 shadow-lg rounded-lg bg-yellow-300 border-2 border-gray-800 min-w-[200px] font-bold text-center relative cursor-pointer ${
-        isCompleted ? 'line-through opacity-60' : ''
+        isCompleted ? "line-through opacity-60" : ""
       }`}
       onContextMenu={handleRightClick}
     >
@@ -95,9 +103,6 @@ const MainNode = ({ data }: { data: any }) => {
         className="w-3 h-3"
       />
       <div className="text-sm text-gray-900">{data.label}</div>
-      {isCompleted && (
-        <div className="text-xs text-green-600 mt-1 font-normal">✓ Complete</div>
-      )}
     </div>
   );
 };
@@ -108,17 +113,20 @@ const TopicNode = ({ data }: { data: any }) => {
   const isReadOnly = data.readOnly || false;
   const onToggleComplete = data.onToggleComplete;
 
-  const handleRightClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!isReadOnly && onToggleComplete) {
-      onToggleComplete(data.id);
-    }
-  }, [data.id, isReadOnly, onToggleComplete]);
+  const handleRightClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (!isReadOnly && onToggleComplete) {
+        onToggleComplete(data.id);
+      }
+    },
+    [data.id, isReadOnly, onToggleComplete]
+  );
 
   return (
     <div
       className={`px-4 py-3 shadow-md rounded-lg bg-gray-300 border-2 border-gray-800 min-w-[150px] font-semibold text-center relative cursor-pointer ${
-        isCompleted ? 'line-through opacity-60' : ''
+        isCompleted ? "line-through opacity-60" : ""
       }`}
       onContextMenu={handleRightClick}
     >
@@ -159,9 +167,7 @@ const TopicNode = ({ data }: { data: any }) => {
         className="w-3 h-3"
       />
       <div className="text-xs text-gray-900">{data.label}</div>
-      {isCompleted && (
-        <div className="text-xs text-green-600 mt-0.5 font-normal">✓</div>
-      )}
+    
     </div>
   );
 };
@@ -172,17 +178,20 @@ const SubtopicNode = ({ data }: { data: any }) => {
   const isReadOnly = data.readOnly || false;
   const onToggleComplete = data.onToggleComplete;
 
-  const handleRightClick = useCallback((e: React.MouseEvent) => {
-    e.preventDefault();
-    if (!isReadOnly && onToggleComplete) {
-      onToggleComplete(data.id);
-    }
-  }, [data.id, isReadOnly, onToggleComplete]);
+  const handleRightClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.preventDefault();
+      if (!isReadOnly && onToggleComplete) {
+        onToggleComplete(data.id);
+      }
+    },
+    [data.id, isReadOnly, onToggleComplete]
+  );
 
   return (
     <div
       className={`px-3 py-2 shadow-sm rounded bg-gray-200 border border-gray-700 min-w-[80px] text-center relative cursor-pointer ${
-        isCompleted ? 'line-through opacity-60' : ''
+        isCompleted ? "line-through opacity-60" : ""
       }`}
       onContextMenu={handleRightClick}
     >
@@ -211,9 +220,6 @@ const SubtopicNode = ({ data }: { data: any }) => {
         className="w-2 h-2"
       />
       <div className="text-xs text-gray-800 font-medium">{data.label}</div>
-      {isCompleted && (
-        <div className="text-xs text-green-600 mt-0.5 font-normal">✓</div>
-      )}
     </div>
   );
 };
@@ -224,7 +230,11 @@ const nodeTypes = {
   subtopic: SubtopicNode,
 };
 
-export default function RoadmapRenderer({ roadmapData, onToggleComplete, readOnly = true }: RoadmapRendererProps) {
+export default function RoadmapRenderer({
+  roadmapData,
+  onToggleComplete,
+  readOnly = true,
+}: RoadmapRendererProps) {
   console.log("RoadmapRenderer called with:", roadmapData);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -249,6 +259,7 @@ export default function RoadmapRenderer({ roadmapData, onToggleComplete, readOnl
           type: node.type || "topic",
           position,
           data: {
+            id: node.id,
             label: node.label,
             description: node.description,
             completed: node.completed || false,
