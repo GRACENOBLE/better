@@ -29,7 +29,7 @@ const RoadmapCard = ({
   };
 
   return (
-    <div className="border flex flex-col justify-between relative rounded-md p-4  w-full h-60 max-w-[259px] bg-white">
+    <div className="border flex flex-col justify-between relative rounded-md p-4 w-full h-60 max-w-[280px] sm:max-w-[320px] bg-white">
       <button
         onClick={handleToggleBookMark}
         className="absolute top-2 right-2 z-20"
@@ -55,7 +55,7 @@ const RoadmapCard = ({
         </span>
         <Link
           href={"/roadmaps/" + slug}
-          className="text-xl line-clamp-2 font-semibold mt-3 max-w-[200px] hover:underline"
+          className="text-lg sm:text-xl line-clamp-2 font-semibold mt-3 max-w-[200px] hover:underline"
         >
           {title}
         </Link>

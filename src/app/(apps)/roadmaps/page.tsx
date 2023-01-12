@@ -137,23 +137,23 @@ const page = () => {
             </div>
           ) : (
             <Tabs defaultValue="underway" className="">
-              <TabsList className="grid grid-cols-4 mx-auto mb-6 bg-muted-foreground/10">
-                <TabsTrigger value="all" className="w-[200px]">
+              <TabsList className="grid grid-cols-2 sm:grid-cols-4 mx-auto mb-6 bg-muted-foreground/10">
+                <TabsTrigger value="all" className="w-full sm:w-[200px]">
                   All ({roadmaps.length})
                 </TabsTrigger>
-                <TabsTrigger value="underway" className="w-[200px]">
+                <TabsTrigger value="underway" className="w-full sm:w-[200px]">
                   Underway ({roadmaps.filter((r) => r.progress < 100).length})
                 </TabsTrigger>
-                <TabsTrigger value="completed" className="w-[200px]">
+                <TabsTrigger value="completed" className="w-full sm:w-[200px]">
                   Completed ({roadmaps.filter((r) => r.progress === 100).length}
                   )
                 </TabsTrigger>
-                <TabsTrigger value="bookmarked" className="w-[200px]">
+                <TabsTrigger value="bookmarked" className="w-full sm:w-[200px]">
                   Bookmarked (0)
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="all">
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {roadmaps.map((roadmap) => (
                     <RoadmapCard
                       key={roadmap.id}
@@ -172,7 +172,7 @@ const page = () => {
                 </div>
               </TabsContent>
               <TabsContent value="underway">
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {roadmaps
                     .filter((r) => r.progress < 100)
                     .map((roadmap) => (
@@ -191,7 +191,7 @@ const page = () => {
                 </div>
               </TabsContent>
               <TabsContent value="completed">
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                   {roadmaps
                     .filter((r) => r.progress === 100)
                     .map((roadmap) => (
@@ -210,7 +210,7 @@ const page = () => {
                 </div>
               </TabsContent>
               <TabsContent value="bookmarked">
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                   {/* Bookmarked roadmaps will be implemented later */}
                 </div>
               </TabsContent>

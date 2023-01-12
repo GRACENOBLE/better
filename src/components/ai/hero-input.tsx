@@ -15,11 +15,11 @@ const HeroInput = () => {
   return (
     <form
       onSubmit={(e) => {
-        setIsSendingStarter(true)
+        setIsSendingStarter(true);
         e.preventDefault();
         handleSubmit();
       }}
-      className="mx-auto max-w-sm"
+      className="mx-auto max-w-sm hidden md:block "
     >
       <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-full border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
         {/* <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" /> */}

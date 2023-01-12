@@ -30,13 +30,13 @@ export default function HeroSection() {
   return (
     <>
       <section className="bg-accent">
-        <div className="mx-auto max-w-6xl px-6 pt-40 pb-32 2xl:pb-48 2xl:pt-48 ">
+        <div className="mx-auto max-w-6xl px-2 md:px-6 pt-40 pb-32 2xl:pb-48 2xl:pt-48 ">
           <div className=" mx-auto max-w-4xl text-center">
             <TextEffect
               preset="fade-in-blur"
               speedSegment={0.3}
               as="h1"
-              className="text-balance font-title text-4xl font-semibold sm:text-5xl lg:text-6xl"
+              className="text-balance font-title text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl"
             >
               Create a plan for
             </TextEffect>
@@ -54,7 +54,7 @@ export default function HeroSection() {
               speedSegment={0.3}
               delay={0.5}
               as="p"
-              className="mx-auto mt-12 max-w-2xl text-pretty lg:text-lg"
+              className="mx-auto mt-6 md:mt-12 max-w-2xl text-pretty lg:text-lg"
             >
               Increase your chances of "Getting it done!". Plan with Better AI
               and create a custom roadmap with clearly defined timelines and
@@ -75,15 +75,21 @@ export default function HeroSection() {
               }}
               className="mt-12 flex gap-4 items-center justify-center"
             >
-              <Link href={"/roadmaps/studio"} aria-label="go to roadmap studio">
+              <Link
+                href={"/roadmaps/studio"}
+                aria-label="go to roadmap studio"
+                className=""
+              >
                 <CustomButton size="lg">Create a roadmap</CustomButton>
               </Link>
-              <HeroInput/>
+              <HeroInput />
             </AnimatedGroup>
           </div>
         </div>
       </section>
-      <LogoCloud />
+      <section className="pt-20 md:pt-0">
+        <LogoCloud />
+      </section>
     </>
   );
 }
