@@ -10,6 +10,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Edit } from "lucide-react";
+import { ReactFlowProvider } from "@xyflow/react";
 
 interface Roadmap {
   id: string;
@@ -55,6 +56,10 @@ export default async function Page({
       progress: userRoadmap[0].progress || 0,
     };
 
+    console.log("Loaded roadmap data:", roadmapData);
+
+    console.log("Rendering roadmap viewer for:", roadmapData.title);
+
     return (
       <>
         <Header user={session.user} />
@@ -84,7 +89,9 @@ export default async function Page({
               </div>
             </div>
             <div className="h-[600px] border rounded-lg">
-              <RoadmapRenderer roadmapData={roadmapData} />
+              <ReactFlowProvider>
+                <RoadmapRenderer roadmapData={roadmapData} />
+              </ReactFlowProvider>
             </div>
           </Container>
         </section>

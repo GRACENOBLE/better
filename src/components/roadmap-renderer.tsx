@@ -16,6 +16,7 @@ import {
   MiniMap,
   Handle,
   Position,
+  useReactFlow,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 
@@ -158,12 +159,14 @@ const nodeTypes = {
 };
 
 export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
+  console.log("RoadmapRenderer called with:", roadmapData);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const { fitView } = useReactFlow();
 
   useEffect(() => {
     if (roadmapData?.nodes && roadmapData?.edges) {
-      console.log("Roadmap data:", roadmapData);
+      console.log("RoadmapRenderer received data:", roadmapData);
 
       // Calculate all positions in a single pass to avoid recursion
       const nodePositions = calculateAllNodePositions(
@@ -363,8 +366,11 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
 
       setNodes(flowNodes);
       setEdges(flowEdges);
+
+      // Fit view after nodes are set
+      setTimeout(() => fitView(), 100);
     }
-  }, [roadmapData, setNodes, setEdges]);
+  }, [roadmapData, setNodes, setEdges, fitView]);
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -672,7 +678,6 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
           size={1}
           color="#000000"
         />
-        
       </ReactFlow>
     </div>
   );
