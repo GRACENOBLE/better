@@ -15,6 +15,7 @@ import RoadmapCard from "@/components/projections/roadmap-card";
 import Image from "next/image";
 import CustomButton from "@/components/CustomButton";
 import { useEffect, useState } from "react";
+import { authClient } from "@/lib/auth/auth-client";
 
 interface Roadmap {
   id: string;
@@ -29,6 +30,7 @@ interface Roadmap {
 const page = () => {
   const [roadmaps, setRoadmaps] = useState<Roadmap[]>([]);
   const [loading, setLoading] = useState(true);
+  const { data: session } = authClient.useSession();
 
   useEffect(() => {
     const fetchRoadmaps = async () => {
@@ -69,7 +71,7 @@ const page = () => {
 
   return (
     <>
-      <Header />
+      <Header user={session?.user} />
       <section className="pt-40 pb-32 bg-accent">
         <Container size="sm">
           <div className="flex flex-col items-center">
