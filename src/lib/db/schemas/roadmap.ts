@@ -1,10 +1,4 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  jsonb,
-  integer,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, jsonb, integer } from "drizzle-orm/pg-core";
 import { user } from "./auth";
 
 export const roadmap = pgTable("roadmap", {

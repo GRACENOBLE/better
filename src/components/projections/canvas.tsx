@@ -246,7 +246,11 @@ const nodeTypes: NodeTypes = {
   subtopic: EditableSubtopicNode,
 };
 
-export default function RoadmapStudio() {
+export default function RoadmapStudio({
+  initialRoadmap,
+}: {
+  initialRoadmap?: any;
+}) {
   const router = useRouter();
   const { currentRoadmap, setRoadmap } = useRoadmapStore();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -265,7 +269,11 @@ export default function RoadmapStudio() {
 
   // Load roadmap data from store and apply the same positioning algorithm
   useEffect(() => {
-    if (currentRoadmap) {
+    if (initialRoadmap) {
+      console.log("Loading initial roadmap into studio:", initialRoadmap);
+      setRoadmap(initialRoadmap);
+      applyRoadmapLayout(initialRoadmap.nodes, initialRoadmap.edges);
+    } else if (currentRoadmap) {
       console.log("Loading roadmap into studio:", currentRoadmap);
       applyRoadmapLayout(currentRoadmap.nodes, currentRoadmap.edges);
     } else {
@@ -285,7 +293,7 @@ export default function RoadmapStudio() {
       setRoadmap(defaultRoadmap);
       applyRoadmapLayout(defaultRoadmap.nodes, defaultRoadmap.edges);
     }
-  }, [currentRoadmap]);
+  }, [currentRoadmap, initialRoadmap]);
 
   // Function to apply the roadmap layout and update nodes/edges
   const applyRoadmapLayout = (roadmapNodes: any[], roadmapEdges: any[]) => {
@@ -816,7 +824,7 @@ export default function RoadmapStudio() {
     setSelectedNode(null);
   }, []);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Convert React Flow nodes/edges back to roadmap format
     const roadmapNodes = nodes.map((node) => ({
       id: node.id,
@@ -834,14 +842,32 @@ export default function RoadmapStudio() {
         : ("main" as const),
     }));
 
-    const updatedRoadmap = {
+    const roadmapData = {
+      id: currentRoadmap?.id,
+      title: currentRoadmap?.metadata?.topic || "My Roadmap",
       nodes: roadmapNodes,
       edges: roadmapEdges,
       metadata: currentRoadmap?.metadata,
+      progress: currentRoadmap?.progress || 0,
     };
 
-    setRoadmap(updatedRoadmap);
-    router.push("/");
+    try {
+      const method = currentRoadmap?.id ? "PUT" : "POST";
+      const res = await fetch("/api/roadmaps", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(roadmapData),
+      });
+
+      if (res.ok) {
+        setRoadmap(roadmapData);
+        router.push("/roadmaps");
+      } else {
+        console.error("Failed to save roadmap");
+      }
+    } catch (error) {
+      console.error("Error saving roadmap:", error);
+    }
   };
 
   return (

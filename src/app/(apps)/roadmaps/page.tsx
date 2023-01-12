@@ -115,7 +115,8 @@ const page = () => {
             <h2 className="text-2xl font-semibold">Your roadmaps</h2>
 
             <div className="border rounded-md p-2 w-fit flex items-center">
-              <Flame strokeWidth={1.5} size={20} /> <span>{roadmaps.length}</span>
+              <Flame strokeWidth={1.5} size={20} />{" "}
+              <span>{roadmaps.length}</span>
             </div>
           </div>
 
@@ -127,12 +128,11 @@ const page = () => {
             <div className="text-center py-12">
               <h3 className="text-xl font-semibold mb-4">No roadmaps yet</h3>
               <p className="text-muted-foreground mb-6">
-                Create your first roadmap to get started on your learning journey.
+                Create your first roadmap to get started on your learning
+                journey.
               </p>
               <Link href="/roadmaps/studio">
-                <CustomButton>
-                  Create Roadmap
-                </CustomButton>
+                <CustomButton>Create Roadmap</CustomButton>
               </Link>
             </div>
           ) : (
@@ -142,66 +142,79 @@ const page = () => {
                   All ({roadmaps.length})
                 </TabsTrigger>
                 <TabsTrigger value="underway" className="w-[200px]">
-                  Underway ({roadmaps.filter(r => r.progress < 100).length})
+                  Underway ({roadmaps.filter((r) => r.progress < 100).length})
                 </TabsTrigger>
                 <TabsTrigger value="completed" className="w-[200px]">
-                  Completed ({roadmaps.filter(r => r.progress === 100).length})
+                  Completed ({roadmaps.filter((r) => r.progress === 100).length}
+                  )
                 </TabsTrigger>
                 <TabsTrigger value="bookmarked" className="w-[200px]">
                   Bookmarked (0)
                 </TabsTrigger>
               </TabsList>
-            <TabsContent value="all">
-              <div className="grid grid-cols-4 gap-4">
-                {roadmaps.map((roadmap) => (
-                  <RoadmapCard
-                    key={roadmap.id}
-                    slug={roadmap.id}
-                    type={roadmap.progress === 100 ? "completed" : "in-progress"}
-                    bookmarked={false}
-                    title={roadmap.title}
-                    deadline={new Date(roadmap.createdAt).toLocaleDateString()}
-                    progress={roadmap.progress}
-                  />
-                ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="underway">
-              <div className="grid grid-cols-4 gap-4">
-                {roadmaps.filter(r => r.progress < 100).map((roadmap) => (
-                  <RoadmapCard
-                    key={roadmap.id}
-                    slug={roadmap.id}
-                    type="in-progress"
-                    bookmarked={false}
-                    title={roadmap.title}
-                    deadline={new Date(roadmap.createdAt).toLocaleDateString()}
-                    progress={roadmap.progress}
-                  />
-                ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="completed">
-              <div className="grid grid-cols-4 gap-2">
-                {roadmaps.filter(r => r.progress === 100).map((roadmap) => (
-                  <RoadmapCard
-                    key={roadmap.id}
-                    slug={roadmap.id}
-                    type="completed"
-                    bookmarked={false}
-                    title={roadmap.title}
-                    deadline={new Date(roadmap.createdAt).toLocaleDateString()}
-                    progress={roadmap.progress}
-                  />
-                ))}
-              </div>
-            </TabsContent>
-            <TabsContent value="bookmarked">
-              <div className="grid grid-cols-4 gap-2">
-                {/* Bookmarked roadmaps will be implemented later */}
-              </div>
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="all">
+                <div className="grid grid-cols-4 gap-4">
+                  {roadmaps.map((roadmap) => (
+                    <RoadmapCard
+                      key={roadmap.id}
+                      slug={roadmap.id}
+                      type={
+                        roadmap.progress === 100 ? "completed" : "in-progress"
+                      }
+                      bookmarked={false}
+                      title={roadmap.title}
+                      deadline={new Date(
+                        roadmap.createdAt
+                      ).toLocaleDateString()}
+                      progress={roadmap.progress}
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="underway">
+                <div className="grid grid-cols-4 gap-4">
+                  {roadmaps
+                    .filter((r) => r.progress < 100)
+                    .map((roadmap) => (
+                      <RoadmapCard
+                        key={roadmap.id}
+                        slug={roadmap.id}
+                        type="in-progress"
+                        bookmarked={false}
+                        title={roadmap.title}
+                        deadline={new Date(
+                          roadmap.createdAt
+                        ).toLocaleDateString()}
+                        progress={roadmap.progress}
+                      />
+                    ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="completed">
+                <div className="grid grid-cols-4 gap-2">
+                  {roadmaps
+                    .filter((r) => r.progress === 100)
+                    .map((roadmap) => (
+                      <RoadmapCard
+                        key={roadmap.id}
+                        slug={roadmap.id}
+                        type="completed"
+                        bookmarked={false}
+                        title={roadmap.title}
+                        deadline={new Date(
+                          roadmap.createdAt
+                        ).toLocaleDateString()}
+                        progress={roadmap.progress}
+                      />
+                    ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="bookmarked">
+                <div className="grid grid-cols-4 gap-2">
+                  {/* Bookmarked roadmaps will be implemented later */}
+                </div>
+              </TabsContent>
+            </Tabs>
           )}
         </Container>
       </section>
