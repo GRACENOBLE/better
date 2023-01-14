@@ -7,15 +7,19 @@ import { eq } from "drizzle-orm";
 export async function GET(request: NextRequest) {
   try {
     const session = await auth.api.getSession({ headers: request.headers });
+    console.log("Session in roadmaps API:", session);
     if (!session?.user?.id) {
+      console.log("No session or user ID");
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    console.log("Fetching roadmaps for user:", session.user.id);
     const userRoadmaps = await db
       .select()
       .from(roadmap)
       .where(eq(roadmap.userId, session.user.id));
 
+    console.log("Found roadmaps:", userRoadmaps);
     return NextResponse.json(userRoadmaps);
   } catch (error) {
     console.error("Error fetching roadmaps:", error);
