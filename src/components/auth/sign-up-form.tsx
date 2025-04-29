@@ -29,28 +29,35 @@ export function SignUpForm({
           <form action={SignUpWithEmailAndPassword}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  id="name"
+                  type="name"
+                  name="name"
+                  placeholder="John doe"
                   required
                 />
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder="johndoe@example.com"
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
                 <Input id="password" type="password" required />
               </div>
+              <div className="grid gap-2">
+                <Label htmlFor="repeatPasword">Repeat Password</Label>
+                <Input id="repeatPassword" type="password" required />
+              </div>
               <Button type="submit" className="w-full">
-                Login
+                Sign Up
               </Button>
               <Button variant="outline" className="w-full">
                 Login with Google
@@ -60,7 +67,7 @@ export function SignUpForm({
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Already have an account?{" "}
+              Already have an account?
               <Link
                 href="/auth/sign-in"
                 className="underline underline-offset-4"

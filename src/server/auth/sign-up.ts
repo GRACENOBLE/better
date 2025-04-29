@@ -5,13 +5,12 @@ export const SignUpWithEmailAndPassword = async (formData: FormData) => {
   console.log("FormData: ", formData);
 
   const response = await auth.api
-    .signInEmail({
+    .signUpEmail({
       body: {
-        email: formData.get("email") as string,
-        password: formData.get("password") as string,
+        email: formData.get("email") as string, // user email address
+        password: formData.get("password") as string, // user password -> min 8 characters by default
+        name: formData.get("name") as string,
       },
-      asResponse: true, // returns a response object instead of data
     })
-    .then((res) => res.json());
   console.log(response);
 };

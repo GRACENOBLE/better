@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SignUpWithEmailAndPassword } from "@/server/auth/sign-up";
 import Link from "next/link";
+import { SignInWithEmailAndPassword } from "@/server/auth/sign-in";
 
 export function LoginForm({
   className,
@@ -26,7 +27,7 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={SignUpWithEmailAndPassword}>
+          <form action={SignInWithEmailAndPassword}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
