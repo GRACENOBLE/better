@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SignUpWithEmailAndPassword } from "@/auth/sign-up";
+import { SignUpWithEmailAndPassword } from "@/server/auth/sign-up";
 import Link from "next/link";
 
 export function LoginForm({
@@ -33,6 +33,7 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
+                  name="email"
                   placeholder="m@example.com"
                   required
                 />
@@ -61,7 +62,10 @@ export function LoginForm({
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
-              <Link href="/auth/sign-up" className="underline underline-offset-4">
+              <Link
+                href="/auth/sign-up"
+                className="underline underline-offset-4"
+              >
                 Sign up
               </Link>
             </div>
