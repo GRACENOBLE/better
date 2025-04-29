@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { SignUpWithEmailAndPassword } from "@/auth/sign-up";
 import Link from "next/link";
 
-export function LoginForm({
+export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
@@ -20,7 +20,7 @@ export function LoginForm({
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="min-w-96">
         <CardHeader>
-          <CardTitle className="text-2xl">Sign In</CardTitle>
+          <CardTitle className="text-2xl">Sign Up</CardTitle>
           <CardDescription>
             Enter your email below to login to your account
           </CardDescription>
@@ -60,9 +60,9 @@ export function LoginForm({
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link href="/auth/sign-up" className="underline underline-offset-4">
-                Sign up
+              Already have an account?{" "}
+              <Link href="/auth/sign-in" className="underline underline-offset-4">
+                Sign in
               </Link>
             </div>
           </form>

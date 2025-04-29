@@ -1,21 +1,17 @@
 "use server";
 import { authClient } from "@/lib/auth-client"; //import the auth client
 
-interface emailUser {
-  email: string;
-  password: string;
-  name: string;
-}
-export const SignUpWithEmailAndPassword = async ({
-  email,
-  password,
-  name,
-}: emailUser) => {
+// interface emailUser {
+//   email: string;
+//   password: string;
+//   name: string;
+// }
+export const SignUpWithEmailAndPassword = async (formData: FormData) => {
   const { data, error } = await authClient.signUp.email(
     {
-      email, // user email address
-      password, // user password -> min 8 characters by default
-      name, // user display name
+      email: (formData.get("email") as string) || "", // user email address
+      password: (formData.get("password") as string) || "", // user password -> min 8 characters by default
+      name: (formData.get("name") as string) || "", // user display name
       callbackURL: "/dashboard", // A URL to redirect to after the user verifies their email (optional)
     },
     {
@@ -31,4 +27,14 @@ export const SignUpWithEmailAndPassword = async ({
       },
     }
   );
+
+  if (error) {
+    console.log(
+      "Encountered an error signing up with Email and password: ",
+      error
+    );
+    return;
+  }
+
+  console.log("Successfully signed Up user through email and password:", data);
 };
