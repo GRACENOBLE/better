@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { SignUpWithEmailAndPassword } from "@/server/auth/sign-up";
 import Link from "next/link";
 import { SignInWithEmailAndPassword } from "@/server/auth/sign-in";
+import { FaGoogle, FaGithub } from "react-icons/fa";
 
 export function LoginForm({
   className,
@@ -54,12 +55,14 @@ export function LoginForm({
               <Button type="submit" className="w-full">
                 Login
               </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
-              </Button>
-              <Button variant="outline" className="w-full">
-                Login with Github
-              </Button>
+              <div className="flex justify-center gap-2">
+                <Button variant="outline" className="w-fit">
+                  <FaGoogle />
+                </Button>
+                <Button variant="outline" className="w-fit">
+                  <FaGithub />
+                </Button>
+              </div>
             </div>
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
