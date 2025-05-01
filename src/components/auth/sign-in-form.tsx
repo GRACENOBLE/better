@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,15 +11,39 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SignUpWithEmailAndPassword } from "@/server/auth/sign-up";
 import Link from "next/link";
 import { SignInWithEmailAndPassword } from "@/server/auth/sign-in";
 import { FaGoogle, FaGithub } from "react-icons/fa";
+import { useState } from "react";
+import { useFormStatus } from "react-dom";
+
+// Submit button with loading state
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? "Signing in..." : "Login"}
+    </Button>
+  );
+}
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [error, setError] = useState<string | null>(null);
+
+  // Client action to handle form submission
+  async function handleSubmit(formData: FormData) {
+    setError(null);
+    const error = await SignInWithEmailAndPassword(formData);
+
+    if (error) {
+      setError(error);
+    }
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="min-w-96">
@@ -28,8 +54,13 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={SignInWithEmailAndPassword}>
+          <form action={handleSubmit}>
             <div className="flex flex-col gap-6">
+              {error && (
+                <div className="bg-destructive/10 text-destructive px-4 py-2 rounded-md text-sm">
+                  {error}
+                </div>
+              )}
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -50,16 +81,14 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
               </div>
-              <Button type="submit" className="w-full">
-                Login
-              </Button>
+              <SubmitButton />
               <div className="flex justify-center gap-2">
-                <Button variant="outline" className="w-fit">
+                <Button variant="outline" className="w-fit" type="button">
                   <FaGoogle />
                 </Button>
-                <Button variant="outline" className="w-fit">
+                <Button variant="outline" className="w-fit" type="button">
                   <FaGithub />
                 </Button>
               </div>
