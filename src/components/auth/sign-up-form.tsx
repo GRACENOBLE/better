@@ -1,3 +1,4 @@
+"use client"
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,11 +13,25 @@ import { Label } from "@/components/ui/label";
 import { SignUpWithEmailAndPassword } from "@/server/auth/auth";
 import Link from "next/link";
 import { FaGithub, FaGoogle } from "react-icons/fa";
+import { authClient } from "@/lib/auth-client";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const SignInWithGithub = async () => {
+    await authClient.signIn.social({
+      provider: "github",
+      callbackURL: "/dashboard",
+    });
+  };
+  const SignInWithGoogle = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="min-w-96">
@@ -61,10 +76,20 @@ export function SignUpForm({
                 Sign Up
               </Button>
               <div className="flex justify-center gap-2">
-                <Button variant="outline" className="w-fit" type="button">
+                <Button
+                  onClick={SignInWithGoogle}
+                  variant="outline"
+                  className="w-fit"
+                  type="button"
+                >
                   <FaGoogle />
                 </Button>
-                <Button variant="outline" className="w-fit" type="button">
+                <Button
+                  onClick={SignInWithGithub}
+                  variant="outline"
+                  className="w-fit"
+                  type="button"
+                >
                   <FaGithub />
                 </Button>
               </div>

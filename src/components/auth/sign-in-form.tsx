@@ -52,6 +52,12 @@ export function LoginForm({
       callbackURL: "/dashboard",
     });
   };
+  const SignInWithGoogle = async () => {
+    await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/dashboard",
+    });
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -94,7 +100,12 @@ export function LoginForm({
               </div>
               <SubmitButton />
               <div className="flex justify-center gap-2">
-                <Button variant="outline" className="w-fit" type="button">
+                <Button
+                  onClick={SignInWithGoogle}
+                  variant="outline"
+                  className="w-fit"
+                  type="button"
+                >
                   <FaGoogle />
                 </Button>
                 <Button
