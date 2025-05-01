@@ -9,8 +9,9 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SignUpWithEmailAndPassword } from "@/server/auth/auth"; 
+import { SignUpWithEmailAndPassword } from "@/server/auth/auth";
 import Link from "next/link";
+import { FaGithub, FaGoogle } from "react-icons/fa";
 
 export function SignUpForm({
   className,
@@ -59,12 +60,14 @@ export function SignUpForm({
               <Button type="submit" className="w-full">
                 Sign Up
               </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
-              </Button>
-              <Button variant="outline" className="w-full">
-                Login with Github
-              </Button>
+              <div className="flex justify-center gap-2">
+                <Button variant="outline" className="w-fit" type="button">
+                  <FaGoogle />
+                </Button>
+                <Button variant="outline" className="w-fit" type="button">
+                  <FaGithub />
+                </Button>
+              </div>
             </div>
             <div className="mt-4 text-center text-sm">
               Already have an account?

@@ -16,6 +16,7 @@ import { SignInWithEmailAndPassword } from "@/server/auth/auth";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
+import { createAuthClient } from "better-auth/react";
 
 // Submit button with loading state
 function SubmitButton() {
@@ -32,6 +33,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const authClient = createAuthClient();
   const [error, setError] = useState<string | null>(null);
 
   // Client action to handle form submission
@@ -43,6 +45,12 @@ export function LoginForm({
       setError(error);
     }
   }
+
+  const SignInWithGithub = async () => {
+    const data = await authClient.signIn.social({
+      provider: "github",
+    });
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -88,7 +96,12 @@ export function LoginForm({
                 <Button variant="outline" className="w-fit" type="button">
                   <FaGoogle />
                 </Button>
-                <Button variant="outline" className="w-fit" type="button">
+                <Button
+                  onClick={SignInWithGithub}
+                  variant="outline"
+                  className="w-fit"
+                  type="button"
+                >
                   <FaGithub />
                 </Button>
               </div>

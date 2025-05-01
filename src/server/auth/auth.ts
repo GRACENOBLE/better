@@ -29,7 +29,7 @@ export const SignInWithEmailAndPassword = async (formData: FormData) => {
 };
 
 export const SignUpWithEmailAndPassword = async (formData: FormData) => {
-  console.log("FormData: ", formData);
+  // console.log("FormData: ", formData);
 
   const response = await auth.api.signUpEmail({
     body: {
@@ -40,3 +40,17 @@ export const SignUpWithEmailAndPassword = async (formData: FormData) => {
   });
   console.log(response);
 };
+
+// export const SignInWithGithub = async () => {
+//   const response = await auth.api.signInSocial({
+//     body: {
+//       provider: "github",
+//     },
+//   });
+//   console.log(response);
+//   if (response.url) {
+//     redirect(response.url);
+//   } else {
+//     console.error("Redirect URL is undefined");
+//   }
+// };

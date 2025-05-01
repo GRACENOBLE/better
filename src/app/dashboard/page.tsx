@@ -2,6 +2,8 @@ import SignOutButton from "@/components/auth/sign-out-button";
 import Container from "@/components/common/container";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
 
 const page = async () => {
   const session = await auth.api.getSession({
@@ -9,7 +11,7 @@ const page = async () => {
   });
 
   if (!session) {
-    return <div>Not logged in</div>;
+    redirect("/auth/sign-in")
   }
 
   return (
