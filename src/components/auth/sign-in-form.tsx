@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { SignInWithEmailAndPassword } from "@/server/auth/sign-in";
+import { SignInWithEmailAndPassword } from "@/server/auth/auth";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";

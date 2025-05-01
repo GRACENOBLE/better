@@ -1,12 +1,13 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/db"; 
-import { user, session, account, verification } from "../db/schema"
+import { db } from "@/db";
+import { schema } from "../db/schema";
+import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
     provider: "pg", // or "mysql", "sqlite"
-    schema: { user, session, account, verification },
+    schema: schema,
   }),
   emailAndPassword: {
     enabled: true,
@@ -17,4 +18,5 @@ export const auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     },
   },
+  plugins: [nextCookies()],
 });
