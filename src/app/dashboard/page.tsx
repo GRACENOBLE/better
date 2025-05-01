@@ -1,7 +1,7 @@
+import SignOutButton from "@/components/auth/sign-out-button";
+import Container from "@/components/common/container";
 import { auth } from "@/lib/auth";
-import { getCurrentSession } from "@/server/auth/session";
 import { headers } from "next/headers";
-// import { redirect } from "next/navigation";
 
 const page = async () => {
   const session = await auth.api.getSession({
@@ -13,10 +13,15 @@ const page = async () => {
   }
 
   return (
-    <div>
-      <h1>Welcome, {session.user.name}</h1>
-      <p>Email: {session.user.email}</p>
-    </div>
+    <section className="pt-32">
+      <Container>
+        <div>
+          <h1>Welcome, {session.user.name}</h1>
+          <p>Email: {session.user.email}</p>
+          <SignOutButton />
+        </div>
+      </Container>
+    </section>
   );
 };
 
