@@ -47,8 +47,9 @@ export function LoginForm({
   }
 
   const SignInWithGithub = async () => {
-    const data = await authClient.signIn.social({
+    await authClient.signIn.social({
       provider: "github",
+      callbackURL: "/dashboard",
     });
   };
 
