@@ -5,7 +5,9 @@ const page = () => {
   return (
     <section>
       <Container>
-        <Chat />
+        <div className="h-screen mx-auto max-w-2xl">
+          <Chat />
+        </div>
       </Container>
     </section>
   );

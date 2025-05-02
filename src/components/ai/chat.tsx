@@ -6,9 +6,9 @@ import { useChat } from "@ai-sdk/react";
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   return (
-    <div className="flex flex-col w-full max-w-2xl py-24 mx-auto stretch">
-      {messages.map((message) => (
-        <div key={message.id} className="whitespace-pre-wrap">
+    <div className="flex flex-col w-full  py-24 stretch overflow-auto">
+      {messages.map((message, index) => (
+        <div key={message.id + index} className="whitespace-pre-wrap">
           {/* {message.role === "user" ? "User: " : "AI: "} */}
           {message.parts.map((part, i) => {
             switch (part.type) {
@@ -20,8 +20,8 @@ export default function Chat() {
                     })}
                   >
                     <div
-                      className={cn("border rounded-md max-w-96 px-4 py-2", {
-                        "": message.role === "user",
+                      className={cn("border rounded-md  max-w-96 px-4 py-2", {
+                        "bg-muted": message.role === "user",
                       })}
                       key={`${message.id}-${i}`}
                     >
@@ -33,15 +33,16 @@ export default function Chat() {
           })}
         </div>
       ))}
-
-      <form onSubmit={handleSubmit}>
-        <input
-          className="fixed dark:bg-zinc-900 bottom-0 w-full max-w-md p-2 mb-8 border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
-          value={input}
-          placeholder="Say something..."
-          onChange={handleInputChange}
-        />
-      </form>
+      <div className="fixed bottom-0 left-0 flex justify-center bg-gradient-to-t from-muted via-muted to-transparent w-full">
+        <form onSubmit={handleSubmit} className="min-w-2xl bg-muted my-8">
+          <input
+            className=" dark:bg-zinc-900 bottom-0 w-full  p-2  border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
+            value={input}
+            placeholder="Lets talk about a better you..."
+            onChange={handleInputChange}
+          />
+        </form>
+      </div>
     </div>
   );
 }
