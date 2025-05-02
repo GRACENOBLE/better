@@ -2,7 +2,7 @@ import Container from "@/components/common/container";
 import { TextEffect } from "@/components/ui/text-effect";
 const page = () => {
   return (
-    <section className="pt-32">
+    <section className="pt-40">
       <Container>
         {" "}
         <div className="relative z-10 mx-auto max-w-4xl text-center">
@@ -12,15 +12,7 @@ const page = () => {
             as="h1"
             className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl"
           >
-            Becoming who
-          </TextEffect>
-          <TextEffect
-            preset="fade-in-blur"
-            speedSegment={0.3}
-            as="h1"
-            className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl"
-          >
-            you were meant to be.
+            Create your own path to a better you
           </TextEffect>
           <TextEffect
             per="line"
