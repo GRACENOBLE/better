@@ -10,17 +10,18 @@ const page = async () => {
     headers: await headers(),
   });
 
-  if (!session) {
-    redirect("/auth/sign-in")
-  }
+  // if (!session) {
+  //   redirect("/auth/sign-in")
+  // }
 
   return (
     <section className="pt-32">
       <Container>
         <div>
-          <h1>Welcome, {session.user.name}</h1>
+          {/* <h1>Welcome, {session.user.name}</h1>
           <p>Email: {session.user.email}</p>
-          <SignOutButton />
+          <SignOutButton /> */}
+          dash
         </div>
       </Container>
     </section>
