@@ -1,10 +1,12 @@
 import React from "react";
 import { Mail, SendHorizonal } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { TextEffect } from "@/components/ui/text-effect";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { LogoCloud } from "@/components/logo-cloud";
 import Image from "next/image";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 const transitionVariants = {
   item: {
@@ -65,9 +67,9 @@ export default function HeroSection() {
                 as="p"
                 className="mx-auto mt-12 max-w-2xl text-pretty text-lg"
               >
-                Tailwindcss highly customizable components for building modern
-                websites and applications that look and feel the way you mean
-                it.
+                Embark on a journey of self discovery, create your own path,
+                take one step at a time and get one step closer each day to a
+                better you.
               </TextEffect>
 
               <AnimatedGroup
@@ -82,15 +84,23 @@ export default function HeroSection() {
                   },
                   ...transitionVariants,
                 }}
-                className="mt-12"
+                className="mt-12 flex gap-4 items-center justify-center"
               >
+                <Link
+                  href={"/roadmaps"}
+                  className={cn(
+                    buttonVariants({ variant: "default", size: "lg" })
+                  )}
+                >
+                  Create a roadmap
+                </Link>
                 <form action="" className="mx-auto max-w-sm">
-                  <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-[calc(var(--radius)+0.5rem)] border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
-                    <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" />
+                  <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-md border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
+                    {/* <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" /> */}
 
                     <input
-                      placeholder="Your mail address"
-                      className="h-12 w-full bg-transparent pl-12 focus:outline-none"
+                      placeholder="Talk to Better AI"
+                      className="h-12 w-full bg-transparent pl-4 focus:outline-none"
                       type="email"
                     />
 
@@ -98,9 +108,11 @@ export default function HeroSection() {
                       <Button
                         aria-label="submit"
                         size="sm"
-                        className="rounded-(--radius)"
+                        className="rounded-sm"
                       >
-                        <span className="hidden md:block">Get Started</span>
+                        <span className="hidden md:block">
+                          Start a conversation
+                        </span>
                         <SendHorizonal
                           className="relative mx-auto size-5 md:hidden"
                           strokeWidth={2}

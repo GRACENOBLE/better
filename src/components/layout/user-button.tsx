@@ -16,10 +16,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import SignOutButton from "../auth/sign-out-button";
+import { LoaderCircle } from "lucide-react";
 
 const UserButton = ({
   user,
   isScrolled,
+  isPending,
 }: {
   user:
     | {
@@ -33,21 +35,22 @@ const UserButton = ({
       }
     | undefined;
   isScrolled: boolean;
+  isPending: boolean;
 }) => {
   return (
     <div>
       {user ? (
         <div className="flex items-center gap-4">
           <Link
-            href={""}
-            className={cn(buttonVariants({ variant: "default", size: "sm" }))}
+            href={"/dashboard"}
+            className={"rounded-sm hover:bg-muted transition-all ease-in-out duration-300 border py-[2px] px-3 text-sm"}
           >
             Dashboard
           </Link>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="rounded-full h-12 w-12 grid place-items-center bg-muted">
+              <div className="rounded-full hover:cursor-pointer border h-10 w-10 grid place-items-center bg-muted">
                 {user.name.slice(0, 2).toUpperCase()}
               </div>
             </DropdownMenuTrigger>
@@ -72,6 +75,11 @@ const UserButton = ({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+        </div>
+      ) : isPending ? (
+        <div className="rounded-full border h-10 w-10 grid place-items-center bg-muted animate-spin">
+          {" "}
+          <LoaderCircle size={20} />
         </div>
       ) : (
         <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">

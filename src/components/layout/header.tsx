@@ -85,7 +85,7 @@ const Header = () => {
                   ))}
                 </ul>
               </div>
-              <UserButton user={user} isScrolled={isScrolled} />
+              <UserButton user={user} isScrolled={isScrolled} isPending={isPending} />
             </div>
           </div>
         </div>
