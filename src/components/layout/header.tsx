@@ -9,9 +9,10 @@ import { authClient } from "@/lib/auth-client";
 import UserButton from "./user-button";
 
 const menuItems = [
-  { name: "About", href: "#link" },
-  { name: "Roadmaps", href: "#link" },
-  { name: "Chat", href: "#link" },
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Roadmaps", href: "/roadmaps" },
+  { name: "Chat", href: "/chat" },
 ];
 
 const Header = () => {
