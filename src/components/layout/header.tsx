@@ -44,7 +44,7 @@ const Header = () => {
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              <Logo />
+              <Logo size="sm" />
               <button
                 onClick={() => setMenuState(!menuState)}
                 aria-label={menuState == true ? "Close Menu" : "Open Menu"}
@@ -85,7 +85,11 @@ const Header = () => {
                   ))}
                 </ul>
               </div>
-              <UserButton user={user} isScrolled={isScrolled} isPending={isPending} />
+              <UserButton
+                user={user}
+                isScrolled={isScrolled}
+                isPending={isPending}
+              />
             </div>
           </div>
         </div>
