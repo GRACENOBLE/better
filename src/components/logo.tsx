@@ -10,7 +10,7 @@ const Logo = ({
   variant?: "logo" | "logomark" | "wordmark";
 }) => {
   return (
-    <Link href={"/"} className="flex items-center gap-2">
+    <Link href={"/"} aria-label="go home" className="flex items-center gap-2">
       {!(variant == "wordmark") && (
         <Image
           src={"/images/smile.jpg"}
