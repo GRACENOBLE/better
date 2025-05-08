@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bookmark, Flame } from "lucide-react";
 import Header from "@/components/layout/header";
 import RoadmapCard from "@/components/roadmaps/roadmap-card";
+import Image from "next/image";
 const page = () => {
   const transitionVariants = {
     item: {
@@ -38,52 +39,59 @@ const page = () => {
     <>
       <Header />
       <section className="pt-40 pb-32">
-        <Container>
-          {" "}
-          <div className="relative z-10 mx-auto max-w-4xl text-center">
-            <TextEffect
-              preset="fade-in-blur"
-              speedSegment={0.3}
-              as="h1"
-              className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl"
-            >
-              Create your own path to a better you
-            </TextEffect>
-            <TextEffect
-              per="line"
-              preset="fade-in-blur"
-              speedSegment={0.3}
-              delay={0.5}
-              as="p"
-              className="mx-auto mt-12 max-w-2xl text-pretty text-lg"
-            >
-              Embark on a journey of self discovery, create your own path, take
-              one step at a time and get one step closer each day to a better
-              you.
-            </TextEffect>
-            <AnimatedGroup
-              variants={{
-                container: {
-                  visible: {
-                    transition: {
-                      staggerChildren: 0.05,
-                      delayChildren: 0.75,
+        <Container size="sm">
+          <div className="flex justify-between">
+            <div className="relative z-10 text-center ">
+              <TextEffect
+                preset="fade-in-blur"
+                speedSegment={0.3}
+                as="h1"
+                className="text-balance max-w-2xl text-left text-4xl font-medium sm:text-5xl md:text-5xl"
+              >
+                Roadmap your own path to a better you.
+              </TextEffect>
+              <TextEffect
+                preset="fade-in-blur"
+                speedSegment={0.3}
+                as="h1"
+                className=" max-w-lg leading-7 mt-8 text-left text-lg text-muted-foreground font-medium"
+              >
+                Choose how you manage your roadmap. Plan each step of your
+                journey or do it loosely, whichever fries your biscuit.
+              </TextEffect>
+              <AnimatedGroup
+                variants={{
+                  container: {
+                    visible: {
+                      transition: {
+                        staggerChildren: 0.05,
+                        delayChildren: 0.75,
+                      },
                     },
                   },
-                },
-                ...transitionVariants,
-              }}
-              className="mt-12 flex gap-4 items-center justify-center"
-            >
-              <Link
-                href={"/roadmaps/studio"}
-                className={cn(
-                  buttonVariants({ variant: "default", size: "lg" })
-                )}
+                  ...transitionVariants,
+                }}
+                className="mt-12 w-fit"
               >
-                Roadmap Studio
-              </Link>
-            </AnimatedGroup>
+                <Link
+                  href={"/roadmaps/studio"}
+                  className={cn(
+                    buttonVariants({ variant: "default", size: "lg" })
+                  )}
+                >
+                  Roadmap Studio
+                </Link>
+              </AnimatedGroup>
+            </div>
+            <div>
+              <Image
+                src={"/images/placeholder.svg"}
+                alt={""}
+                width={500}
+                height={500}
+                className="rounded-md"
+              />
+            </div>
           </div>
         </Container>
       </section>

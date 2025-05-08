@@ -87,7 +87,7 @@ export default function HeroSection() {
                 className="mt-12 flex gap-4 items-center justify-center"
               >
                 <Link
-                  href={"/roadmaps/create"}
+                  href={"/roadmaps/studio"}
                   className={cn(
                     buttonVariants({ variant: "default", size: "lg" })
                   )}
