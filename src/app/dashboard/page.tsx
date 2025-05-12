@@ -4,23 +4,23 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-
 const page = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
 
   if (!session) {
-    redirect("/auth/sign-in")
+    redirect("/auth/sign-in");
   }
 
   return (
     <section className="pt-32">
       <Container>
         <div>
-          <h1>Welcome, {session.user.name}</h1>
+          {/* <h1>Welcome, {session.user.name}</h1>
           <p>Email: {session.user.email}</p>
-          <SignOutButton />
+          <SignOutButton /> */}
+          dash
         </div>
       </Container>
     </section>

@@ -1,21 +1,26 @@
 "use client";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Divide, Menu, X } from "lucide-react";
+
 import React from "react";
 import { cn } from "@/lib/utils";
 import Logo from "../logo";
+import { authClient } from "@/lib/auth-client";
+import UserButton from "./user-button";
 
 const menuItems = [
-  { name: "Features", href: "#link" },
-  { name: "Solution", href: "#link" },
-  { name: "Pricing", href: "#link" },
-  { name: "About", href: "#link" },
+  { name: "Home", href: "/" },
+  { name: "About", href: "/about" },
+  { name: "Roadmaps", href: "/roadmaps" },
+  { name: "Chat", href: "/chat" },
 ];
 
 const Header = () => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
+  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const user = session?.user;
+  console.log("user: ", user);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -39,7 +44,7 @@ const Header = () => {
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              <Logo />
+              <Logo size="sm" />
               <button
                 onClick={() => setMenuState(!menuState)}
                 aria-label={menuState == true ? "Close Menu" : "Open Menu"}
@@ -80,36 +85,11 @@ const Header = () => {
                   ))}
                 </ul>
               </div>
-              <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-                <Button
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
-                >
-                  <Link href="/auth/sign-in">
-                    <span>Login</span>
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled && "lg:hidden")}
-                >
-                  <Link href="/auth/sign-up">
-                    <span>Sign Up</span>
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="sm"
-                  className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-                >
-                  <Link href="#">
-                    <span>Get Started</span>
-                  </Link>
-                </Button>
-              </div>
+              <UserButton
+                user={user}
+                isScrolled={isScrolled}
+                isPending={isPending}
+              />
             </div>
           </div>
         </div>
@@ -118,4 +98,4 @@ const Header = () => {
   );
 };
 
-export default Header
+export default Header;

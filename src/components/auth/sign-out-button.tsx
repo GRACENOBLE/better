@@ -26,7 +26,7 @@ const SignOutButton = () => {
   };
 
   return (
-    <Button onClick={handleSignOut} disabled={isSigningOut}>
+    <Button className="-translate-x-2" variant={'ghost'} size={'sm'} onClick={handleSignOut} disabled={isSigningOut}>
       {isSigningOut ? "Signing Out..." : "Sign Out"}
     </Button>
   );
