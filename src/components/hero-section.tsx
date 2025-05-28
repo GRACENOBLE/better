@@ -49,7 +49,7 @@ export default function HeroSection() {
                 as="h1"
                 className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl"
               >
-                Becoming who
+                Create a plan for
               </TextEffect>
               <TextEffect
                 preset="fade-in-blur"
@@ -57,7 +57,7 @@ export default function HeroSection() {
                 as="h1"
                 className="text-balance text-4xl font-medium sm:text-5xl md:text-6xl"
               >
-                you were meant to be.
+                anything!
               </TextEffect>
               <TextEffect
                 per="line"

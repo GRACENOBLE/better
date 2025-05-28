@@ -44,6 +44,7 @@ export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [newChildText, setNewChildText] = useState<string>("");
+  const [newSisterText, setNewSisterText] = useState<string>("");
   const [parentNode, setParentNode] = useState("1");
 
   const onConnect = useCallback(
@@ -82,7 +83,7 @@ export default function App() {
         x: nodes[nodes.length - 1].position.x + 200,
         y: nodes[nodes.length - 1].position.y,
       },
-      data: { label: (nodes.length + 1).toString() },
+      data: { label: newSisterText.toString() },
     };
 
     const newEdge = {
@@ -147,13 +148,31 @@ export default function App() {
               </DialogHeader>
             </DialogContent>
           </Dialog>
-          <Button
-            variant={"outline"}
-            onClick={handleAddSister}
-            className="aspect-square relative"
-          >
-            <Sister />
-          </Button>
+          <Dialog>
+            <DialogTrigger
+              className={cn(
+                "aspect-square relative",
+                buttonVariants({ variant: "outline" })
+              )}
+            >
+              <Sister />
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add a sister</DialogTitle>
+                <DialogDescription className="pt-4 flex flex-col items-end gap-4">
+                  <Input
+                    placeholder="Sister text"
+                    value={newSisterText}
+                    onChange={(e) => setNewSisterText(e.target.value)}
+                  />
+                  <Button onClick={handleAddSister} className="">
+                    Add sister
+                  </Button>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
           <Button
             variant={"outline"}
             onClick={handleAlignHorizontal}

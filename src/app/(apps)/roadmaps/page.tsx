@@ -35,7 +35,7 @@ const page = () => {
   return (
     <>
       <Header />
-      <section className="pt-40 pb-32 bg-primary">
+      <section className="pt-40 pb-32 bg-accent">
         <Container size="sm">
           <div className="relative z-10 flex flex-col items-center">
             <TextEffect
