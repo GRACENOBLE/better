@@ -43,21 +43,13 @@ const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [newChildText, setNewChildText] = useState("");
+  const [newChildText, setNewChildText] = useState<string>("");
+  const [parentNode, setParentNode] = useState("1");
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
-
-  const newSister = {
-    id: (nodes.length + 1).toString(),
-    position: {
-      x: nodes[nodes.length - 1].position.x + 200,
-      y: nodes[nodes.length - 1].position.y,
-    },
-    data: { label: (nodes.length + 1).toString() },
-  };
 
   const handleAddChild = () => {
     const newChild = {
@@ -80,11 +72,30 @@ export default function App() {
     const newEdgeArray = [...edges, newEdge];
     setEdges(newEdgeArray);
     setNewChildText("");
+    setParentNode(String(parseInt(newChild.id) - 1));
   };
 
   const handleAddSister = () => {
+    const newSister = {
+      id: (nodes.length + 1).toString(),
+      position: {
+        x: nodes[nodes.length - 1].position.x + 200,
+        y: nodes[nodes.length - 1].position.y,
+      },
+      data: { label: (nodes.length + 1).toString() },
+    };
+
+    const newEdge = {
+      id: `e${parentNode}-${nodes.length + 1})`,
+      source: String(parentNode),
+      target: String(nodes.length + 1),
+    };
+
     const newNodeArray = [...nodes, newSister];
     setNodes(newNodeArray);
+    const newEdgeArray = [...edges, newEdge];
+    setEdges(newEdgeArray);
+    setNewChildText("");
   };
 
   const handleAlignHorizontal = () => {
