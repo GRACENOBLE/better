@@ -1,16 +1,13 @@
 import Container from "@/components/common/container";
 import { AnimatedGroup } from "@/components/ui/animated-group";
-import { buttonVariants } from "@/components/ui/button";
 import { TextEffect } from "@/components/ui/text-effect";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Bookmark, Flame } from "lucide-react";
+import { ArrowRight, Bookmark, Flame } from "lucide-react";
 import Header from "@/components/layout/header";
 import RoadmapCard from "@/components/roadmaps/roadmap-card";
 import Image from "next/image";
@@ -38,60 +35,40 @@ const page = () => {
   return (
     <>
       <Header />
-      <section className="pt-40 pb-32">
+      <section className="pt-40 pb-32 bg-primary">
         <Container size="sm">
-          <div className="flex justify-between">
-            <div className="relative z-10 text-center ">
-              <TextEffect
-                preset="fade-in-blur"
-                speedSegment={0.3}
-                as="h1"
-                className="text-balance max-w-2xl text-left text-4xl font-medium sm:text-5xl md:text-5xl"
-              >
-                Roadmap your own path to a better you.
-              </TextEffect>
-              <TextEffect
-                preset="fade-in-blur"
-                speedSegment={0.3}
-                as="h1"
-                className=" max-w-lg leading-7 mt-8 text-left text-lg text-muted-foreground font-medium"
-              >
-                Choose how you manage your roadmap. Plan each step of your
-                journey or do it loosely, whichever fries your biscuit.
-              </TextEffect>
-              <AnimatedGroup
-                variants={{
-                  container: {
-                    visible: {
-                      transition: {
-                        staggerChildren: 0.05,
-                        delayChildren: 0.75,
-                      },
+          <div className="relative z-10 flex flex-col items-center">
+            <TextEffect
+              preset="fade-in-blur"
+              speedSegment={0.3}
+              as="h1"
+              className="text-balance max-w-3xl text-center text-4xl font-semibold sm:text-5xl md:text-5xl"
+            >
+            Create a custom roadmap with roadmap studio.
+            </TextEffect>
+            <AnimatedGroup
+              variants={{
+                container: {
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.05,
+                      delayChildren: 0.75,
                     },
                   },
-                  ...transitionVariants,
-                }}
-                className="mt-12 w-fit"
+                },
+                ...transitionVariants,
+              }}
+              className="mt-12 w-fit"
+            >
+              <Link
+                href={"/roadmaps/studio"}
+                className={cn(
+                  "bg-black text-white px-8 py-3 rounded-full font-semibold flex items-center gap-1"
+                )}
               >
-                <Link
-                  href={"/roadmaps/studio"}
-                  className={cn(
-                    buttonVariants({ variant: "default", size: "lg" })
-                  )}
-                >
-                  Roadmap Studio
-                </Link>
-              </AnimatedGroup>
-            </div>
-            <div>
-              <Image
-                src={"/images/placeholder.svg"}
-                alt={""}
-                width={500}
-                height={500}
-                className="rounded-md"
-              />
-            </div>
+                <span>ROADMAP STUDIO</span> <ArrowRight size={20} />
+              </Link>
+            </AnimatedGroup>
           </div>
         </Container>
       </section>
@@ -186,18 +163,15 @@ const page = () => {
                   "roadmap41",
                   "roadmap51",
                 ].map((roadmap, index) => (
-                  <Link
-                    key={roadmap + index}
-                    href={"/roadmaps/my-roadmap"}
-                    className="border relative rounded-md px-4 py-2 w-full max-w-[259px]"
-                  >
-                    <p>{roadmap}</p>
-                    <Bookmark
-                      strokeWidth={1.5}
-                      size={16}
-                      className="absolute top-1 right-1"
-                    />
-                  </Link>
+                  <RoadmapCard
+                    key={index}
+                    slug={"my-custom-roadmap-1"}
+                    type={"completed"}
+                    bookmarked={false}
+                    title={roadmap}
+                    deadline={"Jan 20,2025"}
+                    progress={100}
+                  />
                 ))}
               </div>
             </TabsContent>
@@ -215,18 +189,15 @@ const page = () => {
                   "roadmap41",
                   "roadmap51",
                 ].map((roadmap, index) => (
-                  <Link
-                    key={roadmap + index}
-                    href={"/roadmaps/my-roadmap"}
-                    className="border relative rounded-md px-4 py-2 w-full max-w-[259px]"
-                  >
-                    <p>{roadmap}</p>
-                    <Bookmark
-                      size={16}
-                      className="absolute top-1 right-1 fill-foreground/60"
-                      stroke="false"
-                    />
-                  </Link>
+                  <RoadmapCard
+                    key={index}
+                    slug={"my-custom-roadmap-1"}
+                    type={"in-progress"}
+                    bookmarked={true}
+                    title={roadmap}
+                    deadline={"Jan 20,2025"}
+                    progress={32}
+                  />
                 ))}
               </div>
             </TabsContent>

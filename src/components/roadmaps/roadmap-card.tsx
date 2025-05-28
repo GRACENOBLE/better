@@ -34,19 +34,23 @@ const RoadmapCard = ({
         onClick={handleToggleBookMark}
         className="absolute top-2 right-2 z-20"
       >
-        <Bookmark size={16} strokeWidth={1.5} fill={isBookmarked?"foreground":""}/>
+        <Bookmark
+          size={16}
+          strokeWidth={1.5}
+          fill={isBookmarked ? "foreground" : ""}
+        />
       </button>
       <div>
         <span
           className={cn("text-xs px-2 rounded-sm py-1", {
             "bg-yellow-400": type == "in-progress",
-            "bg-green-500": type == "completed",
+            "bg-green-400": type == "completed",
           })}
         >
           {type == "in-progress"
             ? "In progress"
             : type == "completed"
-            ? "`completed"
+            ? "Completed"
             : "Other"}
         </span>
         <Link
