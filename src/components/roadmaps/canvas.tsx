@@ -1,8 +1,7 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   ReactFlow,
-  MiniMap,
   Controls,
   Background,
   useNodesState,
@@ -10,14 +9,33 @@ import {
   addEdge,
   BackgroundVariant,
 } from "@xyflow/react";
-
 import "@xyflow/react/dist/style.css";
-import { Plus } from "lucide-react";
-import { Button } from "../ui/button";
-import { Goal, Step } from "../icons";
+import { Button, buttonVariants } from "../ui/button";
+import {
+  Child,
+  Sister,
+  AlignHorizontal,
+  AlignVertical,
+  AlignAllNodes,
+} from "../icons";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
 
 const initialNodes = [
-  { id: "1", position: { x: 500, y: 500 }, data: { label: "1" } },
+  {
+    id: "1",
+    position: { x: 500, y: 500 },
+    type: "input",
+    data: { label: "1" },
+  },
   { id: "2", position: { x: 500, y: 600 }, data: { label: "2" } },
 ];
 const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
@@ -25,20 +43,12 @@ const initialEdges = [{ id: "e1-2", source: "1", target: "2" }];
 export default function App() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [newChildText, setNewChildText] = useState("");
 
   const onConnect = useCallback(
     (params: any) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
-
-  const newChild = {
-    id: (nodes.length + 1).toString(),
-    position: {
-      x: nodes[nodes.length - 1].position.x,
-      y: nodes[nodes.length - 1].position.y + 100,
-    },
-    data: { label: (nodes.length + 1).toString() },
-  };
 
   const newSister = {
     id: (nodes.length + 1).toString(),
@@ -50,12 +60,43 @@ export default function App() {
   };
 
   const handleAddChild = () => {
+    const newChild = {
+      id: (nodes.length + 1).toString(),
+      position: {
+        x: nodes[nodes.length - 1].position.x,
+        y: nodes[nodes.length - 1].position.y + 100,
+      },
+      data: { label: newChildText.toString() },
+    };
+
+    const newEdge = {
+      id: `e${nodes.length}-${nodes.length + 1})`,
+      source: String(nodes.length),
+      target: String(nodes.length + 1),
+    };
+
     const newNodeArray = [...nodes, newChild];
     setNodes(newNodeArray);
+    const newEdgeArray = [...edges, newEdge];
+    setEdges(newEdgeArray);
+    setNewChildText("");
   };
+
   const handleAddSister = () => {
     const newNodeArray = [...nodes, newSister];
     setNodes(newNodeArray);
+  };
+
+  const handleAlignHorizontal = () => {
+    throw new Error("Not yet implemented");
+  };
+
+  const handleAlignVertical = () => {
+    throw new Error("Not yet implemented");
+  };
+
+  const handleAlignAll = () => {
+    throw new Error("Not yet implemented");
   };
 
   return (
@@ -70,19 +111,58 @@ export default function App() {
         <Controls />
         {/* <MiniMap /> */}
         <div className="border flex gap-4 rounded-md absolute z-4 bottom-4 -translate-x-[50%] left-[50%] px-8 py-6 bg-white">
-          <Button
-            variant={"outline"}
-            onClick={handleAddChild}
-            className="aspect-square relative"
-          >
-            <Step />
-          </Button>
+          <Dialog>
+            <DialogTrigger
+              className={cn(
+                "aspect-square relative",
+                buttonVariants({ variant: "outline" })
+              )}
+            >
+              <Child />
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add a child</DialogTitle>
+                <DialogDescription className="pt-4 flex flex-col items-end gap-4">
+                  <Input
+                    placeholder="Child text"
+                    value={newChildText}
+                    onChange={(e) => setNewChildText(e.target.value)}
+                  />
+                  <Button onClick={handleAddChild} className="">
+                    Add child
+                  </Button>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
           <Button
             variant={"outline"}
             onClick={handleAddSister}
             className="aspect-square relative"
           >
-            <Goal />
+            <Sister />
+          </Button>
+          <Button
+            variant={"outline"}
+            onClick={handleAlignHorizontal}
+            className="aspect-square relative"
+          >
+            <AlignHorizontal />
+          </Button>
+          <Button
+            variant={"outline"}
+            onClick={handleAlignVertical}
+            className="aspect-square relative"
+          >
+            <AlignVertical />
+          </Button>
+          <Button
+            variant={"outline"}
+            onClick={handleAlignAll}
+            className="aspect-square relative"
+          >
+            <AlignAllNodes />
           </Button>
         </div>
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />

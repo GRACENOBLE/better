@@ -1,12 +1,27 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 
-export const Step = () => {
+export const Child = () => {
   return <Icon image={"/icons/connect.png"} />;
 };
 
-export const Goal = () => {
-  return <Icon image={"/icons/branch-icon.png"} classname="rotate-180"/>;
+export const Sister = () => {
+  return <Icon image={"/icons/branch-icon.png"} classname="rotate-180" />;
+};
+export const AlignHorizontal = () => {
+  return (
+    <Icon image={"/icons/align-nodes-horizontal.png"} classname="rotate-180" />
+  );
+};
+export const AlignVertical = () => {
+  return (
+    <Icon image={"/icons/align-nodes-vertical.png"} classname="rotate-180" />
+  );
+};
+export const AlignAllNodes = () => {
+  return (
+    <Icon image={"/icons/align-all-nodes.png"} classname="rotate-180" />
+  );
 };
 
 const Icon = ({ image, classname }: { image: string; classname?: string }) => {
