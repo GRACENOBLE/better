@@ -11,6 +11,7 @@ import { ArrowRight, Bookmark, Flame } from "lucide-react";
 import Header from "@/components/layout/header";
 import RoadmapCard from "@/components/roadmaps/roadmap-card";
 import Image from "next/image";
+import CustomButton from "@/components/CustomButton";
 const page = () => {
   const transitionVariants = {
     item: {
@@ -37,14 +38,14 @@ const page = () => {
       <Header />
       <section className="pt-40 pb-32 bg-accent">
         <Container size="sm">
-          <div className="relative z-10 flex flex-col items-center">
+          <div className="flex flex-col items-center">
             <TextEffect
               preset="fade-in-blur"
               speedSegment={0.3}
               as="h1"
-              className="text-balance max-w-3xl text-center text-4xl font-semibold sm:text-5xl md:text-5xl"
+              className="text-balance max-w-3xl text-center text-4xl font-title font-semibold sm:text-5xl md:text-5xl"
             >
-            Create a custom roadmap with roadmap studio.
+              Create a custom roadmap with roadmap studio.
             </TextEffect>
             <AnimatedGroup
               variants={{
@@ -60,13 +61,13 @@ const page = () => {
               }}
               className="mt-12 w-fit"
             >
-              <Link
-                href={"/roadmaps/studio"}
-                className={cn(
-                  "bg-black text-white px-8 py-3 rounded-full font-semibold flex items-center gap-1"
-                )}
-              >
-                <span>ROADMAP STUDIO</span> <ArrowRight size={20} />
+              <Link href={"/roadmaps/studio"}>
+                <CustomButton size="lg">
+                  <span className="flex gap-1 items-center">
+                    ROADMAP STUDIO
+                    <ArrowRight size={20} />
+                  </span>
+                </CustomButton>
               </Link>
             </AnimatedGroup>
           </div>
