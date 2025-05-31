@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Divide, Menu, X } from "lucide-react";
-
+import { Menu, X } from "lucide-react";
 import React from "react";
 import { cn } from "@/lib/utils";
 import Logo from "../logo";
@@ -9,7 +8,6 @@ import { authClient } from "@/lib/auth-client";
 import UserButton from "./user-button";
 
 const menuItems = [
-  { name: "Home", href: "/" },
   { name: "About", href: "/about" },
   { name: "Roadmaps", href: "/roadmaps" },
   { name: "Chat", href: "/chat" },
@@ -30,7 +28,7 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
-    <header className="sticky top-0">
+    <header className="sticky top-0 z-10">
       <nav
         data-state={menuState && "active"}
         className="fixed z-20 w-full px-2"
@@ -39,12 +37,12 @@ const Header = () => {
           className={cn(
             "mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12",
             isScrolled &&
-              "bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5"
+              "bg-background/50 max-w-4xl rounded-2xl backdrop-blur-lg lg:px-5"
           )}
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              <Logo size="sm" />
+              <Logo size="sm" color="black" variant="wordmark"/>
               <button
                 onClick={() => setMenuState(!menuState)}
                 aria-label={menuState == true ? "Close Menu" : "Open Menu"}
@@ -61,9 +59,9 @@ const Header = () => {
                   <li key={index}>
                     <Link
                       href={item.href}
-                      className="text-muted-foreground hover:text-accent-foreground block duration-150"
+                      className="text-black/60 hover:text-accent-foreground block duration-150"
                     >
-                      <span>{item.name}</span>
+                      <span className="">{item.name}</span>
                     </Link>
                   </li>
                 ))}

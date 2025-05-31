@@ -77,7 +77,7 @@ export default function HeroSection() {
               className="mt-12 flex gap-4 items-center justify-center"
             >
               <Link href={"/roadmaps/studio"}>
-                <CustomButton>Create a roadmap</CustomButton>
+                <CustomButton size="lg">Create a roadmap</CustomButton>
               </Link>
 
               <form action="" className="mx-auto max-w-sm">
@@ -85,8 +85,8 @@ export default function HeroSection() {
                   {/* <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" /> */}
 
                   <input
-                    placeholder="Talk to Better AI"
-                    className="h-12 w-full bg-transparent pl-4 focus:outline-none"
+                    placeholder="Plan with Better AI"
+                    className="h-12 w-full bg-transparent pl-4 focus:outline-none placeholder:text-base"
                     type="email"
                   />
 
@@ -98,10 +98,6 @@ export default function HeroSection() {
                       <span className="hidden md:block">
                         <CornerRightUp size={20} />
                       </span>
-                      <SendHorizonal
-                        className="relative mx-auto size-5 md:hidden"
-                        strokeWidth={2}
-                      />
                     </button>
                   </div>
                 </div>

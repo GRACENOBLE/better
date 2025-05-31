@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import SignOutButton from "../auth/sign-out-button";
 import { LoaderCircle } from "lucide-react";
+import CustomButton from "../CustomButton";
 
 const UserButton = ({
   user,
@@ -43,7 +44,9 @@ const UserButton = ({
         <div className="flex items-center gap-4">
           <Link
             href={"/dashboard"}
-            className={"rounded-sm hover:bg-muted transition-all ease-in-out duration-300 border py-[2px] px-3 text-sm"}
+            className={
+              "rounded-sm hover:bg-muted transition-all ease-in-out duration-300 border py-[2px] px-3 text-sm"
+            }
           >
             Dashboard
           </Link>
@@ -83,30 +86,11 @@ const UserButton = ({
         </div>
       ) : (
         <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
-          <Button
-            asChild
-            variant="outline"
-            size="sm"
-            className={cn(isScrolled && "lg:hidden")}
-          >
-            <Link href="/auth/sign-in">
-              <span>Login</span>
-            </Link>
-          </Button>
-          <Button asChild size="sm" className={cn(isScrolled && "lg:hidden")}>
-            <Link href="/auth/sign-up">
-              <span>Sign Up</span>
-            </Link>
-          </Button>
-          <Button
-            asChild
-            size="sm"
-            className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
-          >
-            <Link href="#">
-              <span>Get Started</span>
-            </Link>
-          </Button>
+          <Link href="/auth/sign-in">
+            <CustomButton size="default">
+              Sign in
+            </CustomButton>
+          </Link>
         </div>
       )}
     </div>
