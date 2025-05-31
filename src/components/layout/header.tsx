@@ -30,7 +30,7 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   return (
-    <header>
+    <header className="sticky top-0">
       <nav
         data-state={menuState && "active"}
         className="fixed z-20 w-full px-2"
