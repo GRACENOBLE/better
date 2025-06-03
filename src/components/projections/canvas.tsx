@@ -304,6 +304,7 @@ function FlowCanvas({
         type: "smoothstep",
         style: { strokeWidth: 2, stroke: "#374151" },
         markerEnd: {
+          // @ts-ignore
           type: "arrowclosed",
           color: "#374151",
         },
@@ -320,6 +321,7 @@ function FlowCanvas({
           type: "smoothstep",
           style: { strokeWidth: 2, stroke: "#374151" },
           markerEnd: {
+            // @ts-ignore
             type: "arrowclosed",
             color: "#374151",
           },
@@ -410,6 +412,7 @@ function FlowCanvas({
           style: { strokeWidth: 2, stroke: "#374151" },
           type: "smoothstep",
           markerEnd: {
+            // @ts-ignore
             type: "arrowclosed",
             color: "#374151",
           },
