@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowRight, Bookmark, Flame } from "lucide-react";
 import Header from "@/components/layout/header";
-import RoadmapCard from "@/components/roadmaps/roadmap-card";
+import RoadmapCard from "@/components/projections/roadmap-card";
 import Image from "next/image";
 import CustomButton from "@/components/CustomButton";
 const page = () => {

@@ -20,8 +20,8 @@ export default function Chat() {
                     })}
                   >
                     <div
-                      className={cn("border rounded-md  max-w-96 px-4 py-2", {
-                        "bg-muted": message.role === "user",
+                      className={cn(" rounded-md   px-4 py-2", {
+                        "bg-muted border max-w-96": message.role === "user",
                       })}
                       key={`${message.id}-${i}`}
                     >

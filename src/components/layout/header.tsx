@@ -9,7 +9,7 @@ import UserButton from "./user-button";
 
 const menuItems = [
   { name: "About", href: "/about" },
-  { name: "Roadmaps", href: "/roadmaps" },
+  { name: "Plans", href: "/plans" },
   { name: "Chat", href: "/chat" },
 ];
 

@@ -1,7 +1,6 @@
-
-import Canvas from "@/components/roadmaps/canvas";
-import { CanvasHeader } from "@/components/roadmaps/canvas-header";
-import { CanvasSidebar } from "@/components/roadmaps/canvas-sidebar";
+import Canvas from "@/components/projections/canvas";
+import { CanvasHeader } from "@/components/projections/canvas-header";
+import { CanvasSidebar } from "@/components/projections/canvas-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 const page = () => {
