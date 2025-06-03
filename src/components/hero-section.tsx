@@ -76,7 +76,7 @@ export default function HeroSection() {
               }}
               className="mt-12 flex gap-4 items-center justify-center"
             >
-              <Link href={"/roadmaps/studio"}>
+              <Link href={"/plans/studio"}>
                 <CustomButton size="lg">Create a roadmap</CustomButton>
               </Link>
 

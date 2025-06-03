@@ -3,28 +3,16 @@ import Logo from "../logo";
 
 const links = [
   {
-    title: "Features",
-    href: "#",
-  },
-  {
-    title: "Solution",
-    href: "#",
-  },
-  {
-    title: "Customers",
-    href: "#",
-  },
-  {
-    title: "Pricing",
-    href: "#",
-  },
-  {
-    title: "Help",
-    href: "#",
-  },
-  {
     title: "About",
-    href: "#",
+    href: "/about",
+  },
+  {
+    title: "Roadmaps",
+    href: "/plans",
+  },
+  {
+    title: "Chat",
+    href: "/chat/new",
   },
 ];
 
@@ -176,7 +164,7 @@ export default function Footer() {
         </div>
         <span className="text-muted-foreground block text-center text-sm">
           {" "}
-          © {new Date().getFullYear()} Tailark, All rights reserved
+          © {new Date().getFullYear()} Better, All rights reserved
         </span>
       </div>
     </footer>
