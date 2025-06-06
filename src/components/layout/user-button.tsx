@@ -42,14 +42,14 @@ const UserButton = ({
     <div>
       {user ? (
         <div className="flex items-center gap-4">
-          <Link
+          {/* <Link
             href={"/dashboard"}
             className={
               "rounded-sm hover:bg-muted transition-all ease-in-out duration-300 border py-[2px] px-3 text-sm"
             }
           >
             Dashboard
-          </Link>
+          </Link> */}
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

@@ -32,7 +32,17 @@ import { Label } from "@/components/ui/label";
 import { Plus, Users, AlignCenter, Edit, Trash2, Copy } from "lucide-react";
 
 // Custom Node Component with proper handles
-const CustomNode = ({ data, selected, id }) => {
+interface CustomNodeProps {
+  data: {
+    label: string;
+    onEdit?: (id: string, label: string) => void;
+    [key: string]: any;
+  };
+  selected: boolean;
+  id: string;
+}
+
+const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
   const { getNodes, setNodes, getEdges, setEdges } = useReactFlow();
 
   const handleEdit = () => {
@@ -304,6 +314,7 @@ function FlowCanvas({
         type: "smoothstep",
         style: { strokeWidth: 2, stroke: "#374151" },
         markerEnd: {
+          // @ts-ignore
           type: "arrowclosed",
           color: "#374151",
         },
@@ -320,6 +331,7 @@ function FlowCanvas({
           type: "smoothstep",
           style: { strokeWidth: 2, stroke: "#374151" },
           markerEnd: {
+            // @ts-ignore
             type: "arrowclosed",
             color: "#374151",
           },
@@ -390,7 +402,7 @@ function FlowCanvas({
       {selectedNode && (
         <div className="absolute top-4 right-4 z-10 bg-white border rounded-lg p-2 shadow-lg">
           <div className="text-sm font-medium">
-            Selected: {selectedNode.data.label}
+            Selected: {String(selectedNode?.data?.label) ?? ""}
           </div>
         </div>
       )}
@@ -410,6 +422,7 @@ function FlowCanvas({
           style: { strokeWidth: 2, stroke: "#374151" },
           type: "smoothstep",
           markerEnd: {
+            // @ts-ignore
             type: "arrowclosed",
             color: "#374151",
           },
@@ -527,7 +540,6 @@ export default function Component() {
       target: "2",
       type: "smoothstep",
       style: { strokeWidth: 2, stroke: "#374151" },
-      
     },
     {
       id: "e1-3",

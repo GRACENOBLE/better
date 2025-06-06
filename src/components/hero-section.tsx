@@ -76,18 +76,18 @@ export default function HeroSection() {
               }}
               className="mt-12 flex gap-4 items-center justify-center"
             >
-              <Link href={"/roadmaps/studio"}>
+              <Link href={"/plans/studio"}>
                 <CustomButton size="lg">Create a roadmap</CustomButton>
               </Link>
 
-              <form action="" className="mx-auto max-w-sm">
+              <form method="POST" action="/chat/new" className="mx-auto max-w-sm">
                 <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-full border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
                   {/* <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" /> */}
 
                   <input
                     placeholder="Plan with Better AI"
                     className="h-12 w-full bg-transparent pl-4 focus:outline-none placeholder:text-base"
-                    type="email"
+                    type="text"
                   />
 
                   <div className="md:pr-1.5 lg:pr-0">
