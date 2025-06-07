@@ -35,35 +35,35 @@ import Logo from "../logo";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Noble",
+    email: "gracenoble72@gmail.com.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "Chat 0",
       url: "#",
-      icon: LayoutDashboardIcon,
+     
     },
     {
-      title: "Lifecycle",
+      title: "Chat 1",
       url: "#",
-      icon: ListIcon,
+      
     },
     {
-      title: "Analytics",
+      title: "Chat 2",
       url: "#",
-      icon: BarChartIcon,
+     
     },
     {
-      title: "Projects",
+      title: "Chat 3",
       url: "#",
-      icon: FolderIcon,
+      
     },
     {
-      title: "Team",
+      title: "Chat 4",
       url: "#",
-      icon: UsersIcon,
+    
     },
   ],
   navClouds: [

@@ -61,7 +61,7 @@ const page = () => {
               }}
               className="mt-12 w-fit"
             >
-              <Link href={"/roadmaps/studio"}>
+              <Link href={"/plans/studio"}>
                 <CustomButton size="lg">
                   <span className="flex gap-1 items-center">
                     ROADMAP STUDIO

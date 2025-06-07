@@ -25,10 +25,18 @@ export function NavMain({
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
+        <SidebarMenu>
+          <SidebarMenuItem className="flex items-center gap-2">
+            <SidebarMenuButton tooltip="Quick Create">
+              <PlusCircleIcon />
+              <span>Create a roadmap</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+        <SidebarSeparator />
         <SidebarGroupLabel className="text-md font-semibold">
           My roadmaps
         </SidebarGroupLabel>
-        <SidebarSeparator />
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
@@ -40,14 +48,6 @@ export function NavMain({
           ))}
         </SidebarMenu>
         <SidebarSeparator />
-        <SidebarMenu>
-          <SidebarMenuItem className="flex items-center gap-2">
-            <SidebarMenuButton tooltip="Quick Create">
-              <PlusCircleIcon />
-              <span>Create a roadmap</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
   );

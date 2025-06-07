@@ -14,7 +14,7 @@ export default function Chat() {
   );
 
   return (
-    <div className="flex flex-col w-full  py-24 stretch overflow-auto">
+    <div className="flex flex-col w-full  py-24  overflow-auto">
       {messages.map((message, index) => (
         <div key={message.id + index} className="whitespace-pre-wrap">
           {/* {message.role === "user" ? "User: " : "AI: "} */}
@@ -116,11 +116,11 @@ export default function Chat() {
         </div>
       ))}
       <div className="fixed bottom-0 left-0 flex justify-center bg-gradient-to-t from-muted via-muted to-transparent w-full">
-        <form onSubmit={handleSubmit} className="min-w-2xl bg-muted my-8">
+        <form onSubmit={handleSubmit} className="max-w-2xl w-full mx-4 bg-muted my-8">
           <input
             className=" dark:bg-zinc-900 bottom-0 w-full  p-2  border border-zinc-300 dark:border-zinc-800 rounded shadow-xl"
             value={input}
-            placeholder="Lets talk about a better you..."
+            placeholder="What are you planning?"
             onChange={handleInputChange}
           />
         </form>

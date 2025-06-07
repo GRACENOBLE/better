@@ -7,7 +7,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     <SidebarProvider>
       <AISidebar variant="inset" />
 
-      <SidebarInset>
+      <SidebarInset className="overflow-auto">
         <AIHeader />
         {children}
       </SidebarInset>

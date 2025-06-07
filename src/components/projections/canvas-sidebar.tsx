@@ -36,35 +36,30 @@ import Logo from "../logo";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
+    name: "Noble",
+    email: "gracenoble72@gmail.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "Roadmap 1",
       url: "#",
-      icon: LayoutDashboardIcon,
     },
     {
-      title: "Lifecycle",
+      title: "Roadmap 2",
       url: "#",
-      icon: ListIcon,
     },
     {
-      title: "Analytics",
+      title: "Roadmap 3",
       url: "#",
-      icon: BarChartIcon,
     },
     {
-      title: "Projects",
+      title: "Roadmap 4",
       url: "#",
-      icon: FolderIcon,
     },
     {
-      title: "Team",
+      title: "Roadmap 5",
       url: "#",
-      icon: UsersIcon,
     },
   ],
   navClouds: [
