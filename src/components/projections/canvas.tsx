@@ -29,10 +29,24 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Users, AlignCenter, Edit, Trash2, Copy } from "lucide-react";
+import { Edit, Trash2, Copy } from "lucide-react";
+// Import from the correct path
+import { Child, Sister, AlignAllNodes } from "./canvas-icons";
 
 // Custom Node Component with proper handles
-const CustomNode = ({ data, selected, id }) => {
+interface CustomNodeProps {
+  data: {
+    label: string;
+    onEdit?: (id: string, label: string) => void;
+    onAddChild?: (id: string) => void;
+    onAddSister?: (id: string) => void;
+    [key: string]: any;
+  };
+  selected: boolean;
+  id: string;
+}
+
+const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
   const { getNodes, setNodes, getEdges, setEdges } = useReactFlow();
 
   const handleEdit = () => {
@@ -68,6 +82,14 @@ const CustomNode = ({ data, selected, id }) => {
     }
   };
 
+  const handleAddChild = () => {
+    data.onAddChild?.(id);
+  };
+
+  const handleAddSister = () => {
+    data.onAddSister?.(id);
+  };
+
   return (
     <div className="relative">
       {/* Input handle at the top */}
@@ -81,17 +103,40 @@ const CustomNode = ({ data, selected, id }) => {
       <Handle type="source" position={Position.Bottom} />
 
       {selected && (
-        <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 flex gap-1 bg-white border rounded-md shadow-lg p-1">
-          <Button size="sm" variant="ghost" onClick={handleEdit}>
-            <Edit className="h-3 w-3" />
+        <>
+          {/* Edit/Delete/Copy toolbar */}
+          <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 flex gap-1 bg-white border rounded-md shadow-lg p-1">
+            <Button size="sm" variant="ghost" onClick={handleEdit}>
+              <Edit size={14} strokeWidth={2} />
+            </Button>
+            <Button size="sm" variant="ghost" onClick={handleDelete}>
+              <Trash2 size={14}  strokeWidth={2}/>
+            </Button>
+            <Button size="sm" variant="ghost" onClick={handleCopy}>
+              <Copy size={14} strokeWidth={2}/>
+            </Button>
+          </div>
+
+          {/* Add Child button - positioned below the node */}
+          <Button
+            size="icon"
+            onClick={handleAddChild}
+            variant="outline"
+            className="absolute -bottom-13 left-1/2 transform -translate-x-1/2   shadow-md bg-white"
+          >
+            <Child />
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleDelete}>
-            <Trash2 className="h-3 w-3" />
+
+          {/* Add Sister button - positioned to the right of the node */}
+          <Button
+            size="icon"
+            onClick={handleAddSister}
+            variant="outline"
+            className="absolute top-1/2 -right-13 transform -translate-y-1/2  shadow-md bg-white"
+          >
+            <Sister />
           </Button>
-          <Button size="sm" variant="ghost" onClick={handleCopy}>
-            <Copy className="h-3 w-3" />
-          </Button>
-        </div>
+        </>
       )}
     </div>
   );
@@ -164,6 +209,24 @@ function FlowCanvas({
     setEditNodeText(currentText);
     setIsEditDialogOpen(true);
   }, []);
+
+  const handleAddChild = useCallback(
+    (nodeId: string) => {
+      setSelectedNode(nodes.find((node) => node.id === nodeId) || null);
+      setAddMode("child");
+      setIsAddDialogOpen(true);
+    },
+    [nodes]
+  );
+
+  const handleAddSister = useCallback(
+    (nodeId: string) => {
+      setSelectedNode(nodes.find((node) => node.id === nodeId) || null);
+      setAddMode("sister");
+      setIsAddDialogOpen(true);
+    },
+    [nodes]
+  );
 
   const updateNodeText = () => {
     if (!editNodeText.trim()) return;
@@ -253,11 +316,13 @@ function FlowCanvas({
   };
 
   // Update nodes to include edit handler
-  const nodesWithEditHandler = nodes.map((node) => ({
+  const nodesWithHandlers = nodes.map((node) => ({
     ...node,
     data: {
       ...node.data,
       onEdit: handleEditNode,
+      onAddChild: handleAddChild,
+      onAddSister: handleAddSister,
     },
   }));
 
@@ -284,7 +349,12 @@ function FlowCanvas({
       id: newNodeId,
       type: "custom", // Always use custom type to get our toolbar
       position: { x: 0, y: 0 }, // Will be recalculated
-      data: { label: newNodeText, onEdit: handleEditNode },
+      data: {
+        label: newNodeText,
+        onEdit: handleEditNode,
+        onAddChild: handleAddChild,
+        onAddSister: handleAddSister,
+      },
     };
 
     let updatedNodes = [...nodes, newNode];
@@ -347,43 +417,29 @@ function FlowCanvas({
 
   return (
     <div className="w-full h-full relative">
-      {/* Top Toolbar */}
-      <div className="absolute top-4 left-4 z-10 flex gap-2 bg-white border rounded-lg p-2 shadow-lg">
+      {/* Bottom Toolbar - Only showing Align button now */}
+    
         <Button
           size="sm"
-          onClick={addChild}
-          disabled={!selectedNode}
-          variant={selectedNode ? "default" : "secondary"}
+          onClick={alignNodes}
+          variant="outline"
+          className="aspect-square w-10 h-10 absolute z-10 top-4 right-4 "
         >
-          <Plus className="h-4 w-4 mr-1" />
-          Add Child
+          <AlignAllNodes />
         </Button>
-        <Button
-          size="sm"
-          onClick={addSister}
-          disabled={!selectedNode}
-          variant={selectedNode ? "default" : "secondary"}
-        >
-          <Users className="h-4 w-4 mr-1" />
-          Add Sister
-        </Button>
-        <Button size="sm" onClick={alignNodes} variant="outline">
-          <AlignCenter className="h-4 w-4 mr-1" />
-          Align Nodes
-        </Button>
-      </div>
+      
 
       {/* Selected Node Info */}
-      {selectedNode && (
+      {/* {selectedNode && (
         <div className="absolute top-4 right-4 z-10 bg-white border rounded-lg p-2 shadow-lg">
           <div className="text-sm font-medium">
             Selected: {selectedNode.data.label}
           </div>
         </div>
-      )}
+      )} */}
 
       <ReactFlow
-        nodes={nodesWithEditHandler}
+        nodes={nodesWithHandlers}
         edges={edges}
         onNodesChange={handleNodesChange}
         onEdgesChange={handleEdgesChange}
@@ -391,7 +447,7 @@ function FlowCanvas({
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
-        fitView
+        // fitView
         className="bg-gray-50"
         defaultEdgeOptions={{
           style: { strokeWidth: 2, stroke: "#374151" },
@@ -485,19 +541,19 @@ export default function Component() {
   const initialNodes: Node[] = [
     {
       id: "1",
-      type: "custom", // Changed from "input"
+      type: "custom",
       position: { x: 250, y: 50 },
       data: { label: "Root Node" },
     },
     {
       id: "2",
-      type: "custom", // Changed from "default"
+      type: "custom",
       position: { x: 100, y: 150 },
       data: { label: "Child 1" },
     },
     {
       id: "3",
-      type: "custom", // Changed from "default"
+      type: "custom",
       position: { x: 400, y: 150 },
       data: { label: "Child 2" },
     },
