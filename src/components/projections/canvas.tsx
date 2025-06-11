@@ -32,17 +32,7 @@ import { Label } from "@/components/ui/label";
 import { Plus, Users, AlignCenter, Edit, Trash2, Copy } from "lucide-react";
 
 // Custom Node Component with proper handles
-interface CustomNodeProps {
-  data: {
-    label: string;
-    onEdit?: (id: string, label: string) => void;
-    [key: string]: any;
-  };
-  selected: boolean;
-  id: string;
-}
-
-const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
+const CustomNode = ({ data, selected, id }) => {
   const { getNodes, setNodes, getEdges, setEdges } = useReactFlow();
 
   const handleEdit = () => {
@@ -126,7 +116,7 @@ function FlowCanvas({
 }: FlowCanvasProps) {
   const [nodes, setNodes, onNodesStateChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesStateChange] = useEdgesState(initialEdges);
-  const [selectedNode, setSelectedNode] = useState<Node | null>(null);
+  const [selectedNode, setSelectedNode] = useState<Node<any> | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [addMode, setAddMode] = useState<"child" | "sister">("child");
@@ -290,14 +280,9 @@ function FlowCanvas({
       .toString(36)
       .substr(2, 9)}`;
 
-    // Determine node type based on whether it's a root or child
-    const isRoot = !edges.some((edge) => edge.target === selectedNode.id);
-    const nodeType =
-      addMode === "child" ? "default" : isRoot ? "input" : "default";
-
     const newNode: Node = {
       id: newNodeId,
-      type: nodeType,
+      type: "custom", // Always use custom type to get our toolbar
       position: { x: 0, y: 0 }, // Will be recalculated
       data: { label: newNodeText, onEdit: handleEditNode },
     };
@@ -313,11 +298,6 @@ function FlowCanvas({
         target: newNodeId,
         type: "smoothstep",
         style: { strokeWidth: 2, stroke: "#374151" },
-        markerEnd: {
-          // @ts-ignore
-          type: "arrowclosed",
-          color: "#374151",
-        },
       };
       updatedEdges = [...edges, newEdge];
     } else {
@@ -330,11 +310,6 @@ function FlowCanvas({
           target: newNodeId,
           type: "smoothstep",
           style: { strokeWidth: 2, stroke: "#374151" },
-          markerEnd: {
-            // @ts-ignore
-            type: "arrowclosed",
-            color: "#374151",
-          },
         };
         updatedEdges = [...edges, newEdge];
       }
@@ -402,7 +377,7 @@ function FlowCanvas({
       {selectedNode && (
         <div className="absolute top-4 right-4 z-10 bg-white border rounded-lg p-2 shadow-lg">
           <div className="text-sm font-medium">
-            Selected: {String(selectedNode?.data?.label) ?? ""}
+            Selected: {selectedNode.data.label}
           </div>
         </div>
       )}
@@ -421,11 +396,6 @@ function FlowCanvas({
         defaultEdgeOptions={{
           style: { strokeWidth: 2, stroke: "#374151" },
           type: "smoothstep",
-          markerEnd: {
-            // @ts-ignore
-            type: "arrowclosed",
-            color: "#374151",
-          },
         }}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
@@ -515,19 +485,19 @@ export default function Component() {
   const initialNodes: Node[] = [
     {
       id: "1",
-      type: "input", // Root node uses input type
+      type: "custom", // Changed from "input"
       position: { x: 250, y: 50 },
       data: { label: "Root Node" },
     },
     {
       id: "2",
-      type: "default", // Child nodes use default type
+      type: "custom", // Changed from "default"
       position: { x: 100, y: 150 },
       data: { label: "Child 1" },
     },
     {
       id: "3",
-      type: "default", // Child nodes use default type
+      type: "custom", // Changed from "default"
       position: { x: 400, y: 150 },
       data: { label: "Child 2" },
     },

@@ -27,6 +27,7 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+  
   return (
     <header className="sticky top-0 z-10">
       <nav
