@@ -346,7 +346,7 @@ function FlowCanvas({
   };
 
   return (
-    <div className="w-full h-screen relative">
+    <div className="w-full h-full relative">
       {/* Top Toolbar */}
       <div className="absolute top-4 left-4 z-10 flex gap-2 bg-white border rounded-lg p-2 shadow-lg">
         <Button
@@ -399,7 +399,7 @@ function FlowCanvas({
         }}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-        <Controls />
+        {/* <Controls /> */}
       </ReactFlow>
 
       {/* Add Node Dialog */}
