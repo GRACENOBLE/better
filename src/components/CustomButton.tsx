@@ -2,15 +2,18 @@ const CustomButton = ({
   children,
   className,
   size,
+  onClick,
 }: {
   children: React.ReactNode;
   className?: string;
   size?: "sm" | "default" | "lg";
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }) => {
   return (
     <button
       className={`group relative border-none bg-transparent p-0 outline-none cursor-pointer ${className}`}
       type="button"
+      onClick={onClick}
     >
       {/* Shadow */}
       <span className="shadow absolute top-0 left-0 w-full h-full bg-black/25 rounded-full translate-y-[2px] transition-transform duration-[250ms] [transition-timing-function:cubic-bezier(0.3,0.7,0.4,1.5)] group-hover:translate-y-[4px] group-active:translate-y-[1px] group-active:duration-[34ms]"></span>
@@ -25,7 +28,11 @@ const CustomButton = ({
       {/* Front */}
       <div
         className={`front relative flex items-center justify-center ${
-          size == "lg" ? "px-7 py-3" : size == "sm" ? "px-4 py-4 text-sm" : "px-6 py-2"
+          size == "lg"
+            ? "px-7 py-3"
+            : size == "sm"
+            ? "px-4 py-4 text-sm"
+            : "px-6 py-2"
         }  text-white bg-black rounded-full translate-y-[-4px] transition-transform duration-[250ms] [transition-timing-function:cubic-bezier(0.3,0.7,0.4,1.5)] group-hover:translate-y-[-6px] group-active:translate-y-[-2px] group-active:duration-[34ms]`}
       >
         <span className="select-none font-medium">{children}</span>

@@ -32,6 +32,7 @@ import { Label } from "@/components/ui/label";
 import { Edit, Trash2, Copy } from "lucide-react";
 // Import from the correct path
 import { Child, Sister, AlignAllNodes } from "./canvas-icons";
+import CustomButton from "../CustomButton";
 
 // Custom Node Component with proper handles
 interface CustomNodeProps {
@@ -95,7 +96,7 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
       {/* Input handle at the top */}
       <Handle type="target" position={Position.Top} />
 
-      <div className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400 min-w-[120px]">
+      <div className="px-4 py-2 shadow-md rounded-sm bg-accent border-2 border-black min-w-[120px]">
         <div className="text-sm font-medium text-center">{data.label}</div>
       </div>
 
@@ -109,11 +110,11 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
             <Button size="sm" variant="ghost" onClick={handleEdit}>
               <Edit size={14} strokeWidth={2} />
             </Button>
-            <Button size="sm" variant="ghost" onClick={handleDelete}>
-              <Trash2 size={14}  strokeWidth={2}/>
-            </Button>
             <Button size="sm" variant="ghost" onClick={handleCopy}>
-              <Copy size={14} strokeWidth={2}/>
+              <Copy size={14} strokeWidth={2} />
+            </Button>
+            <Button size="sm" variant="ghost" onClick={handleDelete} className="">
+              <Trash2 size={14} strokeWidth={2} />
             </Button>
           </div>
 
@@ -418,16 +419,15 @@ function FlowCanvas({
   return (
     <div className="w-full h-full relative">
       {/* Bottom Toolbar - Only showing Align button now */}
-    
-        <Button
-          size="sm"
-          onClick={alignNodes}
-          variant="outline"
-          className="aspect-square w-10 h-10 absolute z-10 top-4 right-4 "
-        >
-          <AlignAllNodes />
-        </Button>
-      
+
+      <Button
+        size="sm"
+        onClick={alignNodes}
+        variant="outline"
+        className="aspect-square w-10 h-10 absolute z-10 top-4 right-4 "
+      >
+        <AlignAllNodes />
+      </Button>
 
       {/* Selected Node Info */}
       {/* {selectedNode && (
@@ -466,9 +466,9 @@ function FlowCanvas({
               Add {addMode === "child" ? "Child" : "Sister"} Node
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
+          <div className="space-y-8 pt-3">
             <div>
-              <Label htmlFor="nodeText">Node Text</Label>
+              {/* <Label htmlFor="nodeText">Node Text</Label> */}
               <Input
                 id="nodeText"
                 value={newNodeText}
@@ -482,15 +482,15 @@ function FlowCanvas({
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button
+              {/* <Button
                 variant="outline"
                 onClick={() => setIsAddDialogOpen(false)}
               >
                 Cancel
-              </Button>
-              <Button onClick={handleAddNode} disabled={!newNodeText.trim()}>
+              </Button> */}
+              <CustomButton onClick={handleAddNode} >
                 Add Node
-              </Button>
+              </CustomButton>
             </div>
           </div>
         </DialogContent>
@@ -504,7 +504,7 @@ function FlowCanvas({
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="editNodeText">Node Text</Label>
+              {/* <Label htmlFor="editNodeText">Node Text</Label> */}
               <Input
                 id="editNodeText"
                 value={editNodeText}
@@ -518,12 +518,12 @@ function FlowCanvas({
               />
             </div>
             <div className="flex justify-end gap-2">
-              <Button
+              {/* <Button
                 variant="outline"
                 onClick={() => setIsEditDialogOpen(false)}
               >
                 Cancel
-              </Button>
+              </Button> */}
               <Button onClick={updateNodeText} disabled={!editNodeText.trim()}>
                 Update Node
               </Button>
