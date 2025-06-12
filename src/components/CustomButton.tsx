@@ -3,16 +3,18 @@ const CustomButton = ({
   className,
   size,
   onClick,
+  type
 }: {
   children: React.ReactNode;
   className?: string;
   size?: "sm" | "default" | "lg";
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  type?: "submit" | "reset" | "button" | undefined
 }) => {
   return (
     <button
       className={`group relative border-none bg-transparent p-0 outline-none cursor-pointer ${className}`}
-      type="button"
+      type={type}
       onClick={onClick}
     >
       {/* Shadow */}

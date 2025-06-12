@@ -14,6 +14,7 @@ import { SignUpWithEmailAndPassword } from "@/server/auth/auth";
 import Link from "next/link";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
+import CustomButton from "../CustomButton";
 
 export function SignUpForm({
   className,
@@ -34,12 +35,12 @@ export function SignUpForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="min-w-96">
+      <Card className="min-w-96 bg-accent">
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
-          <CardDescription>
+          {/* <CardDescription>
             Enter your email below to login to your account
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
         <CardContent>
           <form action={SignUpWithEmailAndPassword}>
@@ -51,7 +52,7 @@ export function SignUpForm({
                   type="name"
                   name="name"
                   placeholder="John doe"
-                  required
+                  required className="bg-white"
                 />
               </div>
               <div className="grid gap-2">
@@ -61,20 +62,20 @@ export function SignUpForm({
                   type="email"
                   name="email"
                   placeholder="johndoe@example.com"
-                  required
+                  required className="bg-white"
                 />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" required className="bg-white" />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="repeatPasword">Repeat Password</Label>
-                <Input id="repeatPassword" type="password" required />
+                <Input id="repeatPassword" type="password" required className="bg-white" />
               </div>
-              <Button type="submit" className="w-full">
+              <CustomButton type="submit" className="w-full mt-4">
                 Sign Up
-              </Button>
+              </CustomButton>
               <div className="flex justify-center gap-2">
                 <Button
                   onClick={SignInWithGoogle}

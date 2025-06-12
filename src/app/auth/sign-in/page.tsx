@@ -2,9 +2,9 @@ import { LoginForm } from "@/components/auth/sign-in-form";
 
 const page = () => {
   return (
-    <div className="min-h-screen grid place-items-center">
+    <section className="min-h-screen grid place-items-center bg-muted">
       <LoginForm />
-    </div>
+    </section>
   );
 };
 
