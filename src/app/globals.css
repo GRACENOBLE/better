@@ -121,3 +121,16 @@
     @apply bg-background text-foreground;
   }
 }
+
+.divider {
+  display: flex;
+  align-items: center;
+}
+
+.divider::before, .divider::after {
+  flex: 1;
+  content: '';
+  padding: 0.5px;
+  background-color: black;
+  margin: 5px;
+}

@@ -61,12 +61,14 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="min-w-96 bg-accent">
+    <div className={cn("flex flex-col items-center ", className)} {...props}>
+      <Card className="min-w-96 bg-accent border-none shadow-none">
         <CardHeader>
-          <CardTitle className="text-2xl">Sign In</CardTitle>
+          <CardTitle className="font-title text-center text-4xl font-semibold mb-4">
+            Sign In
+          </CardTitle>
           {/* <CardDescription className="text-black">
-            Enter your email below to login to your account
+            Enter your details to sign in to Better
           </CardDescription> */}
         </CardHeader>
         <CardContent>
@@ -78,19 +80,19 @@ export function LoginForm({
                 </div>
               )}
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                {/* <Label htmlFor="email">Email</Label> */}
                 <Input
                   id="email"
                   type="email"
                   name="email"
-                  placeholder="m@example.com"
+                  placeholder="Email"
                   required
                   className="bg-white"
                 />
               </div>
               <div className="grid gap-2 mb-4">
                 <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+                  {/* <Label htmlFor="password">Password</Label> */}
                   <a
                     href="/auth/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
@@ -98,36 +100,35 @@ export function LoginForm({
                     Forgot password?
                   </a>
                 </div>
-                <Input id="password" name="password" type="password" required className="bg-white"/>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  placeholder="Password"
+                  required
+                  className="bg-white"
+                />
               </div>
-              <CustomButton type="submit">Submit</CustomButton>
+              <Button type="submit" className="rounded-full">
+                Submit
+              </Button>
+              <div className="divider">or</div>
               <div className="flex justify-center gap-2">
                 <Button
                   onClick={SignInWithGoogle}
                   size="sm"
-                  className="w-fit hover:cursor-pointer"
-                 
+                  className="w-fit hover:cursor-pointer rounded-full"
                 >
                   <FaGoogle />
                 </Button>
                 <Button
                   onClick={SignInWithGithub}
                   size="sm"
-                  className="w-fit hover:cursor-pointer"
-                  
+                  className="w-fit hover:cursor-pointer rounded-full"
                 >
                   <FaGithub />
                 </Button>
               </div>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/auth/sign-up"
-                className="underline underline-offset-4"
-              >
-                Sign up
-              </Link>
             </div>
           </form>
         </CardContent>
