@@ -1,6 +1,7 @@
 import BackButton from "@/components/auth/back-button";
 import { SignUpForm } from "@/components/auth/sign-up-form";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import Link from "next/link";
 
 const page = () => {
@@ -9,8 +10,8 @@ const page = () => {
       <BackButton className="absolute top-4 left-4" />
 
       <div>
-        <div className="mt-4 text-center ">
-          {/* <p className=" mb-8">I just remembered, I have an account!</p> */}
+        <div className="mt-4 text-center flex flex-col gap-8 items-center">
+          <Image src={"/images/logo-yellow.svg"} alt={""} height={500} width={500} className="h-20 w-20 rounded-xl"/>
           <Link href="/auth/sign-in" className="underline underline-offset-4">
             <Button className="rounded-full px-8 hover:cursor-pointer">I have an account</Button>
           </Link>

@@ -2,6 +2,7 @@ import BackButton from "@/components/auth/back-button";
 import { LoginForm } from "@/components/auth/sign-in-form";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import Link from "next/link";
 
 const page = () => {
@@ -11,8 +12,14 @@ const page = () => {
       <div className="bg-accent h-full w-full flex flex-col items-center justify-center">
         <LoginForm />
       </div>
-      <div className="">
-        {/* <p className=" mb-8">Oh no! I don&apos;t have an account!</p> */}
+      <div className="mt-4 text-center flex flex-col gap-8 items-center">
+        <Image
+          src={"/images/logo-yellow.svg"}
+          alt={""}
+          height={500}
+          width={500}
+          className="h-20 w-20 rounded-xl"
+        />
         <Link
           href="/auth/sign-up"
           aria-label="go to sign up"

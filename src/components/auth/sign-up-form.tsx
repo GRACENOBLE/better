@@ -95,6 +95,7 @@ export function SignUpForm({
               >
                 Sign Up
               </Button>
+              <div className="divider">or</div>
               <div className="flex justify-center gap-2">
                 <Button
                   onClick={SignInWithGoogle}
