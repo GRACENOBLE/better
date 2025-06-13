@@ -6,6 +6,7 @@ import { AnimatedGroup } from "@/components/ui/animated-group";
 import { LogoCloud } from "@/components/logo-cloud";
 import Link from "next/link";
 import CustomButton from "./CustomButton";
+import { submitToChatPage } from "@/server/chat";
 
 const transitionVariants = {
   item: {
@@ -57,9 +58,9 @@ export default function HeroSection() {
               as="p"
               className="mx-auto mt-12 max-w-2xl text-pretty text-lg"
             >
-              Increase your chances of
-              "Getting it done!". Plan with Better AI and create a custom roadmap with clearly
-              defined timelines and deliverables.
+              Increase your chances of "Getting it done!". Plan with Better AI
+              and create a custom roadmap with clearly defined timelines and
+              deliverables.
             </TextEffect>
 
             <AnimatedGroup
@@ -76,11 +77,15 @@ export default function HeroSection() {
               }}
               className="mt-12 flex gap-4 items-center justify-center"
             >
-              <Link href={"/plans/studio"}>
+              <Link href={"/roadmaps/studio"} aria-label="go to roadmap studio">
                 <CustomButton size="lg">Create a roadmap</CustomButton>
               </Link>
 
-              <form method="POST" action="/chat/new" className="mx-auto max-w-sm">
+              <form
+                method="POST"
+                action={submitToChatPage}
+                className="mx-auto max-w-sm"
+              >
                 <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-full border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
                   {/* <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" /> */}
 
@@ -88,12 +93,13 @@ export default function HeroSection() {
                     placeholder="Plan with Better AI"
                     className="h-12 w-full bg-transparent pl-4 focus:outline-none placeholder:text-base"
                     type="text"
+                    name="chatStarter"
                   />
 
                   <div className="md:pr-1.5 lg:pr-0">
                     <button
-                      aria-label="submit"
-                      className="rounded-full bg-black text-white p-2"
+                      aria-label="submit to better chat"
+                      className="rounded-full bg-black text-white p-2 hover:cursor-pointer"
                     >
                       <span className="hidden md:block">
                         <CornerRightUp size={20} />

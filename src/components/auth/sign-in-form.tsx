@@ -17,6 +17,7 @@ import { FaGoogle, FaGithub } from "react-icons/fa";
 import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createAuthClient } from "better-auth/react";
+import CustomButton from "../CustomButton";
 
 // Submit button with loading state
 function SubmitButton() {
@@ -61,12 +62,12 @@ export function LoginForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="min-w-96">
+      <Card className="min-w-96 bg-accent">
         <CardHeader>
           <CardTitle className="text-2xl">Sign In</CardTitle>
-          <CardDescription>
+          {/* <CardDescription className="text-black">
             Enter your email below to login to your account
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
         <CardContent>
           <form action={handleSubmit}>
@@ -84,35 +85,36 @@ export function LoginForm({
                   name="email"
                   placeholder="m@example.com"
                   required
+                  className="bg-white"
                 />
               </div>
-              <div className="grid gap-2">
+              <div className="grid gap-2 mb-4">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                   <a
-                    href="#"
+                    href="/auth/forgot-password"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                    Forgot your password?
+                    Forgot password?
                   </a>
                 </div>
-                <Input id="password" name="password" type="password" required />
+                <Input id="password" name="password" type="password" required className="bg-white"/>
               </div>
-              <SubmitButton />
+              <CustomButton type="submit">Submit</CustomButton>
               <div className="flex justify-center gap-2">
                 <Button
                   onClick={SignInWithGoogle}
-                  variant="outline"
-                  className="w-fit"
-                  type="button"
+                  size="sm"
+                  className="w-fit hover:cursor-pointer"
+                 
                 >
                   <FaGoogle />
                 </Button>
                 <Button
                   onClick={SignInWithGithub}
-                  variant="outline"
-                  className="w-fit"
-                  type="button"
+                  size="sm"
+                  className="w-fit hover:cursor-pointer"
+                  
                 >
                   <FaGithub />
                 </Button>
