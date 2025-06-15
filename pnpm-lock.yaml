@@ -20,6 +20,9 @@ importers:
       '@ai-sdk/xai':
         specifier: ^1.2.15
         version: 1.2.15(zod@3.24.3)
+      '@better-auth/expo':
+        specifier: ^1.2.9
+        version: 1.2.9(better-auth@1.2.7)
       '@huggingface/inference':
         specifier: ^3.10.0
         version: 3.10.0
@@ -210,6 +213,11 @@ packages:
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
+
+  '@better-auth/expo@1.2.9':
+    resolution: {integrity: sha512-o2X310PJaWC131zVwpflH9bHgO2fZbbEs4t6sBxazWMVimX4olEd0v8h9M7orhsc+FkUeFhngIOyc6vD1TOUXQ==}
+    peerDependencies:
+      better-auth: 1.2.9
 
   '@better-auth/utils@0.2.4':
     resolution: {integrity: sha512-ayiX87Xd5sCHEplAdeMgwkA0FgnXsEZBgDn890XHHwSWNqqRZDYOq3uj2Ei2leTv1I2KbG5HHn60Ah1i2JWZjQ==}
@@ -2075,6 +2083,13 @@ snapshots:
       zod: 3.24.3
 
   '@alloc/quick-lru@5.2.0': {}
+
+  '@better-auth/expo@1.2.9(better-auth@1.2.7)':
+    dependencies:
+      '@better-fetch/fetch': 1.1.18
+      better-auth: 1.2.7
+      better-call: 1.0.9
+      zod: 3.24.3
 
   '@better-auth/utils@0.2.4':
     dependencies:
