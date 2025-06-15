@@ -5,7 +5,7 @@ import { TextEffect } from "@/components/ui/text-effect";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { LogoCloud } from "@/components/logo-cloud";
 import Link from "next/link";
-import CustomButton from "./CustomButton";
+import CustomButton from "../CustomButton";
 import { submitToChatPage } from "@/server/chat";
 
 const transitionVariants = {

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,9 +35,11 @@ export function SignUpForm({
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="min-w-96 bg-accent">
+      <Card className="min-w-96 border-none bg-accent shadow-none">
         <CardHeader>
-          <CardTitle className="text-2xl">Sign Up</CardTitle>
+          <CardTitle className="font-title text-center text-4xl font-semibold mb-4">
+            Sign Up
+          </CardTitle>
           {/* <CardDescription>
             Enter your email below to login to your account
           </CardDescription> */}
@@ -46,41 +48,59 @@ export function SignUpForm({
           <form action={SignUpWithEmailAndPassword}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="name">Name</Label>
+                {/* <Label htmlFor="name">Name</Label> */}
                 <Input
                   id="name"
                   type="name"
                   name="name"
-                  placeholder="John doe"
-                  required className="bg-white"
+                  placeholder="Name"
+                  required
+                  className="bg-white"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                {/* <Label htmlFor="email">Email</Label> */}
                 <Input
                   id="email"
                   type="email"
                   name="email"
-                  placeholder="johndoe@example.com"
-                  required className="bg-white"
+                  placeholder="Email"
+                  required
+                  className="bg-white"
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
-                <Input id="password" type="password" required className="bg-white" />
+                {/* <Label htmlFor="password">Password</Label> */}
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Password"
+                  required
+                  className="bg-white"
+                />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="repeatPasword">Repeat Password</Label>
-                <Input id="repeatPassword" type="password" required className="bg-white" />
+                {/* <Label htmlFor="repeatPasword">Repeat Password</Label> */}
+                <Input
+                  id="repeatPassword"
+                  type="password"
+                  placeholder="Repeat password"
+                  required
+                  className="bg-white"
+                />
               </div>
-              <CustomButton type="submit" className="w-full mt-4">
+              <Button
+                type="submit"
+                className="w-full mt-4 rounded-full hover:cursor-pointer"
+              >
                 Sign Up
-              </CustomButton>
+              </Button>
+              <div className="divider">or</div>
               <div className="flex justify-center gap-2">
                 <Button
                   onClick={SignInWithGoogle}
                   variant="outline"
-                  className="w-fit"
+                  className="w-fit rounded-full bg-black border-none text-white hover:cursor-pointer"
                   type="button"
                 >
                   <FaGoogle />
@@ -88,21 +108,12 @@ export function SignUpForm({
                 <Button
                   onClick={SignInWithGithub}
                   variant="outline"
-                  className="w-fit"
+                  className="w-fit rounded-full bg-black border-none text-white hover:cursor-pointer"
                   type="button"
                 >
                   <FaGithub />
                 </Button>
               </div>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Already have an account?
-              <Link
-                href="/auth/sign-in"
-                className="underline underline-offset-4"
-              >
-                Sign in
-              </Link>
             </div>
           </form>
         </CardContent>

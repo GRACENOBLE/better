@@ -1,9 +1,11 @@
-import HeroSection from "@/components/hero-section";
+import AboutBetter from "@/components/home/about-better";
+import HeroSection from "@/components/home/hero-section";
 
 const page = () => {
   return (
     <div>
       <HeroSection />
+      <AboutBetter />
     </div>
   );
 };
