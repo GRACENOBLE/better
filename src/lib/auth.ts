@@ -3,9 +3,11 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "@/lib/db";
 import { schema } from "./db/schema";
 import { nextCookies } from "better-auth/next-js";
-
+import { expo } from "@better-auth/expo";
 
 export const auth = betterAuth({
+  trustedOrigins: ["myapp://"],
+  plugins: [expo(), nextCookies()],
   database: drizzleAdapter(db, {
     provider: "pg", // or "mysql", "sqlite"
     schema: schema,
@@ -23,7 +25,6 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  plugins: [nextCookies()],
 });
 
 
