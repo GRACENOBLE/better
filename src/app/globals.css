@@ -134,3 +134,8 @@
   background-color: black;
   margin: 5px;
 }
+
+::selection {
+  color: black; /* Text color */
+  background-color: var(--color-accent); /* Highlight color */
+}

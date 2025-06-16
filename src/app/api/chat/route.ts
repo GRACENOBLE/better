@@ -1,8 +1,9 @@
 import { google } from "@ai-sdk/google";
-import { streamText, tool } from "ai";
+import { streamText, tool, generateObject } from "ai";
 import { z } from "zod";
 
 export const maxDuration = 30;
+
 
 const generateRoadmapTool = tool({
   description:
@@ -23,8 +24,10 @@ const generateRoadmapTool = tool({
       .describe("Specific focus area or specialization within the topic"),
   }),
   execute: async ({ topic, timeframe, difficulty, focus }) => {
-    console.log(`Generating roadmap for: ${topic}`);
-    const roadmapData = generateRoadmapStructure(
+    console.log(`Generating AI roadmap for: ${topic}`);
+
+    // Use AI to generate the actual roadmap structure
+    const roadmapData = await generateAIRoadmap(
       topic,
       timeframe,
       difficulty,
@@ -34,288 +37,335 @@ const generateRoadmapTool = tool({
   },
 });
 
-function generateRoadmapStructure(
+async function generateAIRoadmap(
   topic: string,
   timeframe?: string,
   difficulty?: string,
   focus?: string
 ) {
-  const topicLower = topic.toLowerCase();
+  try {
+    const prompt = `Create a comprehensive learning roadmap for "${topic}".
 
-  // React/Frontend Development Roadmap
-  if (topicLower.includes("react") || topicLower.includes("frontend")) {
-    return {
-      nodes: [
-        {
-          id: "1",
-          label: "HTML & CSS Basics",
-          level: 0,
-          description: "Master HTML structure and CSS styling fundamentals",
-        },
-        {
-          id: "2",
-          label: "JavaScript Fundamentals",
-          level: 0,
-          description: "Learn ES6+, DOM manipulation, and async programming",
-        },
-        {
-          id: "3",
-          label: "React Basics",
-          level: 1,
-          description: "Components, JSX, props, and basic state management",
-        },
-        {
-          id: "4",
-          label: "React Hooks",
-          level: 2,
-          description: "useState, useEffect, useContext, and custom hooks",
-        },
-        {
-          id: "5",
-          label: "State Management",
-          level: 2,
-          description: "Redux, Zustand, or Context API for complex state",
-        },
-        {
-          id: "6",
-          label: "React Router",
-          level: 2,
-          description: "Client-side routing and navigation",
-        },
-        {
-          id: "7",
-          label: "Testing",
-          level: 3,
-          description: "Jest, React Testing Library, and component testing",
-        },
-        {
-          id: "8",
-          label: "Next.js",
-          level: 3,
-          description: "Full-stack React framework with SSR/SSG",
-        },
-        {
-          id: "9",
-          label: "Build Projects",
-          level: 4,
-          description: "Create portfolio projects and real applications",
-        },
-      ],
-      edges: [
-        { id: "e1-3", source: "1", target: "3", label: "Learn" },
-        { id: "e2-3", source: "2", target: "3", label: "Apply" },
-        { id: "e3-4", source: "3", target: "4", label: "Advanced" },
-        { id: "e4-5", source: "4", target: "5", label: "Scale" },
-        { id: "e4-6", source: "4", target: "6", label: "Navigate" },
-        { id: "e5-7", source: "5", target: "7", label: "Test" },
-        { id: "e6-8", source: "6", target: "8", label: "Framework" },
-        { id: "e7-9", source: "7", target: "9", label: "Build" },
-        { id: "e8-9", source: "8", target: "9", label: "Create" },
-      ],
-      metadata: { topic, timeframe, difficulty, focus },
-    };
+CRITICAL REQUIREMENTS FOR NODES:
+1. Create 3-4 main milestone nodes (type: "main") that represent the major phases of learning
+2. For each main milestone, create 2-4 topic nodes (type: "topic") that represent key areas to learn
+3. For each topic, create 3-5 subtopic nodes (type: "subtopic") that represent specific skills/tools/concepts
+4. Assign appropriate levels (0, 1, 2, 3) to organize the progression
+5. Use kebab-case for all node IDs (e.g., "basic-controls", "weapon-handling")
+
+CRITICAL REQUIREMENTS FOR EDGES - YOU MUST CREATE ALL OF THESE:
+1. Main flow edges: Connect each main node to the next main node (type: "main")
+2. Main-to-topic edges: Connect each main node to its related topic nodes (type: "dotted")
+3. Topic-to-subtopic edges: Connect EVERY topic node to ALL of its subtopic children (type: "dotted")
+
+EDGE GENERATION RULES:
+- EVERY subtopic node MUST have exactly one incoming edge from a topic node
+- EVERY topic node MUST have at least one incoming edge from a main node
+- NO subtopic node should be left disconnected
+- Create edge IDs like "e-source-target" (e.g., "e-basics-fundamentals", "e-fundamentals-concept1")
+
+${timeframe ? `Timeframe: ${timeframe}` : ""}
+${difficulty ? `Difficulty level: ${difficulty}` : ""}
+${focus ? `Special focus: ${focus}` : ""}
+
+Make the roadmap comprehensive and practical for someone wanting to master ${topic}.
+
+EXAMPLE STRUCTURE:
+Main nodes: start → basics → intermediate → advanced
+Topic nodes: fundamentals, practice, tools (connected to appropriate main nodes)
+Subtopic nodes: concept1, concept2, concept3 (each connected to a topic node)
+Edges: All main→main, all main→topic, and ALL topic→subtopic connections`;
+
+    const result = await generateObject({
+      model: google("models/gemini-2.0-flash-exp"),
+      prompt,
+      schema: z.object({
+        nodes: z.array(
+          z.object({
+            id: z.string().describe("Unique identifier using kebab-case"),
+            label: z.string().describe("Display name for the node"),
+            type: z
+              .enum(["main", "topic", "subtopic"])
+              .describe("Node type for styling"),
+            level: z.number().describe("Learning progression level (0-3)"),
+            description: z
+              .string()
+              .optional()
+              .describe("Optional detailed description"),
+          })
+        ),
+        edges: z.array(
+          z.object({
+            id: z.string().describe("Unique edge identifier"),
+            source: z.string().describe("Source node ID"),
+            target: z.string().describe("Target node ID"),
+            type: z
+              .enum(["main", "dotted"])
+              .describe(
+                "Edge type - main for primary flow, dotted for clusters"
+              ),
+            label: z.string().optional().describe("Optional edge label"),
+          })
+        ),
+        metadata: z.object({
+          topic: z.string(),
+          timeframe: z.string().optional(),
+          difficulty: z.string().optional(),
+          focus: z.string().optional(),
+          totalNodes: z.number(),
+          totalEdges: z.number(),
+        }),
+      }),
+    });
+
+    // Validate and fix the generated roadmap
+    const validatedRoadmap = validateAndFixRoadmap(result.object);
+
+    console.log(
+      `AI generated roadmap with ${validatedRoadmap.nodes.length} nodes and ${validatedRoadmap.edges.length} edges`
+    );
+    return validatedRoadmap;
+  } catch (error) {
+    console.error("Error generating AI roadmap:", error);
+
+    // Fallback to a basic structure if AI generation fails
+    return createFallbackRoadmap(topic, timeframe, difficulty, focus);
   }
+}
 
-  // Data Science Roadmap
-  if (
-    topicLower.includes("data science") ||
-    topicLower.includes("machine learning")
-  ) {
-    return {
-      nodes: [
-        {
-          id: "1",
-          label: "Python Basics",
-          level: 0,
-          description:
-            "Learn Python syntax, data types, and control structures",
-        },
-        {
-          id: "2",
-          label: "Statistics & Math",
-          level: 0,
-          description: "Probability, statistics, linear algebra basics",
-        },
-        {
-          id: "3",
-          label: "Pandas & NumPy",
-          level: 1,
-          description: "Data manipulation and numerical computing",
-        },
-        {
-          id: "4",
-          label: "Data Visualization",
-          level: 1,
-          description: "Matplotlib, Seaborn, and Plotly for charts",
-        },
-        {
-          id: "5",
-          label: "Machine Learning",
-          level: 2,
-          description: "Scikit-learn, supervised and unsupervised learning",
-        },
-        {
-          id: "6",
-          label: "Deep Learning",
-          level: 3,
-          description: "TensorFlow/PyTorch and neural networks",
-        },
-        {
-          id: "7",
-          label: "SQL & Databases",
-          level: 1,
-          description: "Database querying and data extraction",
-        },
-        {
-          id: "8",
-          label: "Real Projects",
-          level: 4,
-          description: "End-to-end data science projects",
-        },
-      ],
-      edges: [
-        { id: "e1-3", source: "1", target: "3", label: "Apply" },
-        { id: "e2-5", source: "2", target: "5", label: "Foundation" },
-        { id: "e3-4", source: "3", target: "4", label: "Visualize" },
-        { id: "e3-5", source: "3", target: "5", label: "Model" },
-        { id: "e4-8", source: "4", target: "8", label: "Present" },
-        { id: "e5-6", source: "5", target: "6", label: "Advanced" },
-        { id: "e7-8", source: "7", target: "8", label: "Data" },
-        { id: "e6-8", source: "6", target: "8", label: "Deploy" },
-      ],
-      metadata: { topic, timeframe, difficulty, focus },
-    };
-  }
+function validateAndFixRoadmap(roadmap: any) {
+  const { nodes, edges } = roadmap;
 
-  // Startup Roadmap
-  if (topicLower.includes("startup") || topicLower.includes("business")) {
-    return {
-      nodes: [
-        {
-          id: "1",
-          label: "Idea Validation",
-          level: 0,
-          description: "Research market need and validate your concept",
-        },
-        {
-          id: "2",
-          label: "Market Research",
-          level: 0,
-          description: "Analyze competitors and target audience",
-        },
-        {
-          id: "3",
-          label: "MVP Development",
-          level: 1,
-          description: "Build minimum viable product",
-        },
-        {
-          id: "4",
-          label: "Business Plan",
-          level: 1,
-          description: "Create comprehensive business strategy",
-        },
-        {
-          id: "5",
-          label: "Funding Strategy",
-          level: 2,
-          description: "Seek investors, grants, or bootstrapping",
-        },
-        {
-          id: "6",
-          label: "Launch & Marketing",
-          level: 2,
-          description: "Go to market and acquire customers",
-        },
-        {
-          id: "7",
-          label: "Scale Operations",
-          level: 3,
-          description: "Optimize processes and grow team",
-        },
-        {
-          id: "8",
-          label: "Growth & Expansion",
-          level: 4,
-          description: "Scale business and explore new markets",
-        },
-      ],
-      edges: [
-        { id: "e1-3", source: "1", target: "3", label: "Build" },
-        { id: "e2-4", source: "2", target: "4", label: "Plan" },
-        { id: "e3-6", source: "3", target: "6", label: "Launch" },
-        { id: "e4-5", source: "4", target: "5", label: "Fund" },
-        { id: "e5-7", source: "5", target: "7", label: "Grow" },
-        { id: "e6-7", source: "6", target: "7", label: "Scale" },
-        { id: "e7-8", source: "7", target: "8", label: "Expand" },
-      ],
-      metadata: { topic, timeframe, difficulty, focus },
-    };
-  }
+  // Find all subtopic nodes
+  const subtopicNodes = nodes.filter((n: any) => n.type === "subtopic");
+  const topicNodes = nodes.filter((n: any) => n.type === "topic");
+  const mainNodes = nodes.filter((n: any) => n.type === "main");
 
-  // Generic roadmap for any other topic
+  // Check which subtopics are connected
+  const connectedSubtopics = new Set(
+    edges.filter((e: any) => e.type === "dotted").map((e: any) => e.target)
+  );
+  const disconnectedSubtopics = subtopicNodes.filter(
+    (n: any) => !connectedSubtopics.has(n.id)
+  );
+
+  console.log(
+    `Found ${disconnectedSubtopics.length} disconnected subtopics:`,
+    disconnectedSubtopics.map((n: any) => n.id)
+  );
+
+  // Create missing edges for disconnected subtopics
+  const newEdges = [...edges];
+
+  disconnectedSubtopics.forEach((subtopic: any) => {
+    // Find the best topic parent based on level
+    const sameLevel = topicNodes.filter((t: any) => t.level === subtopic.level);
+    const closestLevel = sameLevel.length > 0 ? sameLevel : topicNodes;
+
+    if (closestLevel.length > 0) {
+      // Distribute subtopics evenly among available topics
+      const topicIndex =
+        disconnectedSubtopics.indexOf(subtopic) % closestLevel.length;
+      const parentTopic = closestLevel[topicIndex];
+
+      const newEdge = {
+        id: `e-${parentTopic.id}-${subtopic.id}`,
+        source: parentTopic.id,
+        target: subtopic.id,
+        type: "dotted" as const,
+      };
+
+      newEdges.push(newEdge);
+      console.log(`Created missing edge: ${parentTopic.id} → ${subtopic.id}`);
+    }
+  });
+
+  // Ensure all topic nodes are connected to main nodes
+  const connectedTopics = new Set(
+    edges
+      .filter(
+        (e: any) =>
+          e.type === "dotted" &&
+          nodes.find((n: any) => n.id === e.target && n.type === "topic")
+      )
+      .map((e: any) => e.target)
+  );
+  const disconnectedTopics = topicNodes.filter(
+    (n: any) => !connectedTopics.has(n.id)
+  );
+
+  disconnectedTopics.forEach((topic: any) => {
+    // Find the best main parent based on level
+    const sameLevel = mainNodes.filter((m: any) => m.level === topic.level);
+    const closestLevel = sameLevel.length > 0 ? sameLevel : mainNodes;
+
+    if (closestLevel.length > 0) {
+      const mainIndex = disconnectedTopics.indexOf(topic) % closestLevel.length;
+      const parentMain = closestLevel[mainIndex];
+
+      const newEdge = {
+        id: `e-${parentMain.id}-${topic.id}`,
+        source: parentMain.id,
+        target: topic.id,
+        type: "dotted" as const,
+      };
+
+      newEdges.push(newEdge);
+      console.log(`Created missing edge: ${parentMain.id} → ${topic.id}`);
+    }
+  });
+
+  return {
+    ...roadmap,
+    edges: newEdges,
+    metadata: {
+      ...roadmap.metadata,
+      totalEdges: newEdges.length,
+      fixedConnections:
+        disconnectedSubtopics.length + disconnectedTopics.length,
+    },
+  };
+}
+
+function createFallbackRoadmap(
+  topic: string,
+  timeframe?: string,
+  difficulty?: string,
+  focus?: string
+) {
   return {
     nodes: [
+      { id: "start", label: "Start Learning", type: "main", level: 0 },
+      { id: "basics", label: "Learn the Basics", type: "main", level: 1 },
       {
-        id: "1",
-        label: "Getting Started",
-        level: 0,
-        description: `Begin your ${topic} journey with basics`,
-      },
-      {
-        id: "2",
-        label: "Learn Fundamentals",
-        level: 1,
-        description: "Master the core concepts and principles",
-      },
-      {
-        id: "3",
-        label: "Practice & Apply",
-        level: 2,
-        description: "Hands-on practice with real examples",
-      },
-      {
-        id: "4",
+        id: "intermediate",
         label: "Intermediate Skills",
+        type: "main",
         level: 2,
-        description: "Build upon the foundation",
+      },
+      { id: "advanced", label: "Advanced Mastery", type: "main", level: 3 },
+
+      {
+        id: "fundamentals",
+        label: "Core Fundamentals",
+        type: "topic",
+        level: 1,
+      },
+      { id: "concept-1", label: "Key Concept 1", type: "subtopic", level: 1 },
+      { id: "concept-2", label: "Key Concept 2", type: "subtopic", level: 1 },
+      { id: "concept-3", label: "Key Concept 3", type: "subtopic", level: 1 },
+
+      {
+        id: "practice",
+        label: "Practical Application",
+        type: "topic",
+        level: 2,
       },
       {
-        id: "5",
-        label: "Advanced Topics",
-        level: 3,
-        description: "Explore complex concepts and techniques",
+        id: "project-1",
+        label: "Practice Project",
+        type: "subtopic",
+        level: 2,
       },
       {
-        id: "6",
-        label: "Real Projects",
-        level: 3,
-        description: "Apply knowledge to practical projects",
+        id: "project-2",
+        label: "Real-world Project",
+        type: "subtopic",
+        level: 2,
       },
-      {
-        id: "7",
-        label: "Specialization",
-        level: 4,
-        description: "Choose your area of expertise",
-      },
-      {
-        id: "8",
-        label: "Mastery",
-        level: 4,
-        description: `Become an expert in ${topic}`,
-      },
+
+      { id: "mastery", label: "Advanced Techniques", type: "topic", level: 3 },
+      { id: "expert-1", label: "Expert Skill 1", type: "subtopic", level: 3 },
+      { id: "expert-2", label: "Expert Skill 2", type: "subtopic", level: 3 },
     ],
     edges: [
-      { id: "e1-2", source: "1", target: "2", label: "Learn" },
-      { id: "e2-3", source: "2", target: "3", label: "Practice" },
-      { id: "e2-4", source: "2", target: "4", label: "Advance" },
-      { id: "e3-6", source: "3", target: "6", label: "Apply" },
-      { id: "e4-5", source: "4", target: "5", label: "Deepen" },
-      { id: "e5-7", source: "5", target: "7", label: "Specialize" },
-      { id: "e6-8", source: "6", target: "8", label: "Master" },
-      { id: "e7-8", source: "7", target: "8", label: "Expert" },
+      // Main flow
+      { id: "e-start-basics", source: "start", target: "basics", type: "main" },
+      {
+        id: "e-basics-intermediate",
+        source: "basics",
+        target: "intermediate",
+        type: "main",
+      },
+      {
+        id: "e-intermediate-advanced",
+        source: "intermediate",
+        target: "advanced",
+        type: "main",
+      },
+
+      // Main to topic connections
+      {
+        id: "e-basics-fundamentals",
+        source: "basics",
+        target: "fundamentals",
+        type: "dotted",
+      },
+      {
+        id: "e-intermediate-practice",
+        source: "intermediate",
+        target: "practice",
+        type: "dotted",
+      },
+      {
+        id: "e-advanced-mastery",
+        source: "advanced",
+        target: "mastery",
+        type: "dotted",
+      },
+
+      // Topic to subtopic connections - ALL OF THEM
+      {
+        id: "e-fundamentals-concept1",
+        source: "fundamentals",
+        target: "concept-1",
+        type: "dotted",
+      },
+      {
+        id: "e-fundamentals-concept2",
+        source: "fundamentals",
+        target: "concept-2",
+        type: "dotted",
+      },
+      {
+        id: "e-fundamentals-concept3",
+        source: "fundamentals",
+        target: "concept-3",
+        type: "dotted",
+      },
+      {
+        id: "e-practice-project1",
+        source: "practice",
+        target: "project-1",
+        type: "dotted",
+      },
+      {
+        id: "e-practice-project2",
+        source: "practice",
+        target: "project-2",
+        type: "dotted",
+      },
+      {
+        id: "e-mastery-expert1",
+        source: "mastery",
+        target: "expert-1",
+        type: "dotted",
+      },
+      {
+        id: "e-mastery-expert2",
+        source: "mastery",
+        target: "expert-2",
+        type: "dotted",
+      },
     ],
-    metadata: { topic, timeframe, difficulty, focus },
+    metadata: {
+      topic,
+      timeframe,
+      difficulty,
+      focus,
+      totalNodes: 14,
+      totalEdges: 10,
+    },
   };
 }
 
@@ -330,13 +380,14 @@ export async function POST(req: Request) {
 
 When users ask for roadmaps, learning paths, career guidance, or step-by-step plans, use the generateRoadmap tool to create visual roadmaps.
 
-You can help with:
-- Programming and technology learning paths (React, Python, JavaScript, etc.)
-- Career development roadmaps (Data Science, Software Engineering, etc.)
-- Business and startup planning
-- Academic subject mastery
-- Skill development journeys
-- Project planning roadmaps
+You can help with ANY topic including:
+- Programming and technology (React, Python, JavaScript, Go, Rust, etc.)
+- Career development (Data Science, Software Engineering, Product Management, etc.)
+- Business and entrepreneurship (Starting a business, Marketing, Sales, etc.)
+- Creative skills (Design, Writing, Music, Art, etc.)
+- Academic subjects (Mathematics, Physics, History, etc.)
+- Life skills (Cooking, Fitness, Personal Finance, etc.)
+- Hobbies and interests (Photography, Gaming, Sports, etc.)
 
 Always be encouraging and explain why each step in the roadmap is important. Provide context about the learning journey and offer additional tips when helpful.
 

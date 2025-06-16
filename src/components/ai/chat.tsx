@@ -11,6 +11,9 @@ import Markdown from "markdown-to-jsx";
 import Loader from "./loader";
 
 import { useRef } from "react";
+import CustomButton from "../CustomButton";
+import { AnimatedGroup } from "../ui/animated-group";
+import { TextEffect } from "../ui/text-effect";
 
 export default function Chat() {
   const [isThinking, setIsThinking] = useState<boolean>(false);
@@ -30,38 +33,86 @@ export default function Chat() {
   }: {
     children: React.ReactNode;
     [key: string]: any;
-  }) => <p {...props}>{children}</p>;
+  }) => <span {...props}>{children}</span>;
+  const transitionVariants = {
+    item: {
+      hidden: {
+        opacity: 0,
+        filter: "blur(12px)",
+        y: 12,
+      },
+      visible: {
+        opacity: 1,
+        filter: "blur(0px)",
+        y: 0,
+        transition: {
+          type: "spring",
+          bounce: 0.3,
+          duration: 1.5,
+        },
+      },
+    },
+  };
 
   return (
     <div
       className="h-full overflow-auto transition-all ease-in-out duration-500"
       ref={chatRef}
     >
-      <div className="flex flex-col w-full pt-10 pb-16  max-w-2xl  mx-auto  min-h-full">
+      <div className="flex flex-col w-full pt-10 pb-16  max-w-3xl  mx-auto  min-h-full">
         {messages.length === 0 && (
           <div className="text-center py-8   h-full my-auto">
-            <div className="text-4xl font-title font-semibold mb-6">Better</div>
-            <div className="text-muted-foreground/80 font-title mb-6">
+            <TextEffect
+              preset="fade-in-blur"
+              speedSegment={0.3}
+              as="h1"
+              className="text-balance font-title text-5xl font-semibold "
+            >
+              Better
+            </TextEffect>
+            <TextEffect
+              per="line"
+              preset="fade-in-blur"
+              speedSegment={0.3}
+              delay={0.5}
+              as="p"
+              className="mx-auto my-6 max-w-2xl  text-muted-foreground"
+            >
               I can generate visual roadmaps to help you learn new skills, plan
               your career, or master any topic with a step-by-step plan.
-            </div>
+            </TextEffect>
             <div className="text-xs flex justify-center text-muted-foreground gap-2">
               {["React roadmap", "Tech startup roadmap", "Data science"].map(
                 (item, idx) => (
-                  <button
-                    key={idx}
-                    className="font-medium border px-2 py-1 rounded-sm bg-muted hover:cursor-pointer"
-                    type="button"
-                    onClick={() => {
-                      setInput(item);
-                      setIsThinking(true);
-                      setTimeout(() => {
-                        formRef.current?.requestSubmit();
-                      }, 0);
+                  <AnimatedGroup
+                    variants={{
+                      container: {
+                        visible: {
+                          transition: {
+                            staggerChildren: 0.05,
+                            delayChildren: 0.75,
+                          },
+                        },
+                      },
+                      ...transitionVariants,
                     }}
+                    className=" flex gap-4 items-center justify-center"
                   >
-                    {item}
-                  </button>
+                    <button
+                      key={idx}
+                      className="font-medium border bg-muted px-2 py-1 rounded-sm hover:cursor-pointer"
+                      type="button"
+                      onClick={() => {
+                        setInput(item);
+                        setIsThinking(true);
+                        setTimeout(() => {
+                          formRef.current?.requestSubmit();
+                        }, 0);
+                      }}
+                    >
+                      {item}
+                    </button>
+                  </AnimatedGroup>
                 )
               )}
             </div>
@@ -92,32 +143,33 @@ export default function Chat() {
                       },
                       h1: {
                         props: {
-                          className: "text-3xl font-bold mt-6 mb-4",
+                          className: "text-3xl font-bold font-title mt-6 mb-4",
                         },
                       },
                       h2: {
                         props: {
-                          className: "text-2xl font-semibold mt-5 mb-3",
+                          className:
+                            "text-2xl font-semibold font-title mt-5 mb-3",
                         },
                       },
                       h3: {
                         props: {
-                          className: "text-xl font-medium mt-4 mb-2",
+                          className: "text-xl font-medium font-title mt-4 mb-2",
                         },
                       },
                       ul: {
                         props: {
-                          className: "list-disc pl-5 mb-4",
+                          className: "list-disc  mb-4 pl-10",
                         },
                       },
                       ol: {
                         props: {
-                          className: "list-decimal pl-5 mb-4",
+                          className: "list-decimal pl-5   ",
                         },
                       },
                       li: {
                         props: {
-                          className: "mb-8",
+                          className: "mb-4 ",
                         },
                       },
                       a: {
@@ -134,9 +186,9 @@ export default function Chat() {
                         },
                       },
                       strong: {
-                        component: bolds, // Your custom component
+                        // component: bolds, // Your custom component
                         props: {
-                          className: "font-semibold",
+                          className: "font-semibold font-title",
                         },
                       },
                       code: {
@@ -168,20 +220,19 @@ export default function Chat() {
                       toolInvocation.state === "result"
                     ) {
                       return (
-                        <div key={partIndex} className="mt-4">
-                          <div className="border rounded-lg p-4 bg-white shadow-sm">
-                            <h3 className="font-semibold mb-3 text-lg flex items-center">
-                              🗺️ Generated Roadmap:{" "}
+                        <div key={partIndex} className="mt-4 w-full">
+                          <div className="border rounded-lg px-4 pt-4 pb-2 bg-muted ">
+                            <h3 className="font-semibold mb-3 font-title flex items-center">
                               {toolInvocation.result.metadata?.topic}
                             </h3>
-                            <div className="h-96 border rounded-lg overflow-hidden">
+                            <div className="h-96 rounded-lg overflow-hidden bg-white">
                               <ReactFlowProvider>
                                 <RoadmapRenderer
                                   roadmapData={toolInvocation.result}
                                 />
                               </ReactFlowProvider>
                             </div>
-                            <div className="mt-2 text-xs text-gray-500">
+                            <div className="mt-2 text-xs text-center text-gray-500">
                               💡 Tip: You can drag nodes around, zoom in/out,
                               and explore the roadmap above
                             </div>
@@ -232,21 +283,28 @@ export default function Chat() {
             setIsThinking(true);
             handleSubmit(e);
           }}
-          className="w-full left-1/2 -translate-x-1/2 absolute flex justify-center bottom-0 bg-linear-to-t from-muted via-muted/80 to-transparent py-6"
+          className="w-full left-1/2 -translate-x-1/2 absolute flex justify-center bottom-0 bg-linear-to-t from-muted via-muted/80 to-transparent py-6 ps-4"
         >
-          <div className="w-full max-w-2xl relative ">
+          <div className="w-full max-w-3xl relative ">
             <textarea
+              id="chat-textarea"
               value={input}
               onChange={handleInputChange}
               placeholder="What are you planning?"
-              className="dark:bg-zinc-900 bottom-0 max-w-2xl max-h-[192px] min-h-[44px] h-full field-sizing-content w-full pl-4 focus:outline-none placeholder:text-base  rounded-sm bg-white border resize-none pt-3 pe-14"
+              className="dark:bg-zinc-900 bottom-0  max-h-[192px] min-h-[44px] h-full field-sizing-content w-full pl-4 focus:outline-none placeholder:text-base  rounded-sm bg-muted border resize-none pt-3 pe-14"
               disabled={isThinking}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  formRef.current?.requestSubmit();
+                }
+              }}
             />
             <Button
               type="submit"
               size={"icon"}
               disabled={isThinking}
-              className="absolute right-2 bottom-2"
+              className="absolute right-2 bottom-2 border border-black bg-accent text-black"
             >
               <CornerRightUp size={16} />
             </Button>
