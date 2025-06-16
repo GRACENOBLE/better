@@ -64,8 +64,8 @@ const nodeTypes = {
 };
 
 export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   useEffect(() => {
     if (roadmapData?.nodes && roadmapData?.edges) {
@@ -174,7 +174,7 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
       />
       <MiniMap
         className="bg-white border border-gray-300 rounded-lg"
-        nodeColor={(node) => node.style?.background || "#f3f4f6"}
+        nodeColor={(node) => String(node.style?.background || "#f3f4f6")}
       />
     </ReactFlow>
   );

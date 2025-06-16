@@ -8,17 +8,22 @@ import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { Button } from "../ui/button";
 import { CornerRightUp } from "lucide-react";
 import Markdown from "markdown-to-jsx";
+import Loader from "./loader";
+
+import { useRef } from "react";
 
 export default function Chat() {
   const [isThinking, setIsThinking] = useState<boolean>(false);
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    maxSteps: 3,
-    onResponse: () => setIsThinking(true),
-    onFinish: () => setIsThinking(false),
-    onError: () => setIsThinking(false),
-  });
+  const { messages, input, setInput, handleInputChange, handleSubmit } =
+    useChat({
+      maxSteps: 3,
+      onResponse: () => setIsThinking(true),
+      onFinish: () => setIsThinking(false),
+      onError: () => setIsThinking(false),
+    });
 
   const chatRef = useChatScroll(messages);
+  const formRef = useRef<HTMLFormElement>(null);
   const bolds = ({
     children,
     ...props
@@ -32,23 +37,33 @@ export default function Chat() {
       className="h-full overflow-auto transition-all ease-in-out duration-500"
       ref={chatRef}
     >
-      <div className="flex flex-col w-full pt-10 pb-24 ps-4  max-w-2xl  mx-auto">
+      <div className="flex flex-col w-full pt-10 pb-16  max-w-2xl  mx-auto  min-h-full">
         {messages.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            <div className="text-lg mb-2">
-              👋 Welcome! I can create interactive roadmaps for you.
+          <div className="text-center py-8   h-full my-auto">
+            <div className="text-4xl font-title font-semibold mb-6">Better</div>
+            <div className="text-muted-foreground/80 font-title mb-6">
+              I can generate visual roadmaps to help you learn new skills, plan
+              your career, or master any topic with a step-by-step plan.
             </div>
-            <div className="text-sm space-y-1">
-              <div>Try asking:</div>
-              <div className="font-medium">
-                "Generate a roadmap for learning React"
-              </div>
-              <div className="font-medium">
-                "Create a roadmap for starting a tech startup"
-              </div>
-              <div className="font-medium">
-                "Show me a data science learning path"
-              </div>
+            <div className="text-xs flex justify-center text-muted-foreground gap-2">
+              {["React roadmap", "Tech startup roadmap", "Data science"].map(
+                (item, idx) => (
+                  <button
+                    key={idx}
+                    className="font-medium border px-2 py-1 rounded-sm bg-muted hover:cursor-pointer"
+                    type="button"
+                    onClick={() => {
+                      setInput(item);
+                      setIsThinking(true);
+                      setTimeout(() => {
+                        formRef.current?.requestSubmit();
+                      }, 0);
+                    }}
+                  >
+                    {item}
+                  </button>
+                )
+              )}
             </div>
           </div>
         )}
@@ -56,7 +71,7 @@ export default function Chat() {
         {messages.map((message) => (
           <div
             className={` flex pb-8 ${
-              message.role === "user" ? "justify-end" : ""
+              message.role === "user" ? "justify-end" : "ps-4"
             }`}
           >
             <div
@@ -207,42 +222,36 @@ export default function Chat() {
         ))}
 
         {isThinking && (
-          <div className="bg-gray-100 p-4 rounded-lg mr-auto max-w-[95%]">
-            <div className="font-semibold mb-2">🤖 AI Assistant</div>
-            <div className="flex items-center space-x-2">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-              <span>Creating your roadmap...</span>
-            </div>
+          <div className="ps-4">
+            <Loader />
           </div>
         )}
-      </div>
-
-      <form
-        onSubmit={handleSubmit}
-        className="w-full left-1/2 -translate-x-1/2 absolute flex justify-center bottom-0 bg-linear-to-t from-muted via-muted/80 to-transparent py-6"
-      >
-        <div className="w-full max-w-2xl relative ">
-          <input
-            value={input}
-            onChange={handleInputChange}
-            placeholder="What are you planning?"
-            className="dark:bg-zinc-900 bottom-0 max-w-2xl p-2 h-12 w-full pl-4 focus:outline-none placeholder:text-base border rounded-sm bg-white"
-            disabled={isThinking}
-          />
-          <Button
-            type="submit"
-            size={"icon"}
-            disabled={isThinking}
-            className="absolute right-2 top-[50%] -translate-y-[50%] "
-          >
-            <CornerRightUp size={16} />
-          </Button>
-        </div>
-      </form>
-
-      <div className="mt-2 text-sm text-gray-500 text-center">
-        Examples: "React learning path", "Data science roadmap", "Startup launch
-        plan", "Python mastery guide"
+        <form
+          ref={formRef}
+          onSubmit={(e) => {
+            setIsThinking(true);
+            handleSubmit(e);
+          }}
+          className="w-full left-1/2 -translate-x-1/2 absolute flex justify-center bottom-0 bg-linear-to-t from-muted via-muted/80 to-transparent py-6"
+        >
+          <div className="w-full max-w-2xl relative ">
+            <textarea
+              value={input}
+              onChange={handleInputChange}
+              placeholder="What are you planning?"
+              className="dark:bg-zinc-900 bottom-0 max-w-2xl max-h-[192px] min-h-[44px] h-full field-sizing-content w-full pl-4 focus:outline-none placeholder:text-base  rounded-sm bg-white border resize-none pt-3 pe-14"
+              disabled={isThinking}
+            />
+            <Button
+              type="submit"
+              size={"icon"}
+              disabled={isThinking}
+              className="absolute right-2 bottom-2"
+            >
+              <CornerRightUp size={16} />
+            </Button>
+          </div>
+        </form>
       </div>
     </div>
   );
