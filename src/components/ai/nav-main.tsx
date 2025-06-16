@@ -34,13 +34,13 @@ export function NavMain({
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarGroupLabel className="text-md font-semibold">
-          Today
+          Recent
         </SidebarGroupLabel>
         <SidebarSeparator />
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
+              <SidebarMenuButton tooltip={item.title} className="hover:cursor-pointer">
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
               </SidebarMenuButton>

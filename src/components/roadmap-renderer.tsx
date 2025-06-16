@@ -547,7 +547,7 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
           variant={BackgroundVariant.Dots}
           gap={20}
           size={1}
-          color="#e5e7eb"
+          color=""
         />
         {/* <MiniMap
           className="bg-white border border-gray-300 rounded-lg"

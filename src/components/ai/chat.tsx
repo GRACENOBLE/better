@@ -6,7 +6,7 @@ import RoadmapRenderer from "@/components/roadmap-renderer";
 import { useState } from "react";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { Button } from "../ui/button";
-import { CornerRightUp } from "lucide-react";
+import { CornerRightUp, LoaderCircle, Pencil } from "lucide-react";
 import Markdown from "markdown-to-jsx";
 import Loader from "./loader";
 
@@ -159,7 +159,7 @@ export default function Chat() {
                       },
                       ul: {
                         props: {
-                          className: "list-disc  mb-4 pl-10",
+                          className: "list-disc  pb-1 pl-10",
                         },
                       },
                       ol: {
@@ -169,7 +169,7 @@ export default function Chat() {
                       },
                       li: {
                         props: {
-                          className: "mb-4 ",
+                          className: "my-2 ",
                         },
                       },
                       a: {
@@ -188,7 +188,7 @@ export default function Chat() {
                       strong: {
                         // component: bolds, // Your custom component
                         props: {
-                          className: "font-semibold font-title",
+                          className: "font-semibold ",
                         },
                       },
                       code: {
@@ -222,9 +222,14 @@ export default function Chat() {
                       return (
                         <div key={partIndex} className="mt-4 w-full">
                           <div className="border rounded-lg px-4 pt-4 pb-2 bg-muted ">
-                            <h3 className="font-semibold mb-3 font-title flex items-center">
-                              {toolInvocation.result.metadata?.topic}
-                            </h3>
+                            <div className="flex justify-between items-center mb-3">
+                              <h3 className="font-semibold  font-title">
+                                {toolInvocation.result.metadata?.topic}
+                              </h3>
+                              <button className="hover:cursor-pointer text-xs">
+                                <Pencil size={16} />
+                              </button>
+                            </div>
                             <div className="h-96 rounded-lg overflow-hidden bg-white">
                               <ReactFlowProvider>
                                 <RoadmapRenderer
@@ -233,8 +238,8 @@ export default function Chat() {
                               </ReactFlowProvider>
                             </div>
                             <div className="mt-2 text-xs text-center text-gray-500">
-                              💡 Tip: You can drag nodes around, zoom in/out,
-                              and explore the roadmap above
+                              💡 Tip: You can drag nodes around and zoom this
+                              roadmap
                             </div>
                           </div>
                         </div>
@@ -249,13 +254,12 @@ export default function Chat() {
                       return (
                         <div
                           key={partIndex}
-                          className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200"
+                          className="mt-4 p-3 bg-accent/20 rounded-lg border border-accent animate-pulse"
                         >
                           <div className="flex items-center space-x-2">
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-                            <span className="text-blue-700">
+                            <span className="text-black">
                               Generating roadmap for:{" "}
-                              {toolInvocation.args.topic}...
+                              {toolInvocation.args.topic}
                             </span>
                           </div>
                         </div>
@@ -306,7 +310,13 @@ export default function Chat() {
               disabled={isThinking}
               className="absolute right-2 bottom-2 border border-black bg-accent text-black"
             >
-              <CornerRightUp size={16} />
+              {isThinking ? (
+                <span className="animate-spin">
+                  <LoaderCircle size={16} />
+                </span>
+              ) : (
+                <CornerRightUp size={16} />
+              )}
             </Button>
           </div>
         </form>
