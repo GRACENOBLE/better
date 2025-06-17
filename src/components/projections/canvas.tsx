@@ -8,7 +8,6 @@ import {
   type Edge,
   addEdge,
   Background,
-  Controls,
   useNodesState,
   useEdgesState,
   type Connection,
@@ -28,13 +27,10 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Edit, Trash2, Copy } from "lucide-react";
-// Import from the correct path
 import { Child, Sister, AlignAllNodes } from "./canvas-icons";
 import CustomButton from "../CustomButton";
 
-// Custom Node Component with proper handles
 interface CustomNodeProps {
   data: {
     label: string;
@@ -55,10 +51,8 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
   };
 
   const handleDelete = () => {
-    // Remove the node
     setNodes((nodes) => nodes.filter((node) => node.id !== id));
 
-    // Remove all edges connected to this node
     setEdges((edges) =>
       edges.filter((edge) => edge.source !== id && edge.target !== id)
     );
@@ -70,7 +64,7 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
     if (currentNode) {
       const newId = `node-${Date.now()}-${Math.random()
         .toString(36)
-        .substr(2, 9)}`;
+        .substring(2, 11)}`;
       const newNode = {
         ...currentNode,
         id: newId,
@@ -93,19 +87,15 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
 
   return (
     <div className="relative">
-      {/* Input handle at the top */}
-      <Handle type="target" position={Position.Top} />
 
+      <Handle type="target" position={Position.Top} />
       <div className="px-4 py-2 shadow-md rounded-sm bg-accent border-2 border-black min-w-[120px]">
         <div className="text-sm font-medium text-center">{data.label}</div>
       </div>
-
-      {/* Output handle at the bottom */}
       <Handle type="source" position={Position.Bottom} />
 
       {selected && (
         <>
-          {/* Edit/Delete/Copy toolbar */}
           <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 flex gap-1 bg-white border rounded-md shadow-lg p-1">
             <Button size="sm" variant="ghost" onClick={handleEdit}>
               <Edit size={14} strokeWidth={2} />
@@ -118,7 +108,6 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
             </Button>
           </div>
 
-          {/* Add Child button - positioned below the node */}
           <Button
             size="icon"
             onClick={handleAddChild}
@@ -128,7 +117,6 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
             <Child />
           </Button>
 
-          {/* Add Sister button - positioned to the right of the node */}
           <Button
             size="icon"
             onClick={handleAddSister}
@@ -244,13 +232,10 @@ function FlowCanvas({
     setEditNodeId("");
   };
 
-  // Tree layout algorithm
   const calculateTreeLayout = (nodes: Node[], edges: Edge[]) => {
-    // Find root nodes (nodes with no incoming edges)
     const hasIncomingEdge = new Set(edges.map((edge) => edge.target));
     const rootNodes = nodes.filter((node) => !hasIncomingEdge.has(node.id));
 
-    // Build adjacency list for children
     const children: { [key: string]: string[] } = {};
     edges.forEach((edge) => {
       if (!children[edge.source]) children[edge.source] = [];
@@ -262,7 +247,6 @@ function FlowCanvas({
     const LEVEL_HEIGHT = 120;
     const MIN_NODE_SPACING = 180;
 
-    // Calculate subtree width for proper spacing
     const calculateSubtreeWidth = (nodeId: string): number => {
       const nodeChildren = children[nodeId] || [];
       if (nodeChildren.length === 0) return MIN_NODE_SPACING;
@@ -276,20 +260,17 @@ function FlowCanvas({
       );
     };
 
-    // Position nodes recursively
     const positionNode = (nodeId: string, x: number, y: number) => {
       positions[nodeId] = { x, y };
 
       const nodeChildren = children[nodeId] || [];
       if (nodeChildren.length === 0) return;
 
-      // Calculate total width needed for all children
       const childrenWidths = nodeChildren.map((childId) =>
         calculateSubtreeWidth(childId)
       );
       const totalWidth = childrenWidths.reduce((sum, width) => sum + width, 0);
 
-      // Start positioning children from the left
       let currentX = x - totalWidth / 2;
 
       nodeChildren.forEach((childId, index) => {
@@ -300,23 +281,22 @@ function FlowCanvas({
       });
     };
 
-    // Position each root and its subtree
-    let rootX = 300; // Start at a reasonable X position
+    let rootX = 300;
     rootNodes.forEach((rootNode, index) => {
       if (index > 0) {
-        rootX += calculateSubtreeWidth(rootNodes[index - 1].id) + 100; // Add spacing between root trees
+        rootX += calculateSubtreeWidth(rootNodes[index - 1].id) + 100; 
       }
       positionNode(rootNode.id, rootX, 50);
     });
 
-    // Update node positions
+
     return nodes.map((node) => ({
       ...node,
       position: positions[node.id] || node.position,
     }));
   };
 
-  // Update nodes to include edit handler
+
   const nodesWithHandlers = nodes.map((node) => ({
     ...node,
     data: {
@@ -348,8 +328,8 @@ function FlowCanvas({
 
     const newNode: Node = {
       id: newNodeId,
-      type: "custom", // Always use custom type to get our toolbar
-      position: { x: 0, y: 0 }, // Will be recalculated
+      type: "custom", 
+      position: { x: 0, y: 0 }, 
       data: {
         label: newNodeText,
         onEdit: handleEditNode,
@@ -362,7 +342,6 @@ function FlowCanvas({
     let updatedEdges = [...edges];
 
     if (addMode === "child") {
-      // Add edge from parent to child
       const newEdge: Edge = {
         id: `edge-${selectedNode.id}-${newNodeId}`,
         source: selectedNode.id,
@@ -372,7 +351,7 @@ function FlowCanvas({
       };
       updatedEdges = [...edges, newEdge];
     } else {
-      // For sister, find the parent of the selected node and add edge from parent to new node
+
       const parentEdge = edges.find((edge) => edge.target === selectedNode.id);
       if (parentEdge) {
         const newEdge: Edge = {
@@ -386,10 +365,8 @@ function FlowCanvas({
       }
     }
 
-    // Recalculate tree layout with new edges
     updatedNodes = calculateTreeLayout(updatedNodes, updatedEdges);
 
-    // Update both nodes and edges
     setNodes(updatedNodes);
     setEdges(updatedEdges);
     onNodesChange?.(updatedNodes);
@@ -398,28 +375,20 @@ function FlowCanvas({
     setNewNodeText("");
     setIsAddDialogOpen(false);
 
-    // Fit view after adding node
     setTimeout(() => fitView(), 100);
   };
 
   const alignNodes = () => {
     const currentNodes = getNodes();
     if (currentNodes.length === 0) return;
-
-    // Use tree layout algorithm
     const alignedNodes = calculateTreeLayout(currentNodes, edges);
-
     setNodes(alignedNodes);
     onNodesChange?.(alignedNodes);
-
-    // Fit view after alignment
     setTimeout(() => fitView(), 100);
   };
 
   return (
     <div className="w-full h-full relative">
-      {/* Bottom Toolbar - Only showing Align button now */}
-
       <Button
         size="sm"
         onClick={alignNodes}
@@ -428,15 +397,6 @@ function FlowCanvas({
       >
         <AlignAllNodes />
       </Button>
-
-      {/* Selected Node Info */}
-      {/* {selectedNode && (
-        <div className="absolute top-4 right-4 z-10 bg-white border rounded-lg p-2 shadow-lg">
-          <div className="text-sm font-medium">
-            Selected: {selectedNode.data.label}
-          </div>
-        </div>
-      )} */}
 
       <ReactFlow
         nodes={nodesWithHandlers}
@@ -455,10 +415,8 @@ function FlowCanvas({
         }}
       >
         <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
-        {/* <Controls /> */}
       </ReactFlow>
 
-      {/* Add Node Dialog */}
       <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -468,7 +426,7 @@ function FlowCanvas({
           </DialogHeader>
           <div className="space-y-8 pt-3">
             <div>
-              {/* <Label htmlFor="nodeText">Node Text</Label> */}
+             
               <Input
                 id="nodeText"
                 value={newNodeText}
@@ -482,12 +440,6 @@ function FlowCanvas({
               />
             </div>
             <div className="flex justify-end gap-2">
-              {/* <Button
-                variant="outline"
-                onClick={() => setIsAddDialogOpen(false)}
-              >
-                Cancel
-              </Button> */}
               <CustomButton onClick={handleAddNode} >
                 Add Node
               </CustomButton>
@@ -496,7 +448,6 @@ function FlowCanvas({
         </DialogContent>
       </Dialog>
 
-      {/* Edit Node Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -504,7 +455,6 @@ function FlowCanvas({
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              {/* <Label htmlFor="editNodeText">Node Text</Label> */}
               <Input
                 id="editNodeText"
                 value={editNodeText}
@@ -518,12 +468,6 @@ function FlowCanvas({
               />
             </div>
             <div className="flex justify-end gap-2">
-              {/* <Button
-                variant="outline"
-                onClick={() => setIsEditDialogOpen(false)}
-              >
-                Cancel
-              </Button> */}
               <Button onClick={updateNodeText} disabled={!editNodeText.trim()}>
                 Update Node
               </Button>
@@ -535,9 +479,7 @@ function FlowCanvas({
   );
 }
 
-// Main component with provider
 export default function Component() {
-  // Example initial data using proper node types
   const initialNodes: Node[] = [
     {
       id: "1",

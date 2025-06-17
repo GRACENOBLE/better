@@ -76,7 +76,7 @@ export default function Chat() {
               speedSegment={0.3}
               delay={0.5}
               as="p"
-              className="mx-auto my-6 max-w-2xl  text-muted-foreground"
+              className="mx-auto my-6 max-w-xl lg:max-w-2xl  text-muted-foreground"
             >
               I can generate visual roadmaps to help you learn new skills, plan
               your career, or master any topic with a step-by-step plan.
@@ -97,9 +97,9 @@ export default function Chat() {
                       ...transitionVariants,
                     }}
                     className=" flex gap-4 items-center justify-center"
+                    key={idx}
                   >
                     <button
-                      key={idx}
                       className="font-medium border bg-muted px-2 py-1 rounded-sm hover:cursor-pointer"
                       type="button"
                       onClick={() => {
@@ -119,11 +119,12 @@ export default function Chat() {
           </div>
         )}
 
-        {messages.map((message) => (
+        {messages.map((message, index) => (
           <div
             className={` flex pb-8 ${
               message.role === "user" ? "justify-end" : "ps-4"
             }`}
+            key={index}
           >
             <div
               key={message.id}
@@ -287,7 +288,7 @@ export default function Chat() {
             setIsThinking(true);
             handleSubmit(e);
           }}
-          className="w-full left-1/2 -translate-x-1/2 absolute flex justify-center bottom-0 bg-linear-to-t from-muted via-muted/80 to-transparent py-6 ps-4"
+          className="w-full left-1/2 -translate-x-1/2 absolute flex justify-center bottom-0 bg-linear-to-t rounded-b-2xl from-white via-white/80 to-transparent py-6 px-4"
         >
           <div className="w-full max-w-3xl relative ">
             <textarea

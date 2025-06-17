@@ -35,7 +35,7 @@ export function NavMain({
         </SidebarMenu>
         <SidebarSeparator />
         <SidebarGroupLabel className="text-md font-semibold">
-          My roadmaps
+          Recent Roadmaps
         </SidebarGroupLabel>
         <SidebarMenu>
           {items.map((item) => (
