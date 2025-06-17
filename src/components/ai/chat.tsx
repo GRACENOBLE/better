@@ -11,9 +11,10 @@ import Markdown from "markdown-to-jsx";
 import Loader from "./loader";
 
 import { useRef } from "react";
-import CustomButton from "../CustomButton";
 import { AnimatedGroup } from "../ui/animated-group";
 import { TextEffect } from "../ui/text-effect";
+import { useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 
 export default function Chat() {
   const [isThinking, setIsThinking] = useState<boolean>(false);
@@ -54,12 +55,25 @@ export default function Chat() {
     },
   };
 
+  const searchParams = useSearchParams();
+  const starterParam = searchParams?.get("starter") ?? "";
+
+  useEffect(() => {
+    if (starterParam && messages.length === 0) {
+      setInput(starterParam);
+      setIsThinking(true);
+      setTimeout(() => {
+        formRef.current?.requestSubmit();
+      }, 0);
+    }
+  }, [starterParam]);
+
   return (
     <div
       className="h-full overflow-auto transition-all ease-in-out duration-500"
       ref={chatRef}
     >
-      <div className="flex flex-col w-full pt-10 pb-16  max-w-3xl  mx-auto  min-h-full">
+      <div className="flex flex-col w-full pt-10 pb-16 px-4  max-w-3xl  mx-auto  min-h-full">
         {messages.length === 0 && (
           <div className="text-center py-8   h-full my-auto">
             <TextEffect
@@ -122,7 +136,7 @@ export default function Chat() {
         {messages.map((message, index) => (
           <div
             className={` flex pb-8 ${
-              message.role === "user" ? "justify-end" : "ps-4"
+              message.role === "user" ? "justify-end" : ""
             }`}
             key={index}
           >
@@ -187,7 +201,6 @@ export default function Chat() {
                         },
                       },
                       strong: {
-                        // component: bolds, // Your custom component
                         props: {
                           className: "font-semibold ",
                         },
@@ -247,7 +260,6 @@ export default function Chat() {
                       );
                     }
 
-                    // Show loading state for tool calls
                     if (
                       toolInvocation.toolName === "generateRoadmap" &&
                       toolInvocation.state === "call"

@@ -38,7 +38,7 @@ export default function HeroSection() {
               preset="fade-in-blur"
               speedSegment={0.3}
               as="h1"
-              className="text-balance font-title text-4xl font-semibold sm:text-5xl md:text-6xl"
+              className="text-balance font-title text-4xl font-semibold sm:text-5xl lg:text-6xl"
             >
               Create a plan for
             </TextEffect>
@@ -46,7 +46,7 @@ export default function HeroSection() {
               preset="fade-in-blur"
               speedSegment={0.3}
               as="h1"
-              className="text-balance text-4xl font-title font-semibold sm:text-5xl md:text-6xl"
+              className="text-balance text-4xl font-title font-semibold sm:text-5xl lg:text-6xl"
             >
               anything!
             </TextEffect>
@@ -56,7 +56,7 @@ export default function HeroSection() {
               speedSegment={0.3}
               delay={0.5}
               as="p"
-              className="mx-auto mt-12 max-w-2xl text-pretty text-lg"
+              className="mx-auto mt-12 max-w-2xl text-pretty lg:text-lg"
             >
               Increase your chances of "Getting it done!". Plan with Better AI
               and create a custom roadmap with clearly defined timelines and
@@ -93,7 +93,7 @@ export default function HeroSection() {
                     placeholder="Plan with Better AI"
                     className="h-12 w-full bg-transparent pl-4 focus:outline-none placeholder:text-base"
                     type="text"
-                    name="chatStarter"
+                    name="starter"
                   />
 
                   <div className="md:pr-1.5 lg:pr-0">

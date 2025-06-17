@@ -26,7 +26,6 @@ const generateRoadmapTool = tool({
   execute: async ({ topic, timeframe, difficulty, focus }) => {
     console.log(`Generating AI roadmap for: ${topic}`);
 
-    // Use AI to generate the actual roadmap structure
     const roadmapData = await generateAIRoadmap(
       topic,
       timeframe,
@@ -118,7 +117,6 @@ Edges: All main→main, all main→topic, and ALL topic→subtopic connections`;
       }),
     });
 
-    // Validate and fix the generated roadmap
     const validatedRoadmap = validateAndFixRoadmap(result.object);
 
     console.log(
@@ -128,7 +126,6 @@ Edges: All main→main, all main→topic, and ALL topic→subtopic connections`;
   } catch (error) {
     console.error("Error generating AI roadmap:", error);
 
-    // Fallback to a basic structure if AI generation fails
     return createFallbackRoadmap(topic, timeframe, difficulty, focus);
   }
 }
@@ -136,12 +133,10 @@ Edges: All main→main, all main→topic, and ALL topic→subtopic connections`;
 function validateAndFixRoadmap(roadmap: any) {
   const { nodes, edges } = roadmap;
 
-  // Find all subtopic nodes
   const subtopicNodes = nodes.filter((n: any) => n.type === "subtopic");
   const topicNodes = nodes.filter((n: any) => n.type === "topic");
   const mainNodes = nodes.filter((n: any) => n.type === "main");
 
-  // Check which subtopics are connected
   const connectedSubtopics = new Set(
     edges.filter((e: any) => e.type === "dotted").map((e: any) => e.target)
   );
@@ -154,16 +149,13 @@ function validateAndFixRoadmap(roadmap: any) {
     disconnectedSubtopics.map((n: any) => n.id)
   );
 
-  // Create missing edges for disconnected subtopics
   const newEdges = [...edges];
 
   disconnectedSubtopics.forEach((subtopic: any) => {
-    // Find the best topic parent based on level
     const sameLevel = topicNodes.filter((t: any) => t.level === subtopic.level);
     const closestLevel = sameLevel.length > 0 ? sameLevel : topicNodes;
 
     if (closestLevel.length > 0) {
-      // Distribute subtopics evenly among available topics
       const topicIndex =
         disconnectedSubtopics.indexOf(subtopic) % closestLevel.length;
       const parentTopic = closestLevel[topicIndex];
@@ -180,7 +172,6 @@ function validateAndFixRoadmap(roadmap: any) {
     }
   });
 
-  // Ensure all topic nodes are connected to main nodes
   const connectedTopics = new Set(
     edges
       .filter(
@@ -195,7 +186,6 @@ function validateAndFixRoadmap(roadmap: any) {
   );
 
   disconnectedTopics.forEach((topic: any) => {
-    // Find the best main parent based on level
     const sameLevel = mainNodes.filter((m: any) => m.level === topic.level);
     const closestLevel = sameLevel.length > 0 ? sameLevel : mainNodes;
 
@@ -279,7 +269,6 @@ function createFallbackRoadmap(
       { id: "expert-2", label: "Expert Skill 2", type: "subtopic", level: 3 },
     ],
     edges: [
-      // Main flow
       { id: "e-start-basics", source: "start", target: "basics", type: "main" },
       {
         id: "e-basics-intermediate",
@@ -294,7 +283,6 @@ function createFallbackRoadmap(
         type: "main",
       },
 
-      // Main to topic connections
       {
         id: "e-basics-fundamentals",
         source: "basics",
@@ -313,8 +301,6 @@ function createFallbackRoadmap(
         target: "mastery",
         type: "dotted",
       },
-
-      // Topic to subtopic connections - ALL OF THEM
       {
         id: "e-fundamentals-concept1",
         source: "fundamentals",

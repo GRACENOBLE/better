@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 
 export const submitToChatPage = async (formdata: FormData) => {
-  const starter = formdata.get("chatStarter")?.toString();
-  const params = new URLSearchParams({ chatStarter: starter ?? "" }).toString();
+  const starter = formdata.get("starter")?.toString();
+  const params = new URLSearchParams({ starter: starter ?? "" }).toString();
   redirect(`/chat/new?${params}`);
 };
