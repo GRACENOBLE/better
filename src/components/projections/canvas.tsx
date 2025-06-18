@@ -1,542 +1,587 @@
+// @ts-nocheck
 "use client";
-
-import type React from "react";
-import { useState, useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import {
   ReactFlow,
   type Node,
   type Edge,
   addEdge,
-  Background,
+  type Connection,
   useNodesState,
   useEdgesState,
-  type Connection,
-  type NodeTypes,
-  useReactFlow,
-  ReactFlowProvider,
+  Background,
   BackgroundVariant,
   Handle,
   Position,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Edit, Trash2, Copy } from "lucide-react";
-import { Child, Sister, AlignAllNodes } from "./canvas-icons";
-import CustomButton from "../CustomButton";
 import { useStore } from "@/hooks/zustand";
 
-interface CustomNodeProps {
-  data: {
+interface RoadmapData {
+  nodes: Array<{
+    id: string;
     label: string;
-    onEdit?: (id: string, label: string) => void;
-    onAddChild?: (id: string) => void;
-    onAddSister?: (id: string) => void;
-    [key: string]: any;
+    type?: "main" | "topic" | "subtopic";
+    level?: number;
+    description?: string;
+    category?: string;
+  }>;
+  edges: Array<{
+    id: string;
+    source: string;
+    target: string;
+    label?: string;
+    type?: "main" | "dotted";
+  }>;
+  metadata?: {
+    topic?: string;
+    timeframe?: string;
+    difficulty?: string;
   };
-  selected: boolean;
-  id: string;
 }
 
-const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
-  const { getNodes, setNodes, getEdges, setEdges } = useReactFlow();
+interface RoadmapRendererProps {
+  roadmapData: RoadmapData;
+}
 
-  const handleEdit = () => {
-    data.onEdit?.(id, data.label);
-  };
+// Main milestone nodes (yellow) with named connection handles
+const MainNode = ({ data }: { data: any }) => (
+  <div className="px-6 py-4 shadow-lg rounded-lg bg-yellow-300 border-2 border-gray-800 min-w-[200px] font-bold text-center relative">
+    <Handle
+      type="target"
+      position={Position.Top}
+      id="top"
+      className="w-3 h-3"
+    />
+    <Handle
+      type="source"
+      position={Position.Bottom}
+      id="bottom"
+      className="w-3 h-3"
+    />
+    <Handle
+      type="source"
+      position={Position.Left}
+      id="left"
+      className="w-3 h-3"
+    />
+    <Handle
+      type="source"
+      position={Position.Right}
+      id="right"
+      className="w-3 h-3"
+    />
+    <div className="text-sm text-gray-900">{data.label}</div>
+  </div>
+);
 
-  const handleDelete = () => {
-    setNodes((nodes) => nodes.filter((node) => node.id !== id));
+// Regular topic nodes (gray) with named connection handles
+const TopicNode = ({ data }: { data: any }) => (
+  <div className="px-4 py-3 shadow-md rounded-lg bg-gray-300 border-2 border-gray-800 min-w-[150px] font-semibold text-center relative">
+    <Handle
+      type="target"
+      position={Position.Top}
+      id="top"
+      className="w-3 h-3"
+    />
+    <Handle
+      type="source"
+      position={Position.Bottom}
+      id="bottom"
+      className="w-3 h-3"
+    />
+    <Handle
+      type="target"
+      position={Position.Left}
+      id="left"
+      className="w-3 h-3"
+    />
+    <Handle
+      type="target"
+      position={Position.Right}
+      id="right"
+      className="w-3 h-3"
+    />
+    <Handle
+      type="source"
+      position={Position.Left}
+      id="left-source"
+      className="w-3 h-3"
+    />
+    <Handle
+      type="source"
+      position={Position.Right}
+      id="right-source"
+      className="w-3 h-3"
+    />
+    <div className="text-xs text-gray-900">{data.label}</div>
+  </div>
+);
 
-    setEdges((edges) =>
-      edges.filter((edge) => edge.source !== id && edge.target !== id)
-    );
-  };
+// Small subtopic nodes with named connection handles
+const SubtopicNode = ({ data }: { data: any }) => (
+  <div className="px-3 py-2 shadow-sm rounded bg-gray-200 border border-gray-700 min-w-[80px] text-center relative">
+    <Handle
+      type="target"
+      position={Position.Top}
+      id="top"
+      className="w-2 h-2"
+    />
+    <Handle
+      type="target"
+      position={Position.Bottom}
+      id="bottom"
+      className="w-2 h-2"
+    />
+    <Handle
+      type="target"
+      position={Position.Left}
+      id="left"
+      className="w-2 h-2"
+    />
+    <Handle
+      type="target"
+      position={Position.Right}
+      id="right"
+      className="w-2 h-2"
+    />
+    <div className="text-xs text-gray-800 font-medium">{data.label}</div>
+  </div>
+);
 
-  const handleCopy = () => {
-    const nodes = getNodes();
-    const currentNode = nodes.find((node) => node.id === id);
-    if (currentNode) {
-      const newId = `node-${Date.now()}-${Math.random()
-        .toString(36)
-        .substring(2, 11)}`;
-      const newNode = {
-        ...currentNode,
-        id: newId,
-        position: {
-          x: currentNode.position.x + 50,
-          y: currentNode.position.y + 50,
-        },
-      };
-      setNodes((nodes) => [...nodes, newNode]);
+const nodeTypes = {
+  main: MainNode,
+  topic: TopicNode,
+  subtopic: SubtopicNode,
+};
+
+export default function Canvas() {
+  const roadmapData = useStore((state: any) => state.roadmapData);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  useEffect(() => {
+    if (roadmapData?.nodes && roadmapData?.edges) {
+      console.log("Roadmap data:", roadmapData);
+
+      // Calculate all positions in a single pass to avoid recursion
+      const nodePositions = calculateAllNodePositions(
+        roadmapData.nodes,
+        roadmapData.edges
+      );
+
+      const flowNodes: Node[] = roadmapData.nodes.map(
+        (node: {
+          id: string | number;
+          type: any;
+          label: any;
+          description: any;
+        }) => {
+          const position = nodePositions[node.id];
+          console.log(`Node ${node.id} positioned at:`, position);
+
+          return {
+            id: node.id,
+            type: node.type || "topic",
+            position,
+            data: {
+              label: node.label,
+              description: node.description,
+            },
+            draggable: true,
+          };
+        }
+      );
+
+      const flowEdges: Edge[] = roadmapData.edges
+        .map(
+          (edge: {
+            source: string | number;
+            target: string | number;
+            type: string;
+            id: any;
+            label: any;
+          }) => {
+            console.log(
+              `Processing edge: ${edge.source} -> ${edge.target}, type: ${edge.type}`
+            );
+
+            // Find the actual nodes to determine positioning
+            const sourceNode = roadmapData.nodes.find(
+              (n: { id: any }) => n.id === edge.source
+            );
+            const targetNode = roadmapData.nodes.find(
+              (n: { id: any }) => n.id === edge.target
+            );
+
+            if (!sourceNode || !targetNode) {
+              console.warn(
+                `Missing node for edge ${edge.source} -> ${edge.target}`
+              );
+              return null;
+            }
+
+            const sourcePos = nodePositions[edge.source];
+            const targetPos = nodePositions[edge.target];
+
+            // Determine handles based on node positions and relationship
+            let sourceHandle = "bottom";
+            let targetHandle = "top";
+
+            if (edge.type === "main") {
+              // Main flow - always vertical
+              sourceHandle = "bottom";
+              targetHandle = "top";
+            } else if (edge.type === "dotted") {
+              if (sourceNode.type === "main" && targetNode.type === "topic") {
+                // Main to topic connections
+                if (targetPos.x < sourcePos.x) {
+                  sourceHandle = "left";
+                  targetHandle = "right";
+                } else {
+                  sourceHandle = "right";
+                  targetHandle = "left";
+                }
+              } else if (
+                sourceNode.type === "topic" &&
+                targetNode.type === "subtopic"
+              ) {
+                // Topic to subtopic connections - based on parent side
+                const centerX = 400;
+                const isParentOnLeft = sourcePos.x < centerX;
+
+                if (isParentOnLeft) {
+                  // Left-side parent: use left-source → right
+                  sourceHandle = "left-source";
+                  targetHandle = "right";
+                } else {
+                  // Right-side parent: use right-source → left
+                  sourceHandle = "right-source";
+                  targetHandle = "left";
+                }
+              }
+            }
+
+            console.log(
+              `Edge ${edge.source} -> ${edge.target}: ${sourceHandle} -> ${targetHandle}`
+            );
+
+            return {
+              id: edge.id,
+              source: edge.source,
+              target: edge.target,
+              sourceHandle,
+              targetHandle,
+              label: edge.label,
+              type: edge.type === "dotted" ? "straight" : "smoothstep",
+              animated: false,
+              style: {
+                stroke: "black",
+                strokeWidth: edge.type === "main" ? 4 : 2,
+                strokeDasharray: edge.type === "dotted" ? "5,5" : undefined,
+              },
+              labelStyle: {
+                fontSize: "10px",
+                fontWeight: "600",
+                background: "white",
+                padding: "1px 4px",
+                borderRadius: "3px",
+                border: "1px solid #d1d5db",
+              },
+            };
+          }
+        )
+        .filter(Boolean) as Edge[];
+
+      // Add validation to ensure all subtopic nodes have connections
+      const connectedSubtopics = new Set(flowEdges.map((edge) => edge.target));
+      const allSubtopics = roadmapData.nodes.filter(
+        (node: { type: string }) => node.type === "subtopic"
+      );
+      const disconnectedSubtopics = allSubtopics.filter(
+        (node: { id: string }) => !connectedSubtopics.has(node.id)
+      );
+
+      if (disconnectedSubtopics.length > 0) {
+        console.warn(
+          "Disconnected subtopics found:",
+          disconnectedSubtopics.map((n: { id: any }) => n.id)
+        );
+
+        // Try to connect disconnected subtopics to nearby topic nodes
+        disconnectedSubtopics.forEach((subtopic: { id: string | number }) => {
+          const subtopicPos = nodePositions[subtopic.id];
+          const topicNodes = roadmapData.nodes.filter(
+            (n: { type: string }) => n.type === "topic"
+          );
+
+          // Find the closest topic node
+          //@ts-ignore
+          let closestTopic: {
+            id: string;
+            label: string;
+            type?: "main" | "topic" | "subtopic";
+            level?: number;
+            description?: string;
+            category?: string;
+          } = null;
+          let minDistance = Number.POSITIVE_INFINITY;
+
+          topicNodes.forEach(
+            (topic: {
+              id: any;
+              label?: string;
+              type?: "main" | "topic" | "subtopic" | undefined;
+              level?: number | undefined;
+              description?: string | undefined;
+              category?: string | undefined;
+            }) => {
+              const topicPos = nodePositions[topic.id];
+              const distance = Math.sqrt(
+                Math.pow(subtopicPos.x - topicPos.x, 2) +
+                  Math.pow(subtopicPos.y - topicPos.y, 2)
+              );
+
+              if (distance < minDistance) {
+                minDistance = distance;
+                closestTopic = topic;
+              }
+            }
+          );
+
+          if (closestTopic && minDistance < 300) {
+            // Create a connection to the closest topic
+            const topicPos = nodePositions[closestTopic.id];
+            const centerX = 400;
+            const isParentOnLeft = topicPos.x < centerX;
+
+            let sourceHandle = "right-source";
+            let targetHandle = "left";
+
+            if (isParentOnLeft) {
+              sourceHandle = "left-source";
+              targetHandle = "right";
+            }
+
+            flowEdges.push({
+              id: `auto-${closestTopic.id}-${subtopic.id}`,
+              source: closestTopic.id,
+              target: subtopic.id,
+              sourceHandle,
+              targetHandle,
+              type: "straight",
+              animated: false,
+              style: {
+                stroke: "#7c3aed",
+                strokeWidth: 2,
+                strokeDasharray: "5,5",
+              },
+            });
+
+            console.log(`Auto-connected ${subtopic.id} to ${closestTopic.id}`);
+          }
+        });
+      }
+
+      console.log("Generated nodes:", flowNodes);
+      console.log("Generated edges:", flowEdges);
+      console.log(
+        "Total edges created:",
+        flowEdges.length,
+        "out of",
+        roadmapData.edges.length
+      );
+
+      setNodes(flowNodes);
+      setEdges(flowEdges);
     }
-  };
-
-  const handleAddChild = () => {
-    data.onAddChild?.(id);
-  };
-
-  const handleAddSister = () => {
-    data.onAddSister?.(id);
-  };
-
-  return (
-    <div className="relative">
-      <Handle type="target" position={Position.Top} />
-      <div className="px-4 py-2 shadow-md rounded-sm bg-accent border-2 border-black min-w-[120px]">
-        <div className="text-sm font-medium text-center">{data.label}</div>
-      </div>
-      <Handle type="source" position={Position.Bottom} />
-
-      {selected && (
-        <>
-          <div className="absolute -top-14 left-1/2 transform -translate-x-1/2 flex gap-1 bg-white border rounded-md shadow-lg p-1">
-            <Button size="sm" variant="ghost" onClick={handleEdit}>
-              <Edit size={14} strokeWidth={2} />
-            </Button>
-            <Button size="sm" variant="ghost" onClick={handleCopy}>
-              <Copy size={14} strokeWidth={2} />
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={handleDelete}
-              className=""
-            >
-              <Trash2 size={14} strokeWidth={2} />
-            </Button>
-          </div>
-
-          <Button
-            size="icon"
-            onClick={handleAddChild}
-            variant="outline"
-            className="absolute -bottom-13 left-1/2 transform -translate-x-1/2   shadow-md bg-white"
-          >
-            <Child />
-          </Button>
-
-          <Button
-            size="icon"
-            onClick={handleAddSister}
-            variant="outline"
-            className="absolute top-1/2 -right-13 transform -translate-y-1/2  shadow-md bg-white"
-          >
-            <Sister />
-          </Button>
-        </>
-      )}
-    </div>
-  );
-};
-
-const nodeTypes: NodeTypes = {
-  custom: CustomNode,
-};
-
-interface FlowCanvasProps {
-  initialNodes?: Node[];
-  initialEdges?: Edge[];
-  onNodesChange?: (nodes: Node[]) => void;
-  onEdgesChange?: (edges: Edge[]) => void;
-}
-
-function FlowCanvas({
-  initialNodes = [],
-  initialEdges = [],
-  onNodesChange,
-  onEdgesChange,
-}: FlowCanvasProps) {
-  const [nodes, setNodes, onNodesStateChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesStateChange] = useEdgesState(initialEdges);
-  const [selectedNode, setSelectedNode] = useState<Node<any> | null>(null);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [addMode, setAddMode] = useState<"child" | "sister">("child");
-  const [newNodeText, setNewNodeText] = useState("");
-  const [editNodeId, setEditNodeId] = useState<string>("");
-  const [editNodeText, setEditNodeText] = useState("");
-  const { getNodes, fitView } = useReactFlow();
+  }, [roadmapData, setNodes, setEdges]);
 
   const onConnect = useCallback(
-    (params: Edge | Connection) => {
-      const newEdges = addEdge(params, edges);
-      setEdges(newEdges);
-      onEdgesChange?.(newEdges);
-    },
-    [edges, setEdges, onEdgesChange]
+    (params: Connection) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
   );
 
-  const handleNodesChange = useCallback(
-    (changes: any) => {
-      onNodesStateChange(changes);
-      const updatedNodes = getNodes();
-      onNodesChange?.(updatedNodes);
-    },
-    [onNodesStateChange, getNodes, onNodesChange]
-  );
+  // Calculate all node positions in a single pass to avoid recursion
+  function calculateAllNodePositions(allNodes: any[], edges: any[]) {
+    const positions: Record<string, { x: number; y: number }> = {};
+    const centerX = 400;
+    const levelSpacing = 250;
+    const topicSpacing = 300;
 
-  const handleEdgesChange = useCallback(
-    (changes: any) => {
-      onEdgesStateChange(changes);
-      onEdgesChange?.(edges);
-    },
-    [onEdgesStateChange, edges, onEdgesChange]
-  );
-
-  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
-    setSelectedNode(node);
-  }, []);
-
-  const onPaneClick = useCallback(() => {
-    setSelectedNode(null);
-  }, []);
-
-  const handleEditNode = useCallback((nodeId: string, currentText: string) => {
-    setEditNodeId(nodeId);
-    setEditNodeText(currentText);
-    setIsEditDialogOpen(true);
-  }, []);
-
-  const handleAddChild = useCallback(
-    (nodeId: string) => {
-      setSelectedNode(nodes.find((node) => node.id === nodeId) || null);
-      setAddMode("child");
-      setIsAddDialogOpen(true);
-    },
-    [nodes]
-  );
-
-  const handleAddSister = useCallback(
-    (nodeId: string) => {
-      setSelectedNode(nodes.find((node) => node.id === nodeId) || null);
-      setAddMode("sister");
-      setIsAddDialogOpen(true);
-    },
-    [nodes]
-  );
-
-  const updateNodeText = () => {
-    if (!editNodeText.trim()) return;
-
-    const updatedNodes = nodes.map((node) =>
-      node.id === editNodeId
-        ? { ...node, data: { ...node.data, label: editNodeText } }
-        : node
-    );
-    setNodes(updatedNodes);
-    onNodesChange?.(updatedNodes);
-    setIsEditDialogOpen(false);
-    setEditNodeText("");
-    setEditNodeId("");
-  };
-
-  const calculateTreeLayout = (nodes: Node[], edges: Edge[]) => {
-    const hasIncomingEdge = new Set(edges.map((edge) => edge.target));
-    const rootNodes = nodes.filter((node) => !hasIncomingEdge.has(node.id));
-
-    const children: { [key: string]: string[] } = {};
-    edges.forEach((edge) => {
-      if (!children[edge.source]) children[edge.source] = [];
-      children[edge.source].push(edge.target);
-    });
-
-    const positions: { [key: string]: { x: number; y: number } } = {};
-
-    const LEVEL_HEIGHT = 120;
-    const MIN_NODE_SPACING = 180;
-
-    const calculateSubtreeWidth = (nodeId: string): number => {
-      const nodeChildren = children[nodeId] || [];
-      if (nodeChildren.length === 0) return MIN_NODE_SPACING;
-
-      const childrenWidths = nodeChildren.map((childId) =>
-        calculateSubtreeWidth(childId)
-      );
-      return Math.max(
-        MIN_NODE_SPACING,
-        childrenWidths.reduce((sum, width) => sum + width, 0)
-      );
-    };
-
-    const positionNode = (nodeId: string, x: number, y: number) => {
-      positions[nodeId] = { x, y };
-
-      const nodeChildren = children[nodeId] || [];
-      if (nodeChildren.length === 0) return;
-
-      const childrenWidths = nodeChildren.map((childId) =>
-        calculateSubtreeWidth(childId)
-      );
-      const totalWidth = childrenWidths.reduce((sum, width) => sum + width, 0);
-
-      let currentX = x - totalWidth / 2;
-
-      nodeChildren.forEach((childId, index) => {
-        const childWidth = childrenWidths[index];
-        const childX = currentX + childWidth / 2;
-        positionNode(childId, childX, y + LEVEL_HEIGHT);
-        currentX += childWidth;
-      });
-    };
-
-    let rootX = 300;
-    rootNodes.forEach((rootNode, index) => {
-      if (index > 0) {
-        rootX += calculateSubtreeWidth(rootNodes[index - 1].id) + 100;
-      }
-      positionNode(rootNode.id, rootX, 50);
-    });
-
-    return nodes.map((node) => ({
-      ...node,
-      position: positions[node.id] || node.position,
-    }));
-  };
-
-  const nodesWithHandlers = nodes.map((node) => ({
-    ...node,
-    data: {
-      ...node.data,
-      onEdit: handleEditNode,
-      onAddChild: handleAddChild,
-      onAddSister: handleAddSister,
-    },
-  }));
-
-  const addChild = () => {
-    if (!selectedNode) return;
-    setAddMode("child");
-    setIsAddDialogOpen(true);
-  };
-
-  const addSister = () => {
-    if (!selectedNode) return;
-    setAddMode("sister");
-    setIsAddDialogOpen(true);
-  };
-
-  const handleAddNode = () => {
-    if (!newNodeText.trim() || !selectedNode) return;
-
-    const newNodeId = `node-${Date.now()}-${Math.random()
-      .toString(36)
-      .substr(2, 9)}`;
-
-    const newNode: Node = {
-      id: newNodeId,
-      type: "custom",
-      position: { x: 0, y: 0 },
-      data: {
-        label: newNodeText,
-        onEdit: handleEditNode,
-        onAddChild: handleAddChild,
-        onAddSister: handleAddSister,
-      },
-    };
-
-    let updatedNodes = [...nodes, newNode];
-    let updatedEdges = [...edges];
-
-    if (addMode === "child") {
-      const newEdge: Edge = {
-        id: `edge-${selectedNode.id}-${newNodeId}`,
-        source: selectedNode.id,
-        target: newNodeId,
-        type: "smoothstep",
-        style: { strokeWidth: 2, stroke: "#374151" },
+    // First pass: Position main nodes
+    const mainNodes = allNodes.filter((n) => n.type === "main");
+    mainNodes.forEach((node, index) => {
+      positions[node.id] = {
+        x: centerX,
+        y: 100 + index * levelSpacing,
       };
-      updatedEdges = [...edges, newEdge];
-    } else {
-      const parentEdge = edges.find((edge) => edge.target === selectedNode.id);
+    });
+
+    // Second pass: Position topic nodes
+    const topicNodes = allNodes.filter((n) => n.type === "topic");
+    topicNodes.forEach((node, index) => {
+      const level = node.level || 0;
+      const topicNodesAtLevel = topicNodes.filter(
+        (n) => (n.level || 0) === level
+      );
+      const topicIndex = topicNodesAtLevel.findIndex((n) => n.id === node.id);
+
+      // Distribute topics around the main flow
+      const isLeft = topicIndex % 2 === 0;
+      const sideIndex = Math.floor(topicIndex / 2);
+
+      positions[node.id] = {
+        x: isLeft
+          ? centerX - topicSpacing - sideIndex * 50
+          : centerX + topicSpacing + sideIndex * 50,
+        y: 100 + level * levelSpacing + sideIndex * 80,
+      };
+    });
+
+    // Third pass: Position subtopic nodes with improved spacing
+    const subtopicNodes = allNodes.filter((n) => n.type === "subtopic");
+
+    // Group subtopics by their parent topic
+    const subtopicGroups: Record<string, any[]> = {};
+    subtopicNodes.forEach((subtopic) => {
+      const parentEdge = edges.find(
+        (edge) => edge.target === subtopic.id && edge.type === "dotted"
+      );
       if (parentEdge) {
-        const newEdge: Edge = {
-          id: `edge-${parentEdge.source}-${newNodeId}`,
-          source: parentEdge.source,
-          target: newNodeId,
-          type: "smoothstep",
-          style: { strokeWidth: 2, stroke: "#374151" },
-        };
-        updatedEdges = [...edges, newEdge];
+        const parentTopic = allNodes.find(
+          (n) => n.id === parentEdge.source && n.type === "topic"
+        );
+        if (parentTopic) {
+          if (!subtopicGroups[parentTopic.id]) {
+            subtopicGroups[parentTopic.id] = [];
+          }
+          subtopicGroups[parentTopic.id].push(subtopic);
+        }
       }
-    }
+    });
 
-    updatedNodes = calculateTreeLayout(updatedNodes, updatedEdges);
+    // Position each group of subtopics
+    Object.entries(subtopicGroups).forEach(([parentId, siblingSubtopics]) => {
+      const parentPos = positions[parentId];
+      if (!parentPos) return;
 
-    setNodes(updatedNodes);
-    setEdges(updatedEdges);
-    onNodesChange?.(updatedNodes);
-    onEdgesChange?.(updatedEdges);
+      // Determine if parent is on left or right side of main flow
+      const isParentOnLeft = parentPos.x < centerX;
 
-    setNewNodeText("");
-    setIsAddDialogOpen(false);
+      // Improved spacing calculations to prevent overlapping
+      const baseSpacing = 70; // Base vertical spacing between subtopics
+      const minSpacing = 50; // Minimum spacing to prevent overlap
+      const maxSpacing = 90; // Maximum spacing to keep groups compact
 
-    setTimeout(() => fitView(), 100);
-  };
+      // Calculate dynamic spacing based on number of subtopics
+      let subtopicSpacing = baseSpacing;
+      if (siblingSubtopics.length > 5) {
+        subtopicSpacing = Math.max(
+          minSpacing,
+          baseSpacing - (siblingSubtopics.length - 5) * 3
+        );
+      } else if (siblingSubtopics.length < 3) {
+        subtopicSpacing = Math.min(
+          maxSpacing,
+          baseSpacing + (3 - siblingSubtopics.length) * 10
+        );
+      }
 
-  const alignNodes = () => {
-    const currentNodes = getNodes();
-    if (currentNodes.length === 0) return;
-    const alignedNodes = calculateTreeLayout(currentNodes, edges);
-    setNodes(alignedNodes);
-    onNodesChange?.(alignedNodes);
-    setTimeout(() => fitView(), 100);
-  };
+      const horizontalOffset = 200; // Distance from parent
 
-  const RoadmapData = useStore((state) => state.roadmapData);
+      // Calculate vertical offset to center the group around the parent
+      const totalHeight = (siblingSubtopics.length - 1) * subtopicSpacing;
+      const startY = parentPos.y - totalHeight / 2;
 
-  console.log("RoadmapData: ", RoadmapData);
+      // Position each subtopic in the group
+      siblingSubtopics.forEach((subtopic, index) => {
+        const proposedY = startY + index * subtopicSpacing;
+
+        if (isParentOnLeft) {
+          // Left-side parent: position subtopics to the LEFT
+          positions[subtopic.id] = {
+            x: parentPos.x - horizontalOffset,
+            y: proposedY,
+          };
+        } else {
+          // Right-side parent: position subtopics to the RIGHT
+          positions[subtopic.id] = {
+            x: parentPos.x + horizontalOffset,
+            y: proposedY,
+          };
+        }
+      });
+    });
+
+    // Handle orphaned subtopics (fallback positioning)
+    subtopicNodes.forEach((node) => {
+      if (!positions[node.id]) {
+        const level = node.level || 0;
+        const subtopicNodesAtLevel = subtopicNodes.filter(
+          (n) => (n.level || 0) === level
+        );
+        const subtopicIndex = subtopicNodesAtLevel.findIndex(
+          (n) => n.id === node.id
+        );
+
+        positions[node.id] = {
+          x: centerX + 200,
+          y: 150 + level * levelSpacing + subtopicIndex * 80,
+        };
+      }
+    });
+
+    return positions;
+  }
+
+  if (!roadmapData?.nodes || roadmapData.nodes.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-gray-500">
+        <div className="text-center">
+          <div className="text-lg mb-2">🗺️</div>
+          <div>No roadmap data available</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full h-full relative">
-      <Button
-        size="sm"
-        onClick={alignNodes}
-        variant="outline"
-        className="aspect-square w-10 h-10 absolute z-10 top-4 right-4 "
-      >
-        <AlignAllNodes />
-      </Button>
-
+    <div className="w-full h-full">
       <ReactFlow
-        nodes={nodesWithHandlers}
+        nodes={nodes}
         edges={edges}
-        onNodesChange={handleNodesChange}
-        onEdgesChange={handleEdgesChange}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
         onConnect={onConnect}
-        onNodeClick={onNodeClick}
-        onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
-        // fitView
-        className="bg-gray-50"
-        defaultEdgeOptions={{
-          style: { strokeWidth: 2, stroke: "#374151" },
-          type: "smoothstep",
+        nodesDraggable={false}
+        fitView
+        fitViewOptions={{
+          padding: 0.2,
+          includeHiddenNodes: false,
         }}
+        attributionPosition="bottom-right"
+        className="bg-white"
+        minZoom={0.1}
+        maxZoom={2}
       >
-        <Background variant={BackgroundVariant.Dots} gap={12} size={1} />
+        {/* <Controls className="bg-white border border-gray-300 rounded-lg shadow-sm" /> */}
+        <Background
+          variant={BackgroundVariant.Dots}
+          gap={20}
+          size={1}
+          color=""
+        />
+        {/* <MiniMap
+          className="bg-white border border-gray-300 rounded-lg"
+          nodeColor={(node) => {
+            if (node.type === "main") return "#fde047";
+            if (node.type === "subtopic") return "#e5e7eb";
+            return "#d1d5db";
+          }}
+        /> */}
       </ReactFlow>
-
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              Add {addMode === "child" ? "Child" : "Sister"} Node
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-8 pt-3">
-            <div>
-              <Input
-                id="nodeText"
-                value={newNodeText}
-                onChange={(e) => setNewNodeText(e.target.value)}
-                placeholder="Enter node text..."
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleAddNode();
-                  }
-                }}
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <CustomButton onClick={handleAddNode}>Add Node</CustomButton>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Node</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Input
-                id="editNodeText"
-                value={editNodeText}
-                onChange={(e) => setEditNodeText(e.target.value)}
-                placeholder="Enter node text..."
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    updateNodeText();
-                  }
-                }}
-              />
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button onClick={updateNodeText} disabled={!editNodeText.trim()}>
-                Update Node
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
-  );
-}
-
-export default function Component() {
-  const initialNodes: Node[] = [
-    {
-      id: "1",
-      type: "custom",
-      position: { x: 250, y: 50 },
-      data: { label: "Root Node" },
-    },
-    {
-      id: "2",
-      type: "custom",
-      position: { x: 100, y: 150 },
-      data: { label: "Child 1" },
-    },
-    {
-      id: "3",
-      type: "custom",
-      position: { x: 400, y: 150 },
-      data: { label: "Child 2" },
-    },
-  ];
-
-  const initialEdges: Edge[] = [
-    {
-      id: "e1-2",
-      source: "1",
-      target: "2",
-      type: "smoothstep",
-      style: { strokeWidth: 2, stroke: "#374151" },
-    },
-    {
-      id: "e1-3",
-      source: "1",
-      target: "3",
-      type: "smoothstep",
-      style: { strokeWidth: 2, stroke: "#374151" },
-    },
-  ];
-
-  const handleNodesChange = (nodes: Node[]) => {
-    console.log("Nodes changed:", nodes);
-  };
-
-  const handleEdgesChange = (edges: Edge[]) => {
-    console.log("Edges changed:", edges);
-  };
-
-  return (
-    <ReactFlowProvider>
-      <FlowCanvas
-        initialNodes={initialNodes}
-        initialEdges={initialEdges}
-        onNodesChange={handleNodesChange}
-        onEdgesChange={handleEdgesChange}
-      />
-    </ReactFlowProvider>
   );
 }

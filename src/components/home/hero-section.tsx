@@ -6,7 +6,7 @@ import { AnimatedGroup } from "@/components/ui/animated-group";
 import { LogoCloud } from "@/components/logo-cloud";
 import Link from "next/link";
 import CustomButton from "../CustomButton";
-import { submitToChatPage } from "@/server/chat";
+import HeroInput from "../ai/hero-input";
 
 const transitionVariants = {
   item: {
@@ -81,33 +81,7 @@ export default function HeroSection() {
                 <CustomButton size="lg">Create a roadmap</CustomButton>
               </Link>
 
-              <form
-                method="POST"
-                action={submitToChatPage}
-                className="mx-auto max-w-sm"
-              >
-                <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] items-center rounded-full border pr-2 shadow shadow-zinc-950/5 has-[input:focus]:ring-2">
-                  {/* <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" /> */}
-
-                  <input
-                    placeholder="Plan with Better AI"
-                    className="h-12 w-full bg-transparent pl-4 focus:outline-none placeholder:text-base"
-                    type="text"
-                    name="starter"
-                  />
-
-                  <div className="md:pr-1.5 lg:pr-0">
-                    <button
-                      aria-label="submit to better chat"
-                      className="rounded-full bg-black text-white p-2 hover:cursor-pointer"
-                    >
-                      <span className="hidden md:block">
-                        <CornerRightUp size={20} />
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </form>
+              <HeroInput/>
             </AnimatedGroup>
           </div>
         </div>

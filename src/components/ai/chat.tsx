@@ -14,11 +14,12 @@ import { useRef } from "react";
 import { AnimatedGroup } from "../ui/animated-group";
 import { TextEffect } from "../ui/text-effect";
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/hooks/zustand";
 
 export default function Chat() {
   const [isThinking, setIsThinking] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const { messages, input, setInput, handleInputChange, handleSubmit } =
     useChat({
       maxSteps: 3,
@@ -29,13 +30,6 @@ export default function Chat() {
 
   const chatRef = useChatScroll(messages);
   const formRef = useRef<HTMLFormElement>(null);
-  const bolds = ({
-    children,
-    ...props
-  }: {
-    children: React.ReactNode;
-    [key: string]: any;
-  }) => <span {...props}>{children}</span>;
   const transitionVariants = {
     item: {
       hidden: {
@@ -57,20 +51,22 @@ export default function Chat() {
   };
 
   const searchParams = useSearchParams();
-  const starterParam = searchParams?.get("starter") ?? "";
+  const router = useRouter();
+
+  const setStoreRoadmapData = useStore((state: any) => state.setRoadmapData);
+  const conversationStarter = useStore(
+    (state: any) => state.conversationStarter
+  );
 
   useEffect(() => {
-    if (starterParam && messages.length === 0) {
-      setInput(starterParam);
+    if (conversationStarter && messages.length === 0) {
+      setInput(conversationStarter);
       setIsThinking(true);
       setTimeout(() => {
         formRef.current?.requestSubmit();
       }, 0);
     }
-  }, [starterParam]);
-
-  const setStoreRoadmapData = useStore((state) => state.setRoadmapData);
-  // Function to set roadmap data using zustand store
+  }, [conversationStarter]);
 
   return (
     <div
@@ -246,12 +242,22 @@ export default function Chat() {
                                 {toolInvocation.result.metadata?.topic}
                               </h3>
                               <button
-                                onClick={setStoreRoadmapData(
-                                  toolInvocation.result
-                                )}
+                                onClick={() => {
+                                  setStoreRoadmapData(toolInvocation.result);
+                                  setIsEditing(true);
+                                  setTimeout(() => {
+                                    router.push("/roadmaps/studio");
+                                  }, 50);
+                                }}
                                 className="hover:cursor-pointer text-xs"
                               >
-                                <Pencil size={16} />
+                                {isEditing ? (
+                                  <span className="animate-spin">
+                                    <LoaderCircle size={16} />
+                                  </span>
+                                ) : (
+                                  <Pencil size={16} />
+                                )}
                               </button>
                             </div>
                             <div className="h-96 rounded-lg overflow-hidden bg-white">
