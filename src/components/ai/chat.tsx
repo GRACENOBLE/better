@@ -15,6 +15,7 @@ import { AnimatedGroup } from "../ui/animated-group";
 import { TextEffect } from "../ui/text-effect";
 import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import { useStore } from "@/hooks/zustand";
 
 export default function Chat() {
   const [isThinking, setIsThinking] = useState<boolean>(false);
@@ -67,6 +68,9 @@ export default function Chat() {
       }, 0);
     }
   }, [starterParam]);
+
+  const setStoreRoadmapData = useStore((state) => state.setRoadmapData);
+  // Function to set roadmap data using zustand store
 
   return (
     <div
@@ -126,6 +130,7 @@ export default function Chat() {
                     >
                       {item}
                     </button>
+                    {/* <button onClick={increasePopulation}>Increase bears</button> */}
                   </AnimatedGroup>
                 )
               )}
@@ -240,7 +245,12 @@ export default function Chat() {
                               <h3 className="font-semibold  font-title">
                                 {toolInvocation.result.metadata?.topic}
                               </h3>
-                              <button className="hover:cursor-pointer text-xs">
+                              <button
+                                onClick={setStoreRoadmapData(
+                                  toolInvocation.result
+                                )}
+                                className="hover:cursor-pointer text-xs"
+                              >
                                 <Pencil size={16} />
                               </button>
                             </div>
@@ -294,6 +304,7 @@ export default function Chat() {
             <Loader />
           </div>
         )}
+
         <form
           ref={formRef}
           onSubmit={(e) => {

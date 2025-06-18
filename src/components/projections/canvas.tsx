@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Edit, Trash2, Copy } from "lucide-react";
 import { Child, Sister, AlignAllNodes } from "./canvas-icons";
 import CustomButton from "../CustomButton";
+import { useStore } from "@/hooks/zustand";
 
 interface CustomNodeProps {
   data: {
@@ -87,7 +88,6 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
 
   return (
     <div className="relative">
-
       <Handle type="target" position={Position.Top} />
       <div className="px-4 py-2 shadow-md rounded-sm bg-accent border-2 border-black min-w-[120px]">
         <div className="text-sm font-medium text-center">{data.label}</div>
@@ -103,7 +103,12 @@ const CustomNode = ({ data, selected, id }: CustomNodeProps) => {
             <Button size="sm" variant="ghost" onClick={handleCopy}>
               <Copy size={14} strokeWidth={2} />
             </Button>
-            <Button size="sm" variant="ghost" onClick={handleDelete} className="">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={handleDelete}
+              className=""
+            >
               <Trash2 size={14} strokeWidth={2} />
             </Button>
           </div>
@@ -284,18 +289,16 @@ function FlowCanvas({
     let rootX = 300;
     rootNodes.forEach((rootNode, index) => {
       if (index > 0) {
-        rootX += calculateSubtreeWidth(rootNodes[index - 1].id) + 100; 
+        rootX += calculateSubtreeWidth(rootNodes[index - 1].id) + 100;
       }
       positionNode(rootNode.id, rootX, 50);
     });
-
 
     return nodes.map((node) => ({
       ...node,
       position: positions[node.id] || node.position,
     }));
   };
-
 
   const nodesWithHandlers = nodes.map((node) => ({
     ...node,
@@ -328,8 +331,8 @@ function FlowCanvas({
 
     const newNode: Node = {
       id: newNodeId,
-      type: "custom", 
-      position: { x: 0, y: 0 }, 
+      type: "custom",
+      position: { x: 0, y: 0 },
       data: {
         label: newNodeText,
         onEdit: handleEditNode,
@@ -351,7 +354,6 @@ function FlowCanvas({
       };
       updatedEdges = [...edges, newEdge];
     } else {
-
       const parentEdge = edges.find((edge) => edge.target === selectedNode.id);
       if (parentEdge) {
         const newEdge: Edge = {
@@ -386,6 +388,10 @@ function FlowCanvas({
     onNodesChange?.(alignedNodes);
     setTimeout(() => fitView(), 100);
   };
+
+  const RoadmapData = useStore((state) => state.roadmapData);
+
+  console.log("RoadmapData: ", RoadmapData);
 
   return (
     <div className="w-full h-full relative">
@@ -426,7 +432,6 @@ function FlowCanvas({
           </DialogHeader>
           <div className="space-y-8 pt-3">
             <div>
-             
               <Input
                 id="nodeText"
                 value={newNodeText}
@@ -440,9 +445,7 @@ function FlowCanvas({
               />
             </div>
             <div className="flex justify-end gap-2">
-              <CustomButton onClick={handleAddNode} >
-                Add Node
-              </CustomButton>
+              <CustomButton onClick={handleAddNode}>Add Node</CustomButton>
             </div>
           </div>
         </DialogContent>

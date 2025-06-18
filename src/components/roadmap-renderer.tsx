@@ -9,14 +9,13 @@ import {
   type Connection,
   useNodesState,
   useEdgesState,
-  Controls,
   Background,
   BackgroundVariant,
-  MiniMap,
   Handle,
   Position,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+
 
 interface RoadmapData {
   nodes: Array<{

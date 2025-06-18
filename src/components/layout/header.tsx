@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import Logo from "../logo";
 import { authClient } from "@/lib/auth-client";
 import UserButton from "./user-button";
+import { useStore } from "@/hooks/zustand";
 
 const menuItems = [
   { name: "About", href: "/about" },
@@ -27,7 +28,7 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  
+
   return (
     <header className="sticky top-0 z-10">
       <nav
@@ -43,7 +44,7 @@ const Header = () => {
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              <Logo size="sm" color="black" variant="wordmark"/>
+              <Logo size="sm" color="black" variant="wordmark" />
               <button
                 onClick={() => setMenuState(!menuState)}
                 aria-label={menuState == true ? "Close Menu" : "Open Menu"}
