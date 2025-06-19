@@ -4,9 +4,8 @@ import { CanvasSidebar } from "@/components/projections/canvas-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
 const page = () => {
-
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={false}>
       <CanvasSidebar variant="inset" />
       <SidebarInset>
         <CanvasHeader />

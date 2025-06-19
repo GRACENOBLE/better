@@ -14,7 +14,7 @@ import { useRef } from "react";
 import { AnimatedGroup } from "../ui/animated-group";
 import { TextEffect } from "../ui/text-effect";
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useStore } from "@/hooks/zustand";
 import { BiExpandAlt } from "react-icons/bi";
 
@@ -51,10 +51,11 @@ export default function Chat() {
     },
   };
 
-  const searchParams = useSearchParams();
   const router = useRouter();
-
   const setStoreRoadmapData = useStore((state: any) => state.setRoadmapData);
+  const clearConversationStarter = useStore(
+    (state: any) => state.clearConversationStarter
+  );
   const conversationStarter = useStore(
     (state: any) => state.conversationStarter
   );
@@ -62,6 +63,7 @@ export default function Chat() {
   useEffect(() => {
     if (conversationStarter && messages.length === 0) {
       setInput(conversationStarter);
+      clearConversationStarter();
       setIsThinking(true);
       setTimeout(() => {
         formRef.current?.requestSubmit();
@@ -237,8 +239,8 @@ export default function Chat() {
                     ) {
                       return (
                         <div key={partIndex} className="mt-4 w-full">
-                          <div className="border rounded-lg px-4 pt-4 pb-2 bg-muted ">
-                            <div className="flex justify-between items-center mb-3">
+                          <div className="border rounded-lg px-4  pb-2 bg-muted ">
+                            <div className="flex justify-between items-center py-2">
                               <h3 className="font-semibold  font-title">
                                 {toolInvocation.result.metadata?.topic}
                               </h3>
@@ -259,8 +261,14 @@ export default function Chat() {
                                   />
                                 ) : (
                                   <>
-                                    <Pencil size={16} />
-                                    <BiExpandAlt />
+                                    {/* <Pencil size={16} /> */}
+                                    <Button
+                                      variant={"ghost"}
+                                      size={"icon"}
+                                      className="text-base"
+                                    >
+                                      <BiExpandAlt />
+                                    </Button>
                                   </>
                                 )}
                               </button>
