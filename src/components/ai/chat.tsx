@@ -16,6 +16,7 @@ import { TextEffect } from "../ui/text-effect";
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/hooks/zustand";
+import { BiExpandAlt } from "react-icons/bi";
 
 export default function Chat() {
   const [isThinking, setIsThinking] = useState<boolean>(false);
@@ -252,11 +253,15 @@ export default function Chat() {
                                 className="hover:cursor-pointer text-xs"
                               >
                                 {isEditing ? (
-                                  <span className="animate-spin">
-                                    <LoaderCircle size={16} />
-                                  </span>
+                                  <LoaderCircle
+                                    size={16}
+                                    className="animate-spin"
+                                  />
                                 ) : (
-                                  <Pencil size={16} />
+                                  <>
+                                    <Pencil size={16} />
+                                    <BiExpandAlt />
+                                  </>
                                 )}
                               </button>
                             </div>
