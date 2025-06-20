@@ -4,7 +4,7 @@ export const useStore = create((set) => ({
   roadmapData: null,
   conversationStarter: null,
   setRoadmapData: (data: any) => set({ roadmapData: data }),
-  removeAllBears: () => set({ roadmapData: null }),
+  removeRoadmapData: () => set({ roadmapData: null }),
   setConversationStarter: (data: any) => set({ conversationStarter: data }),
   clearConversationStarter: () => set({ conversationStarter: null }),
 }));

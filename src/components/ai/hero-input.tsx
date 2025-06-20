@@ -15,9 +15,7 @@ const HeroInput = () => {
   const handleSubmit = () => {
     setIsSendingStarter(true);
     setConversationStarter(userInput);
-    setTimeout(() => {
-      router.push("/chat/new");
-    }, 50);
+    router.push("/chat/new");
   };
   return (
     <form
