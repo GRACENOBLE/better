@@ -2,6 +2,27 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import CustomButton from "../CustomButton";
+import { AnimatedGroup } from "../ui/animated-group";
+
+const transitionVariants = {
+  item: {
+    hidden: {
+      opacity: 0,
+      filter: "blur(12px)",
+      y: 12,
+    },
+    visible: {
+      opacity: 1,
+      filter: "blur(0px)",
+      y: 0,
+      transition: {
+        type: "spring",
+        bounce: 0.3,
+        duration: 1.5,
+      },
+    },
+  },
+};
 
 export default function ContentSection() {
   return (
@@ -20,16 +41,30 @@ export default function ContentSection() {
           <h2 className="text-4xl font-title font-semibold">What is better?</h2>
           <div className="space-y-6">
             <p>
-              Better is an AI powered roadmapping tool that improves your planning 10 fold. Create a knowledge based plan and see it through from start to finish.
+              Better is an AI powered roadmapping tool that improves your
+              planning 10 fold. Create a knowledge based plan and see it through
+              from start to finish.
             </p>
-
-            <CustomButton
-              className="gap-1 pr-1.5"
+            <AnimatedGroup
+              variants={{
+                container: {
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.05,
+                      delayChildren: 0.75,
+                    },
+                  },
+                },
+                ...transitionVariants,
+              }}
+              className="mt-12 flex gap-4 items-center justify-center"
             >
               <Link href="#">
-                <span>Learn More</span>
+                <CustomButton className="gap-1 pr-1.5">
+                  <span>Learn More about it</span>
+                </CustomButton>
               </Link>
-            </CustomButton>
+            </AnimatedGroup>
           </div>
         </div>
       </div>

@@ -40,7 +40,7 @@ const HeroInput = () => {
           autoComplete="off"
         />
 
-        <div className="md:pr-1.5 lg:pr-0">
+        <div className="lg:pr-0">
           <button
             aria-label="submit to better chat"
             className="rounded-full bg-black text-white p-2 hover:cursor-pointer"
