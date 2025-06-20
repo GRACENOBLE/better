@@ -9,13 +9,8 @@ const HeroInput = () => {
   const router = useRouter();
   const [userInput, setUserInput] = useState("");
   const [isSendingStarter, setIsSendingStarter] = useState<boolean>(false);
-  const setConversationStarter = useStore(
-    (state: any) => state.setConversationStarter
-  );
   const handleSubmit = () => {
-    setIsSendingStarter(true);
-    setConversationStarter(userInput);
-    router.push("/chat/new");
+    router.push("/chat/new?starter=" + encodeURIComponent(userInput));
   };
   return (
     <form

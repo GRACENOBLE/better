@@ -14,7 +14,7 @@ import { useRef } from "react";
 import { AnimatedGroup } from "../ui/animated-group";
 import { TextEffect } from "../ui/text-effect";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/hooks/zustand";
 import { BiExpandAlt } from "react-icons/bi";
 
@@ -56,18 +56,21 @@ export default function Chat() {
   const clearConversationStarter = useStore(
     (state: any) => state.clearConversationStarter
   );
-  const conversationStarter = useStore(
-    (state: any) => state.conversationStarter
-  );
-
+  // const conversationStarter = useStore(
+  //   (state: any) => state.conversationStarter
+  // );
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+  const conversationStarter = searchParams.get("starter");
   useEffect(() => {
     if (conversationStarter && messages.length === 0) {
       setInput(conversationStarter);
-      clearConversationStarter();
+      params.delete("starter");
       setIsThinking(true);
       setTimeout(() => {
         formRef.current?.requestSubmit();
       }, 0);
+      router.replace(`?${params.toString()}`);
     }
   }, [conversationStarter]);
 
@@ -239,12 +242,15 @@ export default function Chat() {
                     ) {
                       return (
                         <div key={partIndex} className="mt-4 w-full">
-                          <div className="border rounded-lg px-4  pb-2 bg-muted ">
+                          <div className="border rounded-lg px-4  pb-2 bg-muted w-full">
                             <div className="flex justify-between items-center py-2">
                               <h3 className="font-semibold  font-title">
                                 {toolInvocation.result.metadata?.topic}
                               </h3>
-                              <button
+                              <Button
+                                variant={"ghost"}
+                                size={"icon"}
+                                className="text-xs hover:bg-muted-foreground/20 hover:cursor-pointer"
                                 onClick={() => {
                                   setStoreRoadmapData(toolInvocation.result);
                                   setIsEditing(true);
@@ -252,7 +258,6 @@ export default function Chat() {
                                     router.push("/roadmaps/studio");
                                   }, 50);
                                 }}
-                                className="hover:cursor-pointer text-xs"
                               >
                                 {isEditing ? (
                                   <LoaderCircle
@@ -261,17 +266,10 @@ export default function Chat() {
                                   />
                                 ) : (
                                   <>
-                                    {/* <Pencil size={16} /> */}
-                                    <Button
-                                      variant={"ghost"}
-                                      size={"icon"}
-                                      className="text-base"
-                                    >
-                                      <BiExpandAlt />
-                                    </Button>
+                                    <BiExpandAlt />
                                   </>
                                 )}
-                              </button>
+                              </Button>
                             </div>
                             <div className="h-96 rounded-lg overflow-hidden bg-white">
                               <ReactFlowProvider>
