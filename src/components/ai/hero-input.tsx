@@ -15,6 +15,7 @@ const HeroInput = () => {
   return (
     <form
       onSubmit={(e) => {
+        setIsSendingStarter(true)
         e.preventDefault();
         handleSubmit();
       }}

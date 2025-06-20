@@ -1,6 +1,4 @@
 import React from "react";
-import { CornerRightUp, SendHorizonal } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { TextEffect } from "@/components/ui/text-effect";
 import { AnimatedGroup } from "@/components/ui/animated-group";
 import { LogoCloud } from "@/components/logo-cloud";
@@ -80,7 +78,6 @@ export default function HeroSection() {
               <Link href={"/roadmaps/studio"} aria-label="go to roadmap studio">
                 <CustomButton size="lg">Create a roadmap</CustomButton>
               </Link>
-
               <HeroInput/>
             </AnimatedGroup>
           </div>

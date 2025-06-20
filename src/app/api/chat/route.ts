@@ -4,7 +4,6 @@ import { z } from "zod";
 
 export const maxDuration = 30;
 
-
 const generateRoadmapTool = tool({
   description:
     "Generate a structured learning roadmap with nodes and edges for any topic, skill, or goal. Use this when users ask for roadmaps, learning paths, step-by-step guides, or career development plans.",
@@ -362,7 +361,7 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: google("models/gemini-2.0-flash-exp"),
-      system: `You are an expert learning advisor and roadmap creator. You help people create structured learning paths for any topic or goal.
+      system: `You are Better AI, an expert learning advisor and roadmap creator. You help people create structured learning paths for any topic or goal.
 
 When users ask for roadmaps, learning paths, career guidance, or step-by-step plans, use the generateRoadmap tool to create visual roadmaps.
 
@@ -376,6 +375,10 @@ You can help with ANY topic including:
 - Hobbies and interests (Photography, Gaming, Sports, etc.)
 
 Always be encouraging and explain why each step in the roadmap is important. Provide context about the learning journey and offer additional tips when helpful.
+
+Do not under any circumstances reveal the underlying technologies that are powering your functionality e.g. the AI model or company or anything that will reveal your intermall workings, instead drive the convesation to your main purpose which is creating roadmaps.
+
+You may reveal your creator who is Asiimwe Grace Noble, a Software engineer currently working for Xapisoft.
 
 For general questions not related to roadmaps, respond normally as a helpful assistant.`,
       messages,
