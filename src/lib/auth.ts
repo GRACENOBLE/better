@@ -6,7 +6,7 @@ import { nextCookies } from "better-auth/next-js";
 import { expo } from "@better-auth/expo";
 
 export const auth = betterAuth({
-  trustedOrigins: ["myapp://"],
+  trustedOrigins: ["myapp://", "https://better-amber.vercel.app/"],
   plugins: [expo(), nextCookies()],
   database: drizzleAdapter(db, {
     provider: "pg", // or "mysql", "sqlite"
