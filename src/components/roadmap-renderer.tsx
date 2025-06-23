@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use client";
 
 import { useCallback, useEffect } from "react";
@@ -9,13 +10,14 @@ import {
   type Connection,
   useNodesState,
   useEdgesState,
+  Controls,
   Background,
   BackgroundVariant,
+  MiniMap,
   Handle,
   Position,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-
 
 interface RoadmapData {
   nodes: Array<{
@@ -156,8 +158,8 @@ const nodeTypes = {
 };
 
 export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   useEffect(() => {
     if (roadmapData?.nodes && roadmapData?.edges) {
@@ -261,7 +263,7 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
             type: edge.type === "dotted" ? "straight" : "smoothstep",
             animated: false,
             style: {
-              stroke: "black",
+              stroke: "#7c3aed",
               strokeWidth: edge.type === "main" ? 4 : 2,
               strokeDasharray: edge.type === "dotted" ? "5,5" : undefined,
             },
@@ -300,15 +302,7 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
           );
 
           // Find the closest topic node
-          //@ts-ignore
-          let closestTopic: {
-            id: string;
-            label: string;
-            type?: "main" | "topic" | "subtopic";
-            level?: number;
-            description?: string;
-            category?: string;
-          } = null;
+          let closestTopic = null;
           let minDistance = Number.POSITIVE_INFINITY;
 
           topicNodes.forEach((topic) => {
@@ -384,40 +378,12 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
     const levelSpacing = 250;
     const topicSpacing = 300;
 
-    // First pass: Position main nodes
+    // First pass: Calculate space requirements for each main node
     const mainNodes = allNodes.filter((n) => n.type === "main");
-    mainNodes.forEach((node, index) => {
-      positions[node.id] = {
-        x: centerX,
-        y: 100 + index * levelSpacing,
-      };
-    });
-
-    // Second pass: Position topic nodes
     const topicNodes = allNodes.filter((n) => n.type === "topic");
-    topicNodes.forEach((node, index) => {
-      const level = node.level || 0;
-      const topicNodesAtLevel = topicNodes.filter(
-        (n) => (n.level || 0) === level
-      );
-      const topicIndex = topicNodesAtLevel.findIndex((n) => n.id === node.id);
-
-      // Distribute topics around the main flow
-      const isLeft = topicIndex % 2 === 0;
-      const sideIndex = Math.floor(topicIndex / 2);
-
-      positions[node.id] = {
-        x: isLeft
-          ? centerX - topicSpacing - sideIndex * 50
-          : centerX + topicSpacing + sideIndex * 50,
-        y: 100 + level * levelSpacing + sideIndex * 80,
-      };
-    });
-
-    // Third pass: Position subtopic nodes with improved spacing
     const subtopicNodes = allNodes.filter((n) => n.type === "subtopic");
 
-    // Group subtopics by their parent topic
+    // Group subtopics by their parent topic to calculate space requirements
     const subtopicGroups: Record<string, any[]> = {};
     subtopicNodes.forEach((subtopic) => {
       const parentEdge = edges.find(
@@ -436,7 +402,167 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
       }
     });
 
-    // Position each group of subtopics
+    // Calculate space requirements for each topic group
+    const topicSpaceRequirements: Record<string, number> = {};
+    Object.entries(subtopicGroups).forEach(([topicId, subtopics]) => {
+      const baseSpacing = 70;
+      const minSpacing = 50;
+      const maxSpacing = 90;
+
+      let subtopicSpacing = baseSpacing;
+      if (subtopics.length > 5) {
+        subtopicSpacing = Math.max(
+          minSpacing,
+          baseSpacing - (subtopics.length - 5) * 3
+        );
+      } else if (subtopics.length < 3) {
+        subtopicSpacing = Math.min(
+          maxSpacing,
+          baseSpacing + (3 - subtopics.length) * 10
+        );
+      }
+
+      const totalHeight = Math.max(
+        120,
+        (subtopics.length - 1) * subtopicSpacing + 80
+      );
+      topicSpaceRequirements[topicId] = totalHeight;
+    });
+
+    // Calculate space requirements for each main node
+    const mainNodeSpaceRequirements: Record<string, number> = {};
+    mainNodes.forEach((mainNode) => {
+      // Find all topics connected to this main node
+      const connectedTopics = topicNodes.filter((topic) => {
+        return edges.some(
+          (edge) =>
+            edge.source === mainNode.id &&
+            edge.target === topic.id &&
+            edge.type === "dotted"
+        );
+      });
+
+      if (connectedTopics.length === 0) {
+        mainNodeSpaceRequirements[mainNode.id] = 200; // Minimum space
+        return;
+      }
+
+      // Group topics by side (left/right)
+      const leftTopics: any[] = [];
+      const rightTopics: any[] = [];
+
+      connectedTopics.forEach((topic, index) => {
+        if (index % 2 === 0) {
+          leftTopics.push(topic);
+        } else {
+          rightTopics.push(topic);
+        }
+      });
+
+      // Calculate total space needed for left side
+      const leftSpaceNeeded =
+        leftTopics.reduce((sum, topic) => {
+          return sum + (topicSpaceRequirements[topic.id] || 120);
+        }, 0) +
+        Math.max(0, leftTopics.length - 1) * 40; // Buffer between topics
+
+      // Calculate total space needed for right side
+      const rightSpaceNeeded =
+        rightTopics.reduce((sum, topic) => {
+          return sum + (topicSpaceRequirements[topic.id] || 120);
+        }, 0) +
+        Math.max(0, rightTopics.length - 1) * 40; // Buffer between topics
+
+      // Use the larger of the two sides, with minimum spacing
+      const requiredSpace = Math.max(leftSpaceNeeded, rightSpaceNeeded, 200);
+      mainNodeSpaceRequirements[mainNode.id] = requiredSpace;
+    });
+
+    // Position main nodes with dynamic spacing
+    let currentMainY = 100;
+    mainNodes.forEach((node, index) => {
+      const spaceNeeded = mainNodeSpaceRequirements[node.id];
+
+      positions[node.id] = {
+        x: centerX,
+        y: currentMainY + spaceNeeded / 2, // Center the main node in its allocated space
+      };
+
+      currentMainY += spaceNeeded + 100; // Add buffer between main node sections
+    });
+
+    // Group topics by level
+    const topicsByLevel: Record<string, { left: any[]; right: any[] }> = {};
+    topicNodes.forEach((topic) => {
+      const level = topic.level || 0;
+      if (!topicsByLevel[level]) {
+        topicsByLevel[level] = { left: [], right: [] };
+      }
+
+      // Alternate left and right placement
+      if (
+        topicsByLevel[level].left.length <= topicsByLevel[level].right.length
+      ) {
+        topicsByLevel[level].left.push(topic);
+      } else {
+        topicsByLevel[level].right.push(topic);
+      }
+    });
+
+    // Second pass: Position topic nodes relative to their main nodes
+    Object.entries(topicsByLevel).forEach(([levelStr, { left, right }]) => {
+      const level = Number.parseInt(levelStr);
+
+      // Find the main node for this level
+      const mainNode = mainNodes.find((n) => (n.level || 0) === level);
+      if (!mainNode || !positions[mainNode.id]) return;
+
+      const baseY = positions[mainNode.id].y; // Use the main node's Y position as base
+
+      // Position left-side topics
+      let currentY = baseY;
+      if (left.length > 1) {
+        const totalSpaceNeeded = left.reduce((sum, topic) => {
+          return sum + (topicSpaceRequirements[topic.id] || 120);
+        }, 0);
+        currentY = baseY - totalSpaceNeeded / 2;
+      }
+
+      left.forEach((node, index) => {
+        const sideIndex = index;
+        const spaceNeeded = topicSpaceRequirements[node.id] || 120;
+
+        positions[node.id] = {
+          x: centerX - topicSpacing - sideIndex * 50,
+          y: currentY + spaceNeeded / 2,
+        };
+
+        currentY += spaceNeeded + 40;
+      });
+
+      // Position right-side topics
+      currentY = baseY;
+      if (right.length > 1) {
+        const totalSpaceNeeded = right.reduce((sum, topic) => {
+          return sum + (topicSpaceRequirements[topic.id] || 120);
+        }, 0);
+        currentY = baseY - totalSpaceNeeded / 2;
+      }
+
+      right.forEach((node, index) => {
+        const sideIndex = index;
+        const spaceNeeded = topicSpaceRequirements[node.id] || 120;
+
+        positions[node.id] = {
+          x: centerX + topicSpacing + sideIndex * 50,
+          y: currentY + spaceNeeded / 2,
+        };
+
+        currentY += spaceNeeded + 40;
+      });
+    });
+
+    // Third pass: Position subtopic nodes within their allocated space
     Object.entries(subtopicGroups).forEach(([parentId, siblingSubtopics]) => {
       const parentPos = positions[parentId];
       if (!parentPos) return;
@@ -444,12 +570,11 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
       // Determine if parent is on left or right side of main flow
       const isParentOnLeft = parentPos.x < centerX;
 
-      // Improved spacing calculations to prevent overlapping
-      const baseSpacing = 70; // Base vertical spacing between subtopics
-      const minSpacing = 50; // Minimum spacing to prevent overlap
-      const maxSpacing = 90; // Maximum spacing to keep groups compact
+      // Calculate spacing for this group
+      const baseSpacing = 70;
+      const minSpacing = 50;
+      const maxSpacing = 90;
 
-      // Calculate dynamic spacing based on number of subtopics
       let subtopicSpacing = baseSpacing;
       if (siblingSubtopics.length > 5) {
         subtopicSpacing = Math.max(
@@ -530,32 +655,31 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
-        nodesDraggable={false}
         fitView
         fitViewOptions={{
           padding: 0.2,
           includeHiddenNodes: false,
         }}
-        attributionPosition="bottom-right"
+        attributionPosition="bottom-left"
         className="bg-white"
         minZoom={0.1}
         maxZoom={2}
       >
-        {/* <Controls className="bg-white border border-gray-300 rounded-lg shadow-sm" /> */}
+        <Controls className="bg-white border border-gray-300 rounded-lg shadow-sm" />
         <Background
           variant={BackgroundVariant.Dots}
           gap={20}
           size={1}
-          color=""
+          color="#e5e7eb"
         />
-        {/* <MiniMap
+        <MiniMap
           className="bg-white border border-gray-300 rounded-lg"
           nodeColor={(node) => {
             if (node.type === "main") return "#fde047";
             if (node.type === "subtopic") return "#e5e7eb";
             return "#d1d5db";
           }}
-        /> */}
+        />
       </ReactFlow>
     </div>
   );

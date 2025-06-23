@@ -17,6 +17,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useStore } from "@/hooks/zustand";
 import { BiExpandAlt } from "react-icons/bi";
+import { useRoadmapStore } from "@/lib/stores/roadmap-store";
 
 export default function Chat() {
   const [isThinking, setIsThinking] = useState<boolean>(false);
@@ -52,10 +53,12 @@ export default function Chat() {
   };
 
   const router = useRouter();
-  const setStoreRoadmapData = useStore((state: any) => state.setRoadmapData);
-  const clearConversationStarter = useStore(
-    (state: any) => state.clearConversationStarter
-  );
+  // const setStoreRoadmapData = useStore((state: any) => state.setRoadmapData);
+  const setRoadmap = useRoadmapStore((state) => state.setRoadmap);
+
+  // const clearConversationStarter = useStore(
+  //   (state: any) => state.clearConversationStarter
+  // );
   // const conversationStarter = useStore(
   //   (state: any) => state.conversationStarter
   // );
@@ -252,7 +255,7 @@ export default function Chat() {
                                 size={"icon"}
                                 className="text-xs hover:bg-muted-foreground/20 hover:cursor-pointer"
                                 onClick={() => {
-                                  setStoreRoadmapData(toolInvocation.result);
+                                  setRoadmap(toolInvocation.result);
                                   setIsEditing(true);
                                   setTimeout(() => {
                                     router.push("/roadmaps/studio");

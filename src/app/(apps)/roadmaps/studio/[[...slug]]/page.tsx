@@ -2,6 +2,7 @@ import Canvas from "@/components/projections/canvas";
 import { CanvasHeader } from "@/components/projections/canvas-header";
 import { CanvasSidebar } from "@/components/projections/canvas-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { ReactFlowProvider } from "@xyflow/react";
 
 const page = () => {
   return (
@@ -9,7 +10,9 @@ const page = () => {
       <CanvasSidebar variant="inset" />
       <SidebarInset>
         <CanvasHeader />
+      <ReactFlowProvider>
         <Canvas />
+      </ReactFlowProvider>
       </SidebarInset>
     </SidebarProvider>
   );
