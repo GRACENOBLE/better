@@ -15,18 +15,24 @@ import Link from "next/link";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { authClient } from "@/lib/auth-client";
 import CustomButton from "../CustomButton";
+import { useState } from "react";
+import { LoaderCircle } from "lucide-react";
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [isSigningInGoogle, setIsSigningInGoogle] = useState<boolean>(false);
+  const [isSigningInGithub, setIsSigningInGithub] = useState<boolean>(false);
   const SignInWithGithub = async () => {
+    setIsSigningInGithub(true);
     await authClient.signIn.social({
       provider: "github",
       callbackURL: "/dashboard",
     });
   };
   const SignInWithGoogle = async () => {
+    setIsSigningInGoogle(true);
     await authClient.signIn.social({
       provider: "google",
       callbackURL: "/dashboard",
@@ -99,19 +105,27 @@ export function SignUpForm({
               <div className="flex justify-center gap-2">
                 <Button
                   onClick={SignInWithGoogle}
-                  variant="outline"
-                  className="w-fit rounded-full bg-black border-none text-white hover:cursor-pointer"
+                  size="icon"
+                  className="hover:cursor-pointer rounded-full"
                   type="button"
                 >
-                  <FaGoogle />
+                  {isSigningInGoogle ? (
+                    <LoaderCircle className="animate-spin" size={16} />
+                  ) : (
+                    <FaGoogle />
+                  )}
                 </Button>
                 <Button
                   onClick={SignInWithGithub}
-                  variant="outline"
-                  className="w-fit rounded-full bg-black border-none text-white hover:cursor-pointer"
+                  size="icon"
+                  className=" hover:cursor-pointer rounded-full"
                   type="button"
                 >
-                  <FaGithub />
+                  {isSigningInGithub ? (
+                    <LoaderCircle className="animate-spin" size={16} />
+                  ) : (
+                    <FaGithub />
+                  )}
                 </Button>
               </div>
             </div>

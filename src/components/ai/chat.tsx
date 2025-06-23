@@ -15,7 +15,6 @@ import { AnimatedGroup } from "../ui/animated-group";
 import { TextEffect } from "../ui/text-effect";
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useStore } from "@/hooks/zustand";
 import { BiExpandAlt } from "react-icons/bi";
 import { useRoadmapStore } from "@/lib/stores/roadmap-store";
 

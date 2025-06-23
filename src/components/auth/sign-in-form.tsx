@@ -18,6 +18,7 @@ import { useState } from "react";
 import { useFormStatus } from "react-dom";
 import { createAuthClient } from "better-auth/react";
 import CustomButton from "../CustomButton";
+import { LoaderCircle } from "lucide-react";
 
 // Submit button with loading state
 function SubmitButton() {
@@ -36,6 +37,8 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const authClient = createAuthClient();
   const [error, setError] = useState<string | null>(null);
+  const [isSigningInGoogle, setIsSigningInGoogle] = useState<boolean>(false)
+  const [isSigningInGithub, setIsSigningInGithub] = useState<boolean>(false)
 
   // Client action to handle form submission
   async function handleSubmit(formData: FormData) {
@@ -48,12 +51,14 @@ export function LoginForm({
   }
 
   const SignInWithGithub = async () => {
+    setIsSigningInGithub(true)
     await authClient.signIn.social({
       provider: "github",
       callbackURL: "/dashboard",
     });
   };
   const SignInWithGoogle = async () => {
+    setIsSigningInGoogle(true)
     await authClient.signIn.social({
       provider: "google",
       callbackURL: "/dashboard",
@@ -116,17 +121,27 @@ export function LoginForm({
               <div className="flex justify-center gap-2">
                 <Button
                   onClick={SignInWithGoogle}
-                  size="sm"
-                  className="w-fit hover:cursor-pointer rounded-full"
+                  size="icon"
+                  className="hover:cursor-pointer rounded-full"
+                  type="button"
                 >
-                  <FaGoogle />
+                  {isSigningInGoogle ? (
+                    <LoaderCircle className="animate-spin" size={16} />
+                  ) : (
+                    <FaGoogle />
+                  )}
                 </Button>
                 <Button
                   onClick={SignInWithGithub}
-                  size="sm"
-                  className="w-fit hover:cursor-pointer rounded-full"
+                  size="icon"
+                  className=" hover:cursor-pointer rounded-full"
+                  type="button"
                 >
-                  <FaGithub />
+                  {isSigningInGithub ? (
+                    <LoaderCircle className="animate-spin" size={16} />
+                  ) : (
+                    <FaGithub />
+                  )}
                 </Button>
               </div>
             </div>
