@@ -22,7 +22,7 @@ export const SignInWithEmailAndPassword = async (formData: FormData) => {
   console.log(response);
 
   if (response.user && response.token) {
-    redirect("/dashboard");
+    redirect("/");
   }
 
   return null;

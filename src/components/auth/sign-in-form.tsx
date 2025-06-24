@@ -54,14 +54,14 @@ export function LoginForm({
     setIsSigningInGithub(true)
     await authClient.signIn.social({
       provider: "github",
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
   };
   const SignInWithGoogle = async () => {
     setIsSigningInGoogle(true)
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
   };
 
