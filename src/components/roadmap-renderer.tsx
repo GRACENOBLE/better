@@ -263,7 +263,7 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
             type: edge.type === "dotted" ? "straight" : "smoothstep",
             animated: false,
             style: {
-              stroke: "#7c3aed",
+              stroke: "#000000",
               strokeWidth: edge.type === "main" ? 4 : 2,
               strokeDasharray: edge.type === "dotted" ? "5,5" : undefined,
             },
@@ -341,7 +341,7 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
               type: "straight",
               animated: false,
               style: {
-                stroke: "#7c3aed",
+                stroke: "#000000",
                 strokeWidth: 2,
                 strokeDasharray: "5,5",
               },
@@ -660,26 +660,19 @@ export default function RoadmapRenderer({ roadmapData }: RoadmapRendererProps) {
           padding: 0.2,
           includeHiddenNodes: false,
         }}
-        attributionPosition="bottom-left"
+        attributionPosition="bottom-right"
         className="bg-white"
         minZoom={0.1}
         maxZoom={2}
       >
-        <Controls className="bg-white border border-gray-300 rounded-lg shadow-sm" />
+        {/* <Controls className="bg-white border border-gray-300 rounded-lg shadow-sm" /> */}
         <Background
           variant={BackgroundVariant.Dots}
           gap={20}
           size={1}
-          color="#e5e7eb"
+          color="#000000"
         />
-        <MiniMap
-          className="bg-white border border-gray-300 rounded-lg"
-          nodeColor={(node) => {
-            if (node.type === "main") return "#fde047";
-            if (node.type === "subtopic") return "#e5e7eb";
-            return "#d1d5db";
-          }}
-        />
+        
       </ReactFlow>
     </div>
   );

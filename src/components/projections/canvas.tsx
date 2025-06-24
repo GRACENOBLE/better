@@ -348,7 +348,7 @@ export default function RoadmapStudio() {
           type: edge.type === "dotted" ? "straight" : "smoothstep",
           animated: false,
           style: {
-            stroke: "#7c3aed",
+            stroke: "#000000",
             strokeWidth: edge.type === "main" ? 4 : 2,
             strokeDasharray: edge.type === "dotted" ? "5,5" : undefined,
           },
@@ -780,7 +780,7 @@ export default function RoadmapStudio() {
         ...params,
         type: edgeType,
         style: {
-          stroke: "#7c3aed",
+          stroke: "#000000",
           strokeWidth,
           strokeDasharray,
         },
