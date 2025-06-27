@@ -40,7 +40,7 @@ export function NavMain({
         </SidebarGroupLabel>
         <SidebarSeparator />
         <SidebarMenu>
-          {items.map(({ title, id }) => (
+          {items && items.map(({ title, id }) => (
             <SidebarMenuItem key={title}>
               <Link href={"/chat/" + id}>
                 <SidebarMenuButton

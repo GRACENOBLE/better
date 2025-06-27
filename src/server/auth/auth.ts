@@ -5,17 +5,22 @@ import { redirect } from "next/navigation";
 export const SignInWithEmailAndPassword = async (formData: FormData) => {
   console.log("Signing in with email and password...: ", formData);
   try {
-    const res = await auth.api.signInEmail({
+    const response = await auth.api.signInEmail({
       body: {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
-        callbackURL: "/",
       },
       asResponse: true,
     });
-    console.log("Response: ", res);
-    
+
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({}));
+      throw new Error(errorBody?.message || `Sign in failed with status ${response.status}`);
+    }
+
+    // Optionally, handle successful sign-in here (e.g., redirect or return user info
   } catch (error) {
+    console.error("Sign in error:", error);
     throw error;
   }
 };

@@ -48,8 +48,14 @@ export default function Chat({ chatId }: { chatId: string }) {
     if (!chatId) return;
 
     fetch(`/api/chat/get?conversationId=${chatId}`)
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Network response was not ok");
+        const text = await res.text();
+        if (!text) return null;
+        return JSON.parse(text);
+      })
       .then((data) => {
+        if (!data || !data.messages) return;
         // Map raw DB rows to the SDK `Message[]` type
         const initial: Message[] = data.messages.map((m: any) => ({
           id: m.id,

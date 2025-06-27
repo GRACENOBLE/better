@@ -17,6 +17,7 @@ import { createAuthClient } from "better-auth/react";
 import CustomButton from "../CustomButton";
 import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 // Submit button with loading state
 function SubmitButton() {
@@ -44,10 +45,16 @@ export function LoginForm({
     console.log("Login error:", error);
   }, [error]);
   // Client action to handle form submission
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
+  const decodedReturnTo = returnTo ? decodeURIComponent(returnTo) : "/";
+
   async function handleSubmit(formData: FormData) {
     setError(null);
     try {
       await SignInWithEmailAndPassword(formData);
+      router.push(decodedReturnTo);
     } catch (error: any) {
       setError(error.message);
     } finally {
@@ -106,9 +113,9 @@ export function LoginForm({
                   placeholder="Email"
                   required
                   className="bg-white"
-                  disabled={
-                    isSigningInEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 />
               </div>
               <div className="grid gap-2 mb-4">
@@ -128,17 +135,17 @@ export function LoginForm({
                   placeholder="Password"
                   required
                   className="bg-white"
-                  disabled={
-                    isSigningInEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 />
               </div>
               <Button
                 type="submit"
                 className="rounded-full"
-                disabled={
-                  isSigningInEmail || isSigningInGithub || isSigningInGoogle
-                }
+                // disabled={
+                //   isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                // }
               >
                 {isSigningInEmail ? (
                   <LoaderCircle className="animate-spin" size={16} />
@@ -153,9 +160,9 @@ export function LoginForm({
                   size="icon"
                   className="hover:cursor-pointer rounded-full"
                   type="button"
-                  disabled={
-                    isSigningInEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 >
                   {isSigningInGoogle ? (
                     <LoaderCircle className="animate-spin" size={16} />
@@ -168,9 +175,9 @@ export function LoginForm({
                   size="icon"
                   className=" hover:cursor-pointer rounded-full"
                   type="button"
-                  disabled={
-                    isSigningInEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 >
                   {isSigningInGithub ? (
                     <LoaderCircle className="animate-spin" size={16} />

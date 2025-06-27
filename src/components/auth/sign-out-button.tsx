@@ -14,7 +14,7 @@ const SignOutButton = () => {
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.push("/auth/sign-in"); // redirect to login page
+            window.location.reload(); // reload the window
           },
         },
       });

@@ -10,12 +10,11 @@ import UserButton from "./user-button";
 const menuItems = [
   { name: "About", href: "/about" },
   { name: "Roadmaps", href: "/roadmaps" },
-  { name: "Chat", href: "/chat/new" },
+  { name: "Chat", href: "/chat" },
 ];
 
 const Header = ({
   user,
-  isPending,
 }: {
   user?:
     | {
@@ -28,7 +27,6 @@ const Header = ({
         image?: string | null | undefined;
       }
     | undefined;
-  isPending: boolean;
 }) => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
@@ -56,7 +54,7 @@ const Header = ({
         >
           <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
             <div className="flex w-full justify-between lg:w-auto">
-              <Logo size="sm" color="black" variant="wordmark" />
+              <Logo size="lg" color="black" variant="wordmark" />
               <button
                 onClick={() => setMenuState(!menuState)}
                 aria-label={menuState == true ? "Close Menu" : "Open Menu"}
@@ -99,8 +97,6 @@ const Header = ({
               </div>
               <UserButton
                 user={user}
-                isScrolled={isScrolled}
-                isPending={isPending}
               />
             </div>
           </div>

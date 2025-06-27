@@ -1,11 +1,16 @@
 import { AIHeader } from "@/components/ai/ai-header";
 import { AISidebar } from "@/components/ai/ai-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { auth } from "@/lib/auth/auth";
+import { headers } from "next/headers";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const Layout = async({ children }: { children: React.ReactNode }) => {
+  const session = await auth.api.getSession({
+      headers: await headers(),
+    });
   return (
     <SidebarProvider defaultOpen={false}>
-      <AISidebar variant="inset" />
+      <AISidebar variant="inset" user={session?.user} />
       <SidebarInset className="max-h-[97.5vh]">
         <AIHeader />
         {children}

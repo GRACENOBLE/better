@@ -26,14 +26,14 @@ export function SignUpForm({
     setIsSigningInGithub(true);
     await authClient.signIn.social({
       provider: "github",
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
   };
   const SignInWithGoogle = async () => {
     setIsSigningInGoogle(true);
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: "/",
     });
   };
   const handleSubmit = async(formData: FormData) => {
@@ -65,9 +65,9 @@ export function SignUpForm({
                   placeholder="Name"
                   required
                   className="bg-white"
-                  disabled={
-                    isSigningUpEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningUpEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 />
               </div>
               <div className="grid gap-2">
@@ -79,9 +79,9 @@ export function SignUpForm({
                   placeholder="Email"
                   required
                   className="bg-white"
-                  disabled={
-                    isSigningUpEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningUpEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 />
               </div>
               <div className="grid gap-2">
@@ -92,9 +92,9 @@ export function SignUpForm({
                   placeholder="Password"
                   required
                   className="bg-white"
-                  disabled={
-                    isSigningUpEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningUpEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 />
               </div>
               <div className="grid gap-2">
@@ -105,9 +105,9 @@ export function SignUpForm({
                   placeholder="Repeat password"
                   required
                   className="bg-white"
-                  disabled={
-                    isSigningUpEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningUpEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 />
               </div>
               <Button
@@ -130,9 +130,9 @@ export function SignUpForm({
                   size="icon"
                   className="hover:cursor-pointer rounded-full"
                   type="button"
-                  disabled={
-                    isSigningUpEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningUpEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 >
                   {isSigningInGoogle ? (
                     <LoaderCircle className="animate-spin" size={16} />
@@ -145,9 +145,9 @@ export function SignUpForm({
                   size="icon"
                   className=" hover:cursor-pointer rounded-full"
                   type="button"
-                  disabled={
-                    isSigningUpEmail || isSigningInGithub || isSigningInGoogle
-                  }
+                  // disabled={
+                  //   isSigningUpEmail || isSigningInGithub || isSigningInGoogle
+                  // }
                 >
                   {isSigningInGithub ? (
                     <LoaderCircle className="animate-spin" size={16} />

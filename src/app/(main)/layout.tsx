@@ -19,7 +19,7 @@ export default async function Layout({
   return (
     <div>
       {" "}
-      <Header isPending={!session} user={session?.user}/>
+      <Header user={session?.user}/>
       {children}
       <Footer />
     </div>

@@ -21,8 +21,6 @@ import CustomButton from "../CustomButton";
 
 const UserButton = ({
   user,
-  isScrolled,
-  isPending,
 }: {
   user:
     | {
@@ -35,8 +33,6 @@ const UserButton = ({
         image?: string | null | undefined | undefined;
       }
     | undefined;
-  isScrolled: boolean;
-  isPending: boolean;
 }) => {
   return (
     <div>
@@ -78,11 +74,6 @@ const UserButton = ({
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
-      ) : isPending ? (
-        <div className="rounded-full border h-10 w-10 grid place-items-center bg-muted animate-spin">
-          {" "}
-          <LoaderCircle size={20} />
         </div>
       ) : (
         <div className="flex w-full flex-col space-y-3 sm:flex-row sm:gap-3 sm:space-y-0 md:w-fit">
