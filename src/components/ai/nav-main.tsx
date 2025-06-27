@@ -12,14 +12,14 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
 
 export function NavMain({
   items,
 }: {
   items: {
     title: string;
-    url: string;
-    icon?: LucideIcon;
+    id: string;
   }[];
 }) {
   return (
@@ -28,8 +28,10 @@ export function NavMain({
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
             <SidebarMenuButton tooltip="Quick Create">
-              <PlusCircleIcon />
-              <span>New Chat</span>
+              <Link href={"/chat/new"} className="flex items-center gap-2">
+                <PlusCircleIcon size={16}/>
+                <span>New Chat</span>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -38,12 +40,16 @@ export function NavMain({
         </SidebarGroupLabel>
         <SidebarSeparator />
         <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} className="hover:cursor-pointer">
-                {item.icon && <item.icon />}
-                <span>{item.title}</span>
-              </SidebarMenuButton>
+          {items.map(({ title, id }) => (
+            <SidebarMenuItem key={title}>
+              <Link href={"/chat/" + id}>
+                <SidebarMenuButton
+                  tooltip={title}
+                  className="hover:cursor-pointer"
+                >
+                  <span>{title}</span>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

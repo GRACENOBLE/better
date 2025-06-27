@@ -1,26 +1,22 @@
 import BackButton from "@/components/auth/back-button";
 import { SignUpForm } from "@/components/auth/sign-up-form";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import Link from "next/link";
 
 const page = () => {
   return (
-    <div className="min-h-screen grid grid-cols-2 place-items-center">
+    <section className="min-h-screen grid place-items-center bg-muted">
       <BackButton className="absolute top-4 left-4" />
-
-      <div>
-        <div className="mt-4 text-center flex flex-col gap-8 items-center">
-          <Image src={"/images/logo-yellow.svg"} alt={""} height={500} width={500} className="h-20 w-20 rounded-xl"/>
-          <Link href="/auth/sign-in" className="underline underline-offset-4">
-            <Button className="rounded-full px-8 hover:cursor-pointer">I have an account</Button>
-          </Link>
-        </div>
-      </div>
-      <div className="bg-accent h-full w-full flex flex-col items-center justify-center">
+      <div className=" h-full w-full flex flex-col gap-2 items-center justify-center">
         <SignUpForm />
+        <Link
+          href="/auth/sign-in"
+          className="text-sm underline-offset-4 hover:underline"
+          aria-label="go to sign in"
+        >
+          Sign in instead
+        </Link>
       </div>
-    </div>
+    </section>
   );
 };
 

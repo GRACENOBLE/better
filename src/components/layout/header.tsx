@@ -4,9 +4,8 @@ import { Menu, X } from "lucide-react";
 import React from "react";
 import { cn } from "@/lib/utils";
 import Logo from "../logo";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import UserButton from "./user-button";
-import { useStore } from "@/hooks/zustand";
 
 const menuItems = [
   { name: "About", href: "/about" },
@@ -14,12 +13,25 @@ const menuItems = [
   { name: "Chat", href: "/chat/new" },
 ];
 
-const Header = () => {
+const Header = ({
+  user,
+  isPending,
+}: {
+  user?:
+    | {
+        id: string;
+        name: string;
+        email: string;
+        emailVerified: boolean;
+        createdAt: Date;
+        updatedAt: Date;
+        image?: string | null | undefined;
+      }
+    | undefined;
+  isPending: boolean;
+}) => {
   const [menuState, setMenuState] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
-  const { data: session, isPending, error, refetch } = authClient.useSession();
-  const user = session?.user;
-  console.log("user: ", user);
 
   React.useEffect(() => {
     const handleScroll = () => {

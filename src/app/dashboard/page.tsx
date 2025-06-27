@@ -1,6 +1,6 @@
 import SignOutButton from "@/components/auth/sign-out-button";
 import Container from "@/components/common/container";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 

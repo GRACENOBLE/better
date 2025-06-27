@@ -1,35 +1,27 @@
 "use server";
-import { auth } from "@/lib/auth";
+import { auth } from "@/lib/auth/auth";
 import { redirect } from "next/navigation";
 
 export const SignInWithEmailAndPassword = async (formData: FormData) => {
-  console.log("Signing in with email and passwword...: ", formData);
-
-  const response = await auth.api
-    .signInEmail({
+  console.log("Signing in with email and password...: ", formData);
+  try {
+    const res = await auth.api.signInEmail({
       body: {
         email: formData.get("email") as string,
         password: formData.get("password") as string,
+        callbackURL: "/",
       },
-      asResponse: true, // returns a response object instead of data
-    })
-    .then((res) => res.json())
-    .catch((error) => {
-      console.log("Error signing in: ", error);
-      return error;
+      asResponse: true,
     });
-
-  console.log(response);
-
-  if (response.user && response.token) {
-    redirect("/");
+    console.log("Response: ", res);
+    
+  } catch (error) {
+    throw error;
   }
-
-  return null;
 };
 
 export const SignUpWithEmailAndPassword = async (formData: FormData) => {
-  // console.log("FormData: ", formData);
+  console.log("Signing up with cridentials: ", formData);
 
   const response = await auth.api.signUpEmail({
     body: {
@@ -39,6 +31,7 @@ export const SignUpWithEmailAndPassword = async (formData: FormData) => {
     },
   });
   console.log(response);
+  return null;
 };
 
 // export const SignInWithGithub = async () => {

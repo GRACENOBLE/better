@@ -1,6 +1,6 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
+import { Message, useChat } from "@ai-sdk/react";
 import { ReactFlowProvider } from "@xyflow/react";
 import RoadmapRenderer from "@/components/roadmap-renderer";
 import { useState } from "react";
@@ -9,7 +9,6 @@ import { Button } from "../ui/button";
 import { CornerRightUp, LoaderCircle, Pencil } from "lucide-react";
 import Markdown from "markdown-to-jsx";
 import Loader from "./loader";
-
 import { useRef } from "react";
 import { AnimatedGroup } from "../ui/animated-group";
 import { TextEffect } from "../ui/text-effect";
@@ -17,17 +16,52 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BiExpandAlt } from "react-icons/bi";
 import { useRoadmapStore } from "@/lib/stores/roadmap-store";
+import { authClient } from "@/lib/auth/auth-client";
 
-export default function Chat() {
+export default function Chat({ chatId }: { chatId: string }) {
+  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const user = session?.user;
+  console.log("user: ", user);
+
+  const userId = user?.id;
   const [isThinking, setIsThinking] = useState<boolean>(false);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const { messages, input, setInput, handleInputChange, handleSubmit } =
-    useChat({
-      maxSteps: 3,
-      onResponse: () => setIsThinking(true),
-      onFinish: () => setIsThinking(false),
-      onError: () => setIsThinking(false),
-    });
+  const [chatTitle, setChatTitle] = useState<string>("");
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const {
+    messages,
+    input,
+    setInput,
+    handleInputChange,
+    handleSubmit,
+    setMessages,
+  } = useChat({
+    maxSteps: 3,
+    onResponse: () => setIsThinking(true),
+    onFinish: () => setIsThinking(false),
+    onError: () => setIsThinking(false),
+  });
+
+  console.log("chat Title: ", chatTitle);
+
+  useEffect(() => {
+    if (!chatId) return;
+
+    fetch(`/api/chat/get?conversationId=${chatId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        // Map raw DB rows to the SDK `Message[]` type
+        const initial: Message[] = data.messages.map((m: any) => ({
+          id: m.id,
+          role: m.role,
+          content: m.content!,
+          createdAt: m.createdAt,
+        }));
+        setMessages(initial);
+        setConversationId(chatId);
+      })
+      .catch(console.error);
+  }, [chatId]);
 
   const chatRef = useChatScroll(messages);
   const formRef = useRef<HTMLFormElement>(null);
@@ -75,6 +109,42 @@ export default function Chat() {
       router.replace(`?${params.toString()}`);
     }
   }, [conversationStarter]);
+
+  const hasLoadedHistory = useRef(false);
+
+  useEffect(() => {
+    if (!hasLoadedHistory.current) {
+      // Fetch and load previous messages once
+      if (conversationId) {
+        fetch(`/api/chat/get?conversationId=${conversationId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            const initial = data.messages.map(
+              (m: { id: any; role: any; content: any; createdAt: any }) => ({
+                id: m.id,
+                role: m.role,
+                content: m.content!,
+                createdAt: m.createdAt,
+              })
+            );
+            setMessages(initial);
+          })
+          .catch(console.error)
+          .finally(() => {
+            hasLoadedHistory.current = true;
+          });
+      }
+      return;
+    }
+
+    // From here on it's safe to save new messages
+    if (messages.length === 0) return;
+
+    const latest = messages[messages.length - 1];
+    if (latest.role !== "user" && latest.role !== "assistant") return;
+
+    postMessage(latest);
+  }, [messages, conversationId]);
 
   return (
     <div

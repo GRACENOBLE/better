@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Raleway, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Footer from "@/components/layout/footer";
+import { authClient } from "@/lib/auth/auth-client";
 
 const ralewayFont = Raleway({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   return (
     <html lang="en">
       <body

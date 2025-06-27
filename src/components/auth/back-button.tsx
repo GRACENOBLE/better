@@ -1,20 +1,16 @@
-"use client";
-import { ArrowLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
+import Link from "next/link";
+import { buttonVariants } from "../ui/button";
 
 const BackButton = ({ className }: { className?: string }) => {
-  const router = useRouter();
   return (
-    <Button
-      onClick={() => router.back()}
-      variant={"ghost"}
-      size={"icon"}
-      className={cn(className ,"hover:cursor-pointer")}
+    <Link
+      href={"/"}
+      className={cn(buttonVariants({ variant: "ghost", size: "icon" }), className)}
     >
-      <ArrowLeft />
-    </Button>
+      <X />
+    </Link>
   );
 };
 

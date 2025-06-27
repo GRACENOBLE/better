@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "../ui/button";
-import { authClient } from "@/lib/auth-client";
+import { authClient } from "@/lib/auth/auth-client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -26,7 +26,13 @@ const SignOutButton = () => {
   };
 
   return (
-    <Button className="-translate-x-2" variant={'ghost'} size={'sm'} onClick={handleSignOut} disabled={isSigningOut}>
+    <Button
+      className="-translate-x-2"
+      variant={"ghost"}
+      size={"sm"}
+      onClick={handleSignOut}
+      disabled={isSigningOut}
+    >
       {isSigningOut ? "Signing Out..." : "Sign Out"}
     </Button>
   );

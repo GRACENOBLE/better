@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import {
   CameraIcon,
   ClipboardListIcon,
@@ -13,8 +12,8 @@ import {
   SettingsIcon,
 } from "lucide-react";
 
-import { NavMain } from "./nav-main"; 
-import { NavUser } from "./nav-user"; 
+import { NavMain } from "./nav-main";
+import { NavUser } from "./nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -24,6 +23,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Logo from "../logo";
+import { useEffect, useState } from "react";
+import { authClient } from "@/lib/auth/auth-client";
 
 const data = {
   user: {
@@ -31,33 +32,7 @@ const data = {
     email: "gracenoble72@gmail.com.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "Chat 0",
-      url: "#",
-     
-    },
-    {
-      title: "Chat 1",
-      url: "#",
-      
-    },
-    {
-      title: "Chat 2",
-      url: "#",
-     
-    },
-    {
-      title: "Chat 3",
-      url: "#",
-      
-    },
-    {
-      title: "Chat 4",
-      url: "#",
-    
-    },
-  ],
+
   navClouds: [
     {
       title: "Capture",
@@ -142,24 +117,54 @@ const data = {
   ],
 };
 
-export function AISidebar({
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export function AISidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const user = session?.user;
+  console.log("user: ", user);
+  const userId = user?.id;
+  const [conversations, setConversations] = useState<
+    { title: string; id: string }[] | null
+  >(null);
+
+  async function fetchConversations() {
+    console.log("fetching...");
+    const res = await fetch(`/api/chat/list?userId=${userId}`);
+
+    const { conversations } = await res.json();
+    // console.log("Res: ", conversations);
+    setConversations(conversations);
+  }
+
+  useEffect(() => {
+    fetchConversations();
+  }, []);
+
+  useEffect(() => {
+    console.log("conversations: ", conversations);
+  }, [conversations]);
+
+  const chats = Array.isArray(conversations)
+    ? conversations?.map((c: { title: string; id: string }) => ({
+        title: c.title,
+        id: c.id,
+      }))
+    : [];
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Logo variant="logo" size="sm" />
+            <Logo variant="logomark" size="sm" />
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={chats} />
         {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
     </Sidebar>
   );

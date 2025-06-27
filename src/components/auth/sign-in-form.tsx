@@ -5,13 +5,10 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Link from "next/link";
 import { SignInWithEmailAndPassword } from "@/server/auth/auth";
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import { useState } from "react";
@@ -19,6 +16,7 @@ import { useFormStatus } from "react-dom";
 import { createAuthClient } from "better-auth/react";
 import CustomButton from "../CustomButton";
 import { LoaderCircle } from "lucide-react";
+import { useEffect } from "react";
 
 // Submit button with loading state
 function SubmitButton() {
@@ -37,28 +35,35 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const authClient = createAuthClient();
   const [error, setError] = useState<string | null>(null);
-  const [isSigningInGoogle, setIsSigningInGoogle] = useState<boolean>(false)
-  const [isSigningInGithub, setIsSigningInGithub] = useState<boolean>(false)
+  const [isSigningInEmail, setIsSigningInEmail] = useState<boolean>(false);
+  const [isSigningInGoogle, setIsSigningInGoogle] = useState<boolean>(false);
+  const [isSigningInGithub, setIsSigningInGithub] = useState<boolean>(false);
 
+  useEffect(() => {
+    // You can replace this with any tracking/analytics logic
+    console.log("Login error:", error);
+  }, [error]);
   // Client action to handle form submission
   async function handleSubmit(formData: FormData) {
     setError(null);
-    const error = await SignInWithEmailAndPassword(formData);
-
-    if (error) {
-      setError(error);
+    try {
+      await SignInWithEmailAndPassword(formData);
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setIsSigningInEmail(false);
     }
   }
 
   const SignInWithGithub = async () => {
-    setIsSigningInGithub(true)
+    setIsSigningInGithub(true);
     await authClient.signIn.social({
       provider: "github",
       callbackURL: "/",
     });
   };
   const SignInWithGoogle = async () => {
-    setIsSigningInGoogle(true)
+    setIsSigningInGoogle(true);
     await authClient.signIn.social({
       provider: "google",
       callbackURL: "/",
@@ -66,8 +71,11 @@ export function LoginForm({
   };
 
   return (
-    <div className={cn("flex flex-col items-center ", className)} {...props}>
-      <Card className="min-w-96 bg-accent border-none shadow-none">
+    <div
+      className={cn("flex flex-col items-center w-full", className)}
+      {...props}
+    >
+      <Card className="w-full md:w-96 bg-accent border-none shadow-none">
         <CardHeader>
           <CardTitle className="font-title text-center text-4xl font-semibold mb-4">
             Sign In
@@ -77,14 +85,19 @@ export function LoginForm({
           </CardDescription> */}
         </CardHeader>
         <CardContent>
-          <form action={handleSubmit}>
+          <form
+            action={handleSubmit}
+            onSubmit={() => {
+              setIsSigningInEmail(true);
+            }}
+          >
             <div className="flex flex-col gap-6">
-              {error && (
-                <div className="bg-destructive/10 text-destructive px-4 py-2 rounded-md text-sm">
-                  {error}
-                </div>
-              )}
-              <div className="grid gap-2">
+              <div className="relative grid gap-2">
+                {error && (
+                  <div className="absolute -top-10 left-[50%] -translate-x-[50%] text-nowrap  text-center text-destructive px-4 py-2 rounded-md text-sm">
+                    {error}
+                  </div>
+                )}
                 {/* <Label htmlFor="email">Email</Label> */}
                 <Input
                   id="email"
@@ -93,6 +106,9 @@ export function LoginForm({
                   placeholder="Email"
                   required
                   className="bg-white"
+                  disabled={
+                    isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                  }
                 />
               </div>
               <div className="grid gap-2 mb-4">
@@ -112,10 +128,23 @@ export function LoginForm({
                   placeholder="Password"
                   required
                   className="bg-white"
+                  disabled={
+                    isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                  }
                 />
               </div>
-              <Button type="submit" className="rounded-full">
-                Submit
+              <Button
+                type="submit"
+                className="rounded-full"
+                disabled={
+                  isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                }
+              >
+                {isSigningInEmail ? (
+                  <LoaderCircle className="animate-spin" size={16} />
+                ) : (
+                  "Sign in"
+                )}
               </Button>
               <div className="divider">or</div>
               <div className="flex justify-center gap-2">
@@ -124,6 +153,9 @@ export function LoginForm({
                   size="icon"
                   className="hover:cursor-pointer rounded-full"
                   type="button"
+                  disabled={
+                    isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                  }
                 >
                   {isSigningInGoogle ? (
                     <LoaderCircle className="animate-spin" size={16} />
@@ -136,6 +168,9 @@ export function LoginForm({
                   size="icon"
                   className=" hover:cursor-pointer rounded-full"
                   type="button"
+                  disabled={
+                    isSigningInEmail || isSigningInGithub || isSigningInGoogle
+                  }
                 >
                   {isSigningInGithub ? (
                     <LoaderCircle className="animate-spin" size={16} />

@@ -72,7 +72,7 @@ const UserButton = ({
               </DropdownMenuGroup>
 
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem >
                 <SignOutButton />
                 <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
               </DropdownMenuItem>
