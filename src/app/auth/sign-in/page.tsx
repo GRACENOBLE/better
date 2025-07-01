@@ -2,13 +2,16 @@ import BackButton from "@/components/auth/back-button";
 import { LoginForm } from "@/components/auth/sign-in-form";
 import Container from "@/components/common/container";
 import Link from "next/link";
+import { Suspense } from "react";
 
 const page = () => {
   return (
     <section className="min-h-screen grid place-items-center bg-muted">
       <BackButton className="absolute top-4 left-4" />
       <Container className="h-full w-full flex flex-col gap-2 items-center justify-center">
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
         <Link
           href="/auth/sign-up"
           className="text-sm underline-offset-4 hover:underline"
