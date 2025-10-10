@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 const CustomButton = ({
   children,
   className,
@@ -13,7 +15,9 @@ const CustomButton = ({
 }) => {
   return (
     <button
-      className={`group relative border-none bg-transparent w-fit p-0 outline-none cursor-pointer ${className}`}
+      className={cn(
+        `group relative border-none bg-transparent w-fit p-0 outline-none cursor-pointer`
+      )}
       type={type}
       onClick={onClick}
     >
@@ -37,7 +41,9 @@ const CustomButton = ({
             : "px-6 py-2"
         }  text-white bg-black rounded-full translate-y-[-4px] transition-transform duration-[250ms] [transition-timing-function:cubic-bezier(0.3,0.7,0.4,1.5)] group-hover:translate-y-[-6px] group-active:translate-y-[-2px] group-active:duration-[34ms]`}
       >
-        <span className="select-none font-medium">{children}</span>
+        <span className={cn("select-none font-medium", className)}>
+          {children}
+        </span>
       </div>
     </button>
   );
