@@ -166,7 +166,7 @@ export default function Chat({ chatId }: { chatId: string }) {
               as="h1"
               className="text-balance font-title text-5xl font-semibold "
             >
-              Better
+              Trace
             </TextEffect>
             <TextEffect
               per="line"

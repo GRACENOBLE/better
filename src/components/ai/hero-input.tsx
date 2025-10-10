@@ -25,7 +25,7 @@ const HeroInput = () => {
         {/* <Mail className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" /> */}
 
         <input
-          placeholder="Plan with Better AI"
+          placeholder="Plan with Jarvis"
           className="h-12 w-full bg-transparent pl-4 focus:outline-none placeholder:text-base overflow-hidden"
           type="text"
           name="starter"
@@ -36,7 +36,7 @@ const HeroInput = () => {
 
         <div className="lg:pr-0">
           <button
-            aria-label="submit to better chat"
+            aria-label="submit to Jarvis"
             className="rounded-full bg-black text-white p-2 hover:cursor-pointer"
             type="submit"
           >

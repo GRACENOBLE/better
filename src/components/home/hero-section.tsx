@@ -36,7 +36,7 @@ export default function HeroSection() {
               preset="fade-in-blur"
               speedSegment={0.3}
               as="h1"
-              className="text-balance font-title text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl"
+              className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl"
             >
               Create a plan for
             </TextEffect>
@@ -44,7 +44,7 @@ export default function HeroSection() {
               preset="fade-in-blur"
               speedSegment={0.3}
               as="h1"
-              className="text-balance text-4xl font-title font-semibold sm:text-5xl lg:text-6xl"
+              className="text-balance text-4xl font-bold sm:text-5xl lg:text-6xl"
             >
               anything!
             </TextEffect>
@@ -56,7 +56,7 @@ export default function HeroSection() {
               as="p"
               className="mx-auto mt-6 md:mt-12 max-w-2xl text-pretty lg:text-lg"
             >
-              Increase your chances of "Getting it done!". Plan with Better AI
+              Increase your chances of "Getting it done!". Plan with Jarvis
               and create a custom roadmap with clearly defined timelines and
               deliverables.
             </TextEffect>

@@ -38,10 +38,10 @@ export default function ContentSection() {
         />
 
         <div className="grid gap-6 md:grid-cols-2 md:gap-12">
-          <h2 className="text-4xl font-title font-semibold">What is better?</h2>
+          <h2 className="text-4xl font-title font-semibold">What is Trace?</h2>
           <div className="space-y-6">
             <p>
-              Better is an AI powered roadmapping tool that improves your
+              Trace is an AI powered roadmapping tool that improves your
               planning 10 fold. Create a knowledge based plan and see it through
               from start to finish.
             </p>

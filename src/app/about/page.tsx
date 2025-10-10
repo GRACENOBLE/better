@@ -86,7 +86,7 @@ const page = () => {
               as="h1"
               className="text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl mb-6"
             >
-              About Better
+              About Trace
             </TextEffect>
             <TextEffect
               preset="fade-in-blur"
@@ -105,19 +105,19 @@ const page = () => {
       {/* Main Content */}
       <section className="py-16 md:py-28">
         <div className="mx-auto max-w-6xl space-y-16 px-6">
-          {/* What is Better Section */}
+          {/* What is Trace Section */}
           <div className="grid gap-8 md:grid-cols-2 md:gap-16 items-center">
             <div className="space-y-6 pb-6">
-              <h2 className="text-3xl  font-bold">What is Better?</h2>
+              <h2 className="text-3xl  font-bold">What is Trace?</h2>
               <div className="space-y-4 pb-4">
                 <p className=" text-muted-foreground">
-                  Better is an AI-powered roadmapping tool that revolutionizes
+                  Trace is an AI-powered roadmapping tool that revolutionizes
                   your planning process. Create knowledge-based plans and see
                   them through from start to finish.
                 </p>
                 <p className="text-muted-foreground">
                   Whether you're planning a career change, building a product,
-                  or working towards personal goals, Better provides the
+                  or working towards personal goals, Trace provides the
                   structure and intelligence you need to succeed.
                 </p>
               </div>
@@ -147,7 +147,7 @@ const page = () => {
               <img
                 className="rounded-lg border h-[400px] w-full object-cover shadow-lg"
                 src="/images/canvas.png"
-                alt="Better roadmapping interface"
+                alt="Trace roadmapping interface"
                 loading="lazy"
               />
             </div>

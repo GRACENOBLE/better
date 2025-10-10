@@ -361,7 +361,7 @@ export async function POST(req: Request) {
 
     const result = streamText({
       model: google("models/gemini-2.0-flash-exp"),
-      system: `You are Better AI, an expert learning advisor and roadmap creator. You help people create structured learning paths for any topic or goal.
+      system: `You are Trace AI, an expert learning advisor and roadmap creator. You help people create structured learning paths for any topic or goal.
 
 When users ask for roadmaps, learning paths, career guidance, or step-by-step plans, use the generateRoadmap tool to create visual roadmaps.
 

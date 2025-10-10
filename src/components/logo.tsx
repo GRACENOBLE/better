@@ -34,13 +34,13 @@ const Logo = ({
       )}
       {!(variant == "logo") && (
         <span
-          className={cn(" font-semibold font-body", {
+          className={cn(" font-bold", {
             "text-lg": size == "sm",
             "": size == "md",
             "text-3xl": size == "lg",
           })}
         >
-          Better
+          Trace
         </span>
       )}
     </Link>
