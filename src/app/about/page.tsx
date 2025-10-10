@@ -14,6 +14,7 @@ import {
   Rocket,
   CheckCircle,
 } from "lucide-react";
+import Header from "@/components/layout/header";
 
 const transitionVariants = {
   item: {
@@ -74,6 +75,7 @@ const benefits = [
 const page = () => {
   return (
     <div className="min-h-screen">
+      <Header />
       {/* Hero Section */}
       <section className="bg-accent">
         <div className="mx-auto max-w-6xl px-2 md:px-6 pt-32 pb-20 2xl:pb-32 2xl:pt-40">
@@ -154,7 +156,7 @@ const page = () => {
           <div className="relative">
             <div className="bg-accent rounded-xl p-8 text-center">
               <Rocket className="h-16 w-16 mx-auto" />
-             
+
               <p className="text-muted-foreground pb-10 pt-6">
                 Join thousands of users who have transformed their planning
                 process
