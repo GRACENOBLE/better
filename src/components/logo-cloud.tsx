@@ -9,11 +9,12 @@ export const LogoCloud = () => {
                     <div className="inline md:max-w-44 md:border-r md:pr-6">
                         <p className="text-end text-sm">Powering the best teams</p>
                     </div>
-                    <div className="relative py-6 md:w-[calc(100%-11rem)]">
+                    <div className="relative w-full py-6 md:w-[calc(100%-11rem)]">
                         <InfiniteSlider
                             speedOnHover={20}
                             speed={40}
                             gap={112}>
+                            
                             <div className="flex">
                                 <img
                                     className="mx-auto h-5 w-fit dark:invert"
@@ -93,12 +94,12 @@ export const LogoCloud = () => {
                         <div className="bg-linear-to-r from-background absolute inset-y-0 left-0 w-20"></div>
                         <div className="bg-linear-to-l from-background absolute inset-y-0 right-0 w-20"></div>
                         <ProgressiveBlur
-                            className="pointer-events-none absolute left-0 top-0 h-full w-20"
+                            className="pointer-events-none absolute -left-4 md:left-0 top-0 h-full w-4 md:w-20"
                             direction="left"
                             blurIntensity={1}
                         />
                         <ProgressiveBlur
-                            className="pointer-events-none absolute right-0 top-0 h-full w-20"
+                            className="pointer-events-none absolute -right-4 md:right-0 top-0 h-full w-4 md:w-20"
                             direction="right"
                             blurIntensity={1}
                         />

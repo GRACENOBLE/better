@@ -40,7 +40,7 @@ const Header = ({
   }, []);
 
   return (
-    <header className="sticky top-0 z-10">
+    <header className="sticky top-0 z-10 w-full">
       <nav
         data-state={menuState && "active"}
         className="fixed z-20 w-full px-2"
